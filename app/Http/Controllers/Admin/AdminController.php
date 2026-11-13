@@ -665,12 +665,13 @@ class AdminController extends Controller
         foreach (Setting::ALANLAR as $k) $v[$k] = Setting::al($k, '');
         $v['header_menu'] = $v['header_menu'] ?: "Pet Otel|/kedi-kopek-otelleri\nKedi Oteli|/kedi-otelleri\nKöpek Oteli|/kopek-otelleri\nFiyatlar|/fiyatlar\nMağaza|/magaza\nBlog|/blog\nSahiplendir|/sahiplendir\nForum|/forum\nOtelini Kaydet|/partner";
         $v['footer_description'] = $v['footer_description'] ?: 'Antalya’da kedi ve köpek konaklaması sunan tesisleri; oda tipi, günlük fiyat, giriş-çıkış saatleri ve konaklama kurallarıyla birlikte karşılaştırın.';
-        $v['footer_booking_note'] = $v['footer_booking_note'] ?: 'Rezervasyon talebi ilgili tesise iletilir; ödeme otelde yapılır.';
+        $v['footer_booking_note'] = $v['footer_booking_note'] ?: 'Talepler platforma kaydedilir ve işletmeye e-posta bildirimi gönderilir; rezervasyon işletme onayıyla kesinleşir.';
         $v['footer_explore'] = $v['footer_explore'] ?: "Antalya Pet Otelleri|/kedi-kopek-otelleri\nKöpek Otelleri|/kopek-otelleri\nKedi Otelleri|/kedi-otelleri\nBlog|/blog\nSahiplendir|/sahiplendir\nForum|/forum\nGünlük Fiyatlar|/fiyatlar";
         $v['footer_corporate'] = $v['footer_corporate'] ?: "Hakkımızda|/sayfa/hakkimizda\nNasıl Çalışır?|/sayfa/nasil-calisir\nSıkça Sorulan Sorular|/sayfa/sss\nOtel Sahibi Ol|/partner\nİletişim|/iletisim";
         $v['footer_legal'] = $v['footer_legal'] ?: "Gizlilik Politikası|/gizlilik\nKullanım Koşulları|/kullanim-kosullari\nİptal ve İade|/iptal-iade\nMesafeli Satış Politikası|/mesafeli-satis-politikasi\nÇerez Politikası|/cerez-politikasi";
         $v['footer_copyright'] = $v['footer_copyright'] ?: '© {year} Antalya Pet Otel · antalyapetotel.com';
         $v['call_recording_days'] = $v['call_recording_days'] ?: '30';
+        $v['booking_requests_enabled'] = Setting::al('booking_requests_enabled', '0');
         $v['home_hero_prefix'] = $v['home_hero_prefix'] ?: 'Minik dostunuz için';
         $v['home_hero_highlight'] = $v['home_hero_highlight'] ?: 'doğru pet oteli';
         $v['home_hero_suffix'] = $v['home_hero_suffix'] ?: 'bulun.';
@@ -726,6 +727,7 @@ class AdminController extends Controller
             'footer_legal' => 'nullable|string|max:5000',
             'footer_copyright' => 'nullable|string|max:200',
             'subscription_payment_instructions' => 'nullable|string|max:2000',
+            'booking_requests_enabled' => 'nullable|boolean',
             'module_guest_crm' => 'nullable|boolean',
             'module_stay_updates' => 'nullable|boolean',
             'module_live_camera' => 'nullable|boolean',
@@ -785,6 +787,7 @@ class AdminController extends Controller
             $key = 'module_' . $module;
             $d[$key] = $r->boolean($key) ? '1' : '0';
         }
+        $d['booking_requests_enabled'] = $r->boolean('booking_requests_enabled') ? '1' : '0';
         Setting::kaydet($d);
         Setting::kaydet(['home_sections' => json_encode(['order' => $requestedOrder, 'visible' => $requestedVisible], JSON_UNESCAPED_UNICODE)]);
         return back()->with('ok', 'Ayarlar kaydedildi.');

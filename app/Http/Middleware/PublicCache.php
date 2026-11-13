@@ -33,7 +33,7 @@ class PublicCache
     /* Onbelleklenmeyecek yol onekleri */
     private const HARIC = [
         'panel', 'yonetim', 'giris', 'kayit', 'cikis',
-        'rezervasyonlarim', 'evcil-hayvanlarim', 'up',
+        'rezervasyonlarim', 'evcil-hayvanlarim', 'kayip-patiler', 'up',
         'api', 'storage', 'sohbet', 'sohbetlerim',
     ];
 

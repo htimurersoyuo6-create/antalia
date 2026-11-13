@@ -110,8 +110,9 @@
       $heroOtelIkinci = $hoteller->skip(1)->first();
       $heroHotelPhoto = $heroOtel?->primaryPhotoUrl();
       $heroHasImage = $heroHotelPhoto !== null;
+      $heroPhotoRepresentative = $heroOtel?->hasRepresentativeCover() ?? false;
       $heroPhotoUrl = $heroHasImage ? $heroHotelPhoto : ($heroImageUrl ?: asset('img/paw-placeholder.svg'));
-      $heroPhotoAlt = $heroHasImage ? $heroOtel->name . ' pet oteli fotoğrafı' : ($heroImageUrl ? $siteMarka . ' kapak görseli' : 'Pati illüstrasyonu; henüz tesis fotoğrafı eklenmedi');
+      $heroPhotoAlt = $heroHasImage ? $heroOtel->name . ' pet oteli fotoğrafı' . ($heroPhotoRepresentative ? ', temsili görünüm; tesis fotoğrafı paylaşılmadı' : '') : ($heroImageUrl ? $siteMarka . ' kapak görseli' : 'Pati illüstrasyonu; henüz tesis fotoğrafı eklenmedi');
     @endphp
     <div class="home-hero-grid">
       <div class="home-hero-copy">
@@ -130,7 +131,7 @@
           <figcaption>
             @if($heroHasImage)
               {{ $heroOtel->name }}
-              <small>{{ $heroOtel->district?->name ?? $sehir }}</small>
+              <small>{{ $heroOtel->district?->name ?? $sehir }}@if($heroPhotoRepresentative) · Temsili görsel · Tesis fotoğrafı paylaşılmadı @endif</small>
             @else
               {{ $heroImageUrl ? $siteMarka . ' · ' . ($siteBolge ?: $sehir) : 'Tesis görseli henüz eklenmedi' }}
             @endif
@@ -161,6 +162,16 @@
       <label for="f-cikis" class="sr-only">Çıkış tarihi</label>
       <span class="ic" aria-hidden="true">&#128337;</span>
       <input type="date" id="f-cikis" name="cikis" value="{{ request('cikis') }}" min="{{ today()->addDay()->toDateString() }}" required>
+    </div>
+    <div class="sf">
+      <label for="f-kapasite" class="sr-only">Evcil hayvan sayısı</label>
+      <span class="ic" aria-hidden="true">&#128062;</span>
+      <select name="kapasite" id="f-kapasite">
+        <option value="">Dost sayısı</option>
+        @foreach([1, 2, 3, 4] as $petCount)
+          <option value="{{ $petCount }}" @selected((int) request('kapasite') === $petCount)>{{ $petCount }} dost</option>
+        @endforeach
+      </select>
     </div>
     <div class="sf">
       <label for="f-tur" class="sr-only">Evcil hayvan türü</label>
@@ -342,7 +353,7 @@
   <div class="steps">
     <div class="step"><i>1</i><b>Tesisi seçin</b><p>İlçe ve hayvan türüne göre listeleyin; oda tipi ve günlük ücreti tek tabloda görün.</p></div>
     <div class="step"><i>2</i><b>Odayı inceleyin</b><p>Oda ölçüsü, kapasitesi, giriş-çıkış saati ve kabul edilen tür oda sayfasında yazılıdır.</p></div>
-    <div class="step"><i>3</i><b>Çevrimiçi rezervasyon yapın</b><p>Oda, dostunuz ve tarihleri seçerek rezervasyonunuzu doğrudan tesise iletin; tesis onayını hesabınızdan takip edin.</p></div>
+    <div class="step"><i>3</i><b>{{ $onlineBookingEnabled ? 'Çevrimiçi rezervasyon talebi gönderin' : 'İşletmeyle iletişime geçin' }}</b><p>{{ $onlineBookingEnabled ? 'Talep platforma kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. İşletme onayı gelmeden rezervasyon kesinleşmez.' : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor; müsaitliği ve koşulları işletmeyle doğrudan teyit edin.' }}</p></div>
     <div class="step"><i>4</i><b>Ödemeyi otelde yapın</b><p>Ücret, tesiste yapılır. Site üzerinden ödeme alınmaz ve kart bilgisi istenmez.</p></div>
   </div>
 </div></section>
@@ -372,9 +383,11 @@
         <div class="g">
           @php
             $roomPhotoUrl = $o->hotel?->primaryPhotoUrl();
+            $roomPhotoRepresentative = $o->hotel?->hasRepresentativeCover() ?? false;
           @endphp
           @if($roomPhotoUrl)
-            <img src="{{ $roomPhotoUrl }}" alt="{{ $o->hotel->name }} - {{ $o->name }}" decoding="async" width="640" height="480">
+            <img src="{{ $roomPhotoUrl }}" alt="{{ $o->hotel->name }} - {{ $o->name }}{{ $roomPhotoRepresentative ? ', temsili görsel; tesis fotoğrafı paylaşılmadı' : '' }}" decoding="async" width="640" height="480">
+            @if($roomPhotoRepresentative)<span class="apt-lcard__flag">Temsili görsel</span>@endif
           @else
             <span class="oda-image-placeholder" role="img" aria-label="{{ $o->hotel->name }} için tesis fotoğrafı henüz paylaşılmadı"><x-ui-icon name="camera" size="34" /></span>
           @endif

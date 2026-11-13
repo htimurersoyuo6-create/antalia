@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\District;
 use App\Models\Hotel;
+use App\Models\Setting;
 
 class LocalSeoController extends Controller
 {
@@ -34,7 +35,7 @@ class LocalSeoController extends Controller
         }
 
         $faq = [
-            ['soru' => $locality['name'] . ' pet otel seçenekleri nasıl karşılaştırılır?', 'cevap' => 'Tesislerin kabul ettiği hayvan türünü, oda tipini, günlük fiyatını ve güncel müsaitlik bilgisini birlikte inceleyin. Rezervasyon talebini göndermeden önce doğrudan tesisle teyit alın.'],
+            ['soru' => $locality['name'] . ' pet otel seçenekleri nasıl karşılaştırılır?', 'cevap' => 'Tesislerin kabul ettiği hayvan türünü, oda tipini, günlük fiyatını ve güncel müsaitlik bilgisini birlikte inceleyin. ' . (Setting::al('booking_requests_enabled', '0') === '1' ? 'Çevrimiçi talep oluşturmadan önce doğrudan tesisle teyit alın.' : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor; planınızı tesisle doğrudan teyit edin.')],
             ['soru' => $locality['name'] . ' yakınında kedi ve köpek konaklaması var mı?', 'cevap' => $district->name . ' ilçesinde aktif olarak listelenen tesisler aşağıdadır. Her tesisin kedi veya köpek kabul bilgisi kartında ayrı gösterilir.'],
             ['soru' => $locality['name'] . ' pet otel fiyatları neye göre değişir?', 'cevap' => 'Ücret; hayvan türü, oda tipi, konaklama süresi ve seçilen ek hizmetlere göre değişir. Güncel fiyatı tesis sayfasından ve tesisle görüşerek kontrol edin.'],
         ];

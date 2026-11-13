@@ -5,6 +5,7 @@ use App\Models\District;
 use App\Models\Hotel;
 use App\Models\Post;
 use App\Models\RoomType;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -115,23 +116,15 @@ class HomeController extends Controller
     {
         $hoteller = Hotel::active()
             ->with(['city', 'district', 'rooms'])
+            ->orderByRaw('CASE WHEN license_verified_at IS NULL THEN 1 ELSE 0 END')
             ->orderByDesc('rating_count')->orderBy('name')->get();
 
-        $doluluk = $this->occupancyStats();
+        $doluluk = Cache::remember('occupancy.antalya.current', now()->addMinute(), fn () => $this->occupancyStats());
         $dolulukOrani = $doluluk['occupancyPercent'];
         $dolulukBaslangic = $doluluk['startDate'];
         $dolulukBitis = $doluluk['endDate'];
         $dolulukOdaSayisi = $doluluk['roomCount'];
         $dolulukGuncellemeAt = $doluluk['updatedAt'];
-
-        // Ana sayfa vitrininde mevcut ayın anonim otel sayfası görüntülenmelerini kullan.
-        $aylikOtelHit = DB::table('site_analytics_daily')
-            ->where('dimension', 'hotel_view')
-            ->whereBetween('stat_date', [today()->startOfMonth()->toDateString(), today()->toDateString()])
-            ->select('label')
-            ->selectRaw('SUM(page_views) AS views')
-            ->groupBy('label')
-            ->pluck('views', 'label');
 
         /* Ilce bazli tesis sayilari (yalnizca oteli olan ilceler) */
         $ilceler = District::query()
@@ -180,7 +173,7 @@ class HomeController extends Controller
             'dolulukBitis' => $dolulukBitis,
             'dolulukOdaSayisi' => $dolulukOdaSayisi,
             'dolulukGuncellemeAt' => $dolulukGuncellemeAt,
-            'aylikOtelHit' => $aylikOtelHit,
+            'onlineBookingEnabled' => Setting::al('booking_requests_enabled', '0') === '1',
             'ilceler'    => $ilceler,
             'enUcuz'     => $enUcuz,
             'enPahali'   => $enPahali,
@@ -234,18 +227,21 @@ class HomeController extends Controller
 
         $out[] = [
             'soru' => 'Rezervasyon nasıl yapılıyor, ödeme nasıl alınıyor?',
-            'cevap' => 'Seçtiğiniz tesisin detay sayfasında oda tipini ve konaklama tarihlerini '
-                . 'belirleyip rezervasyon talebi gönderirsiniz. Talep doğrudan işletmeye iletilir; '
-                . 'onaylandıktan sonra ödeme işletmede yapılır. Bu nedenle rezervasyonunuz '
-                . 'işletmeden dönüş alınmadan tamamlanmış sayılmaz.',
+            'cevap' => Setting::al('booking_requests_enabled', '0') === '1'
+                ? 'Seçtiğiniz tesisin detay sayfasında çevrimiçi talep oluşturabilirsiniz. Talep platforma '
+                    . 'kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. Rezervasyon, işletme '
+                    . 'onayı olmadan kesinleşmez.'
+                : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor. Konaklama koşullarını ve '
+                    . 'müsaitliği ilgili işletmeyle doğrudan iletişim kurarak teyit edin.',
         ];
 
         $out[] = [
             'soru' => 'Rezervasyon talebim kaç sürede sonuçlanır?',
-            'cevap' => 'Talep gönderildiği anda işletmeye iletilir. İşletme uygunluk ve oda '
-                . 'durumunu kontrol edip dönüş yapar. Yoğun dönemlerde ve tatil günlerinde '
-                . 'dönüş süresi uzayabilir; acil konaklama için doğrudan telefonla aramanız '
-                . 'daha hızlı sonuç verir.',
+            'cevap' => Setting::al('booking_requests_enabled', '0') === '1'
+                ? 'Talep platforma kaydedilir. E-posta iletimi doğrulanamazsa uyarı gösterilir; '
+                    . 'rezervasyon, işletme onayı olmadan kesinleşmez.'
+                : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor. Acil konaklama için '
+                    . 'işletmeyle doğrudan telefon veya WhatsApp üzerinden iletişime geçin.',
         ];
 
         $out[] = [

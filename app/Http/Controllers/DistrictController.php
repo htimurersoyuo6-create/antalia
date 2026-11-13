@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\District;
 use App\Models\Hotel;
+use App\Models\Setting;
 
 /**
  * Ilce bazli pet otel sayfalari.
@@ -100,10 +101,11 @@ class DistrictController extends Controller
 
         $liste[] = [
             'soru' => 'Rezervasyon nasıl yapılır?',
-            'cevap' => 'İletişim bilgilerinizi ve konaklamak istediğiniz tarihleri paylaşarak '
-                . $ilce->name . ' içindeki otellerden birine talep gönderebilirsiniz. '
-                . 'Talebiniz doğrudan tesise iletilir; ödeme tesiste yapılır ve rezervasyonu yalnızca tesise dönüşü '
-                . 'teyit ettiğinde tamamlanmış sayılır.',
+            'cevap' => Setting::al('booking_requests_enabled', '0') === '1'
+                ? 'Çevrimiçi talep platforma kaydedilir. E-posta iletimi doğrulanamazsa uyarı gösterilir; '
+                    . 'rezervasyon ancak işletme onayından sonra kesinleşir.'
+                : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor. Müsaitlik ve konaklama koşullarını '
+                    . 'ilgili işletmeyle telefon veya WhatsApp üzerinden doğrudan teyit edin.',
         ];
 
         return $liste;

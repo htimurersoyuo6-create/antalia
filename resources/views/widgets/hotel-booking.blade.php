@@ -45,7 +45,7 @@
       <p class="intro">Bu tesis henüz oda seçeneği paylaşmadı. Tesis bilgilerini inceleyebilirsiniz.</p>
       <a class="details-link" href="{{ route('hotels.show', $hotel->slug) }}" target="_top">Tesis sayfasına git →</a>
     @endif
-    <p class="foot">Çevrimiçi rezervasyonunuzu gönderin; tesis onayını hesabınızdan takip edin. Ödeme otelde yapılır, sitede kart bilgisi istenmez.</p>
+    <p class="foot">{{ \App\Models\Setting::al('booking_requests_enabled', '0') === '1' ? 'Tarihleri seçip tesis bilgilerini inceleyin. Çevrimiçi talepler yalnızca sahibi tanımlı ve rezervasyon özelliği etkin tesislerde alınır.' : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor. Planınızı tesisle doğrudan teyit edin.' }}</p>
   </main>
   <script>
   (function(){var start=document.getElementById('widget-arrival'),end=document.getElementById('widget-departure');if(!start||!end)return;function nextDay(value){var d=new Date(value+'T00:00:00');d.setDate(d.getDate()+1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}function sync(){var min=nextDay(start.value);end.min=min;if(!end.value||end.value<min)end.value=min}start.addEventListener('change',sync);sync()})();

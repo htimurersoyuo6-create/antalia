@@ -13,8 +13,8 @@
     $siteCitySlug = \Illuminate\Support\Str::slug($siteCity ?: 'antalya');
     $defaultMetaTitle = $siteBrand . ' | Kedi ve Köpek Konaklama Rehberi';
     $defaultMetaDescription = ($sitePlace ?: $siteBrand) . ' bölgesindeki kedi ve köpek otellerini, konaklama seçeneklerini ve fiyatları karşılaştırın.';
-    $headerMenuDefault = ($siteCity ?: $siteBrand) . ' Pet Otel|/kedi-kopek-otelleri' . "\nKedi Oteli|/kedi-otelleri\nKöpek Oteli|/kopek-otelleri\nFiyatlar|/fiyatlar\nMağaza|/magaza\nBlog|/blog\nSahiplendir|/sahiplendir\nForum|/forum\nPet Akışı|/pet-akisi\nOtelini Kaydet|/partner";
-    $footerExploreDefault = ($siteCity ?: $siteBrand) . ' Pet Otelleri|/kedi-kopek-otelleri' . "\nKöpek Otelleri|/kopek-otelleri\nKedi Otelleri|/kedi-otelleri\nBlog|/blog\nSahiplendir|/sahiplendir\nForum|/forum\nPet Akışı|/pet-akisi\nGünlük Fiyatlar|/fiyatlar";
+    $headerMenuDefault = ($siteCity ?: $siteBrand) . ' Pet Otel|/kedi-kopek-otelleri' . "\nKedi Oteli|/kedi-otelleri\nKöpek Oteli|/kopek-otelleri\nFiyatlar|/fiyatlar\nMağaza|/magaza\nBlog|/blog\nKayıp İlanları|/kayip-patiler\nSahiplendir|/sahiplendir\nForum|/forum\nPet Akışı|/pet-akisi\nOtelini Kaydet|/partner";
+    $footerExploreDefault = ($siteCity ?: $siteBrand) . ' Pet Otelleri|/kedi-kopek-otelleri' . "\nKöpek Otelleri|/kopek-otelleri\nKedi Otelleri|/kedi-otelleri\nBlog|/blog\nKayıp İlanları|/kayip-patiler\nSahiplendir|/sahiplendir\nForum|/forum\nPet Akışı|/pet-akisi\nGünlük Fiyatlar|/fiyatlar";
 @endphp
 <title>@yield('title', \App\Models\Setting::al('meta_title', $defaultMetaTitle))</title>
 <meta name="description" content="@yield('desc', \App\Models\Setting::al('meta_description', $defaultMetaDescription))">
@@ -34,7 +34,7 @@
     $canonicalUrl = $canonicalYol === '' ? rtrim((string) url('/'), '/') : url($canonicalYol);
     $izlemeParam = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term',
                     'utm_content', 'gclid', 'fbclid', 'cb', 'ref'];
-    $facetParam  = ['page', 'fiyat', 'ilce', 'giris', 'cikis', 'tur', 'q'];
+    $facetParam  = ['page', 'fiyat', 'min_fiyat', 'max_fiyat', 'ilce', 'giris', 'cikis', 'tur', 'q'];
     $temiz = !array_intersect($izlemeParam, array_keys($_GET))
           && !array_intersect($facetParam, array_keys($_GET));
 $aramaDiziniDisi = auth()->check()
@@ -330,6 +330,7 @@ $footerLegal = $siteLinks(\App\Models\Setting::al('footer_legal', "Gizlilik Poli
 @endif
 <main id="icerik" class="{{ request()->routeIs('panel.*') ? 'owner-panel' : '' }}">
 @if(session('ok'))<div class="wrap"><div class="flash ok">{{ session('ok') }}</div></div>@endif
+@if(session('warning'))<div class="wrap"><div class="flash err">{{ session('warning') }}</div></div>@endif
 @if($errors->any())<div class="wrap"><div class="flash err">@foreach($errors->all() as $e)<div>{{ $e }}</div>@endforeach</div></div>@endif
 @yield('content')
 </main>
@@ -338,7 +339,7 @@ $footerLegal = $siteLinks(\App\Models\Setting::al('footer_legal', "Gizlilik Poli
 <div class="fcol footer-brand">
   <b class="footer-brand-name">{{ \App\Models\Setting::al('site_name', $siteBrand) }}</b>
   <p class="hint">{{ \App\Models\Setting::al('footer_description', ($siteCity ?: $siteBrand).' bölgesindeki kedi ve köpek konaklama tesislerini; oda tipi, günlük fiyat, giriş-çıkış saatleri ve kurallara göre karşılaştırın.') }}</p>
-  <p class="hint">{{ \App\Models\Setting::al('footer_booking_note', 'Rezervasyon talebi ilgili tesise iletilir; ödeme otelde yapılır.') }}</p>
+  <p class="hint">{{ \App\Models\Setting::al('booking_requests_enabled', '0') === '1' ? 'Talepler platforma kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. Rezervasyon işletme onayıyla kesinleşir.' : 'Sitemiz şu anda test aşamasındadır. Çevrimiçi rezervasyon talepleri işletmelere iletilmemektedir.' }}</p>
   @php($footerPhone = trim((string) \App\Models\Setting::al('site_phone', '')))
   <div class="footer-contact">
     <span class="footer-contact-label">İLETİŞİM</span>

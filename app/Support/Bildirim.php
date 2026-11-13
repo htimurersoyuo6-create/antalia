@@ -43,12 +43,14 @@ class Bildirim
         return array_filter([$res->hotel?->owner?->email, Setting::al('site_email')]);
     }
 
-    public static function rezervasyonAlindi(Reservation $res): void
+    public static function rezervasyonAlindi(Reservation $res): bool
     {
         $res->loadMissing(['hotel.owner', 'room', 'pet', 'user', 'extras']);
-        self::gonder($res->user->email, 'Rezervasyon talebiniz alındı · ' . $res->code, 'mail.rezervasyon-musteri', ['res' => $res]);
-        self::gonder(self::otelAlicilari($res), 'Yeni rezervasyon talebi · ' . $res->hotel->name, 'mail.rezervasyon-otel',
+        $customerSent = self::gonder($res->user->email, 'Rezervasyon talebiniz alındı · ' . $res->code, 'mail.rezervasyon-musteri', ['res' => $res]);
+        $hotelSent = self::gonder(self::otelAlicilari($res), 'Yeni rezervasyon talebi · ' . $res->hotel->name, 'mail.rezervasyon-otel',
             ['res' => $res, 'baslik' => 'Yeni rezervasyon talebi'], $res->user->email);
+
+        return $customerSent && $hotelSent && !in_array((string) config('mail.default'), ['log', 'array'], true);
     }
 
     public static function rezervasyonYanitiHatirlatmasi(Reservation $res): bool

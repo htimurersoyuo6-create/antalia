@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\ReservationUpdate;
 use App\Models\ReservationPaymentAttempt;
 use App\Models\ReservationExtension;
+use App\Models\Setting;
 use App\Services\BookingService;
 use App\Services\HotelGuestProfileService;
 use Illuminate\Http\Request;
@@ -81,14 +82,21 @@ class ReservationController extends Controller
 
     public function store(Request $r, string $slug, BookingService $svc, HotelGuestProfileService $guestProfiles, \App\Services\PetTransferPricingService $transferPricing)
     {
-        $hotel = Hotel::active()->where('slug', $slug)->firstOrFail();
+        $hotel = Hotel::active()->with('owner')->where('slug', $slug)->firstOrFail();
+        abort_unless(
+            Setting::al('booking_requests_enabled', '0') === '1'
+                && $hotel->owner !== null
+                && !$hotel->sahipsizMi(),
+            503,
+            'Çevrimiçi rezervasyon talepleri bu tesiste şu anda alınmıyor.'
+        );
         $d = $r->validate([
             'room_type_id' => 'required|integer',
             'pet_id' => 'required|integer',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
             'customer_note' => 'nullable|string|max:1000',
-            'terms' => 'required|boolean',
+            'terms' => 'accepted',
             'whatsapp_consent' => 'nullable|boolean',
             'extras' => 'nullable|array|max:10',
             'extras.*' => 'integer',
@@ -225,17 +233,29 @@ class ReservationController extends Controller
             'page_views' => 0, 'created_at' => now(), 'updated_at' => now(),
         ]);
         \Illuminate\Support\Facades\DB::table('site_analytics_daily')->where('stat_date', $today)->where('dimension', 'booking_request')->where('label', $label)->increment('page_views');
-        \App\Support\Bildirim::rezervasyonAlindi($res);
-        \App\Support\WhatsAppCloudApi::queueReservationNotifications((int) $res->id, 'requested');
+        $emailNotificationsSent = \App\Support\Bildirim::rezervasyonAlindi($res);
+        try {
+            \App\Support\WhatsAppCloudApi::queueReservationNotifications((int) $res->id, 'requested');
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
-        return redirect()->route('reservations.show', $res)->with('ok', 'Rezervasyon talebiniz alındı. Otel onayladığında durum güncellenecek.');
+        $redirect = redirect()->route('reservations.show', $res);
+        if (!$emailNotificationsSent) {
+            return $redirect->with('warning', 'Talebiniz platform hesabınıza kaydedildi ancak işletmeye e-posta bildiriminin iletildiği doğrulanamadı. Bu kayıt rezervasyon onayı değildir; lütfen işletmeyle doğrudan iletişime geçin.');
+        }
+
+        return $redirect->with('ok', 'Talebiniz platforma kaydedildi ve işletmeye e-posta bildirimi gönderildi. Rezervasyon, işletme onayı olmadan kesinleşmez.');
     }
 
     /** Rezervasyon formu icin anlik fiyat teklifi (JSON). Kayit olusturmaz. */
     public function quote(Request $r, string $slug, BookingService $svc, \App\Services\PetTransferPricingService $transferPricing)
     {
-        $hotel = Hotel::active()->where('slug', $slug)->firstOrFail();
-        $yanit = fn (array $d) => response()->json($d)->header('Cache-Control', 'no-store');
+        $hotel = Hotel::active()->with('owner')->where('slug', $slug)->firstOrFail();
+        $yanit = fn (array $d, int $status = 200) => response()->json($d, $status)->header('Cache-Control', 'no-store');
+        if (Setting::al('booking_requests_enabled', '0') !== '1' || !$hotel->owner || $hotel->sahipsizMi()) {
+            return $yanit(['ok' => false, 'message' => 'Çevrimiçi rezervasyon talepleri bu tesiste şu anda alınmıyor.'], 503);
+        }
         try {
             $in = Carbon::parse((string) $r->query('check_in'))->startOfDay();
             $out = Carbon::parse((string) $r->query('check_out'))->startOfDay();

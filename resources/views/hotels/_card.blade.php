@@ -3,7 +3,7 @@
     $sadeceKedi = $tip === 'kedi';
     $photoUrl = $h->primaryPhotoUrl();
     $hasPhoto = $photoUrl !== null;
-    $temsil = $h->hasCoverImage() && str_contains((string) $h->cover_path, 'cover-generated.');
+    $temsil = $h->hasRepresentativeCover();
     $rozet = ['kedi' => 'Kedi Oteli', 'kopek' => 'Köpek Oteli', 'ikisi' => 'Kedi ve Köpek', 'diger' => 'Pet Oteli'][$tip];
     $kayitli = $isFavorite ?? false;
 

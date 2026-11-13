@@ -14,6 +14,7 @@ class GeofencedAlert extends Model
         'lat' => 'decimal:7',
         'lng' => 'decimal:7',
         'radius_m' => 'integer',
+        'is_public' => 'boolean',
         'reported_at' => 'datetime',
         'notified_user_ids' => 'array',
     ];

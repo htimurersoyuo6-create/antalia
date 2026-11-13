@@ -165,6 +165,21 @@ class Hotel extends Model
         return is_file($base . '.jpg') || is_file($base . '.webp');
     }
 
+    public function hasRepresentativeCover(): bool
+    {
+        if (!empty($this->cover_path) && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->cover_path)) {
+            return str_contains(basename((string) $this->cover_path), 'cover-generated.');
+        }
+
+        $slug = (string) $this->slug;
+        if ($slug === '' || !preg_match('~^[a-z0-9-]+$~i', $slug)) {
+            return false;
+        }
+
+        $base = public_path('img/otel/' . $slug);
+        return is_file($base . '.jpg') || is_file($base . '.webp');
+    }
+
     public function primaryPhotoUrl(): ?string
     {
         if ($this->hasCoverImage()) return $this->kapak_url;
@@ -188,11 +203,8 @@ class Hotel extends Model
     /**
      * Karta, otel sayfasina ve og:image'a gidecek kapak adresi.
      *
-     * cover_path doluysa işletmenin yüklediği GERÇEK fotoğraf
-     * kullanılır. Boşsa public/img/otel/{slug}.jpg içindeki, o tesise
-     * özgü marka kapağı döner. Böylece hiçbir kart boş kalmaz;
-     * işletme panelden fotoğraf yüklediğinde gerçek fotoğraf
-     * kendiliğinden öne geçer.
+     * cover_path doluysa yüklenen görsel kullanılır. Boşsa public/img/otel
+     * içindeki, fotoğraf paylaşılmadığını belirten temsilî kapak döner.
      */
     public function getKapakUrlAttribute(): string
     {

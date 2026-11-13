@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pet;
+use App\Models\GeofencedAlert;
 use App\Models\PetMedicalDocument;
 use App\Models\PetVaccination;
 use App\Models\Reservation;
@@ -23,7 +24,8 @@ class PetHealthController extends Controller
         $this->ownedPet($request, $pet);
         $documents = $pet->medicalDocuments()->latest()->get();
         $vaccinations = $pet->vaccinations()->orderByRaw('next_due_at IS NULL')->orderBy('next_due_at')->get();
-        return view('pets.health', compact('pet', 'documents', 'vaccinations'));
+        $lostAlerts = GeofencedAlert::open()->where('pet_id', $pet->id)->latest('reported_at')->get();
+        return view('pets.health', compact('pet', 'documents', 'vaccinations', 'lostAlerts'));
     }
 
     public function uploadDocument(Request $request, Pet $pet)

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('title','Antalya’da Evcil Hayvan Sahiplendirme')
-@section('desc','Antalya’da güvenli evcil hayvan sahiplendirme ilanlarını keşfedin veya sahiplendirme sürecini başlatın.')
+@section('desc','Antalya’da inceleme sürecinden geçen evcil hayvan sahiplendirme ilanlarını keşfedin veya yeni bir ilan gönderin.')
 @section('content')
 <div class="wrap page adoption-page">
   <section class="adopt-hero">

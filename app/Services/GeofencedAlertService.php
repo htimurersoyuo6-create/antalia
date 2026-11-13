@@ -16,7 +16,15 @@ use Throwable;
 
 class GeofencedAlertService
 {
-    public function report(Pet $pet, float $lat, float $lng, int $radiusM, ?string $note = null): GeofencedAlert
+    public function report(
+        Pet $pet,
+        float $lat,
+        float $lng,
+        int $radiusM,
+        ?string $note = null,
+        bool $isPublic = false,
+        ?string $publicContactPhone = null,
+    ): GeofencedAlert
     {
         $alert = GeofencedAlert::create([
             'pet_id' => $pet->id,
@@ -26,6 +34,9 @@ class GeofencedAlertService
             'radius_m' => max(500, min(50000, $radiusM)),
             'status' => 'open',
             'reported_at' => now(),
+            'is_public' => $isPublic,
+            'public_note' => $isPublic ? $note : null,
+            'public_contact_phone' => $isPublic ? $publicContactPhone : null,
         ]);
 
         $this->notify($alert, $note);

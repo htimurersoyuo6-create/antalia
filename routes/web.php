@@ -17,6 +17,8 @@ use App\Http\Controllers\Panel;
 use Illuminate\Support\Facades\Route;
 Route::get('/pet-akisi', [\App\Http\Controllers\PetSocialFeedController::class, 'index'])->name('pet-social.index');
 Route::get('/sahiplendir', [\App\Http\Controllers\AdoptionController::class, 'index'])->name('adoption.index');
+Route::get('/kayip-patiler', [\App\Http\Controllers\GeofencedAlertController::class, 'index'])->name('lost-pets.index');
+Route::get('/kayip-patiler/{alert}', [\App\Http\Controllers\GeofencedAlertController::class, 'show'])->name('lost-pets.show');
 Route::get('/sahiplendir/ilan/{listing}/foto', [\App\Http\Controllers\AdoptionController::class, 'photo'])->middleware('throttle:60,1')->name('adoption.photo');
 Route::get('/sahiplendir/ilan/{listing}', [\App\Http\Controllers\AdoptionController::class, 'show'])->name('adoption.show');
 Route::get('/forum', [\App\Http\Controllers\ForumController::class, 'index'])->name('forum.index');

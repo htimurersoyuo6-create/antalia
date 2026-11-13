@@ -24,6 +24,8 @@ Sunucuda `php` komutu eski bir sürüme (ör. 8.1) gidebilir; her zaman tam yolu
     cp .env.example .env && $PHP artisan key:generate        # SADECE ilk kurulumda
     # .env: APP_ENV=production, APP_DEBUG=false, APP_URL=https://antalyapetotel.com,
     #       DB_CONNECTION=mariadb, DB_DATABASE, DB_USERNAME, DB_PASSWORD, APP_LOCALE=tr
+    #       Optional separate adoption database: DB_ADOPTION_URL or DB_ADOPTION_HOST,
+    #       DB_ADOPTION_PORT, DB_ADOPTION_DATABASE, DB_ADOPTION_USERNAME, DB_ADOPTION_PASSWORD
     $PHP artisan migrate --force
     $PHP artisan db:seed --class=PetOtelSeeder      # SADECE ilk kurulum: ÖRNEK veriler (otel + blog)
     $PHP artisan storage:link                         # otel kapak fotoğrafları için
@@ -52,6 +54,7 @@ tüm zamanlanmış görevleri durdurur:
 - Müşteri: `/kayit` `/giris` `/evcil-hayvanlarim` `/rezervasyonlarim`
 - Otel sahibi: `/partner` (başvuru) → `/panel` (otel bilgisi, odalar, sezon fiyatı, rezervasyon onayı)
 - Admin: `/yonetim` (otel onayı + lisans doğrulama, blog yazıları, iletişim mesajları)
+- Kayıp pet ilanları: `/kayip-patiler` (yalnızca sahibinin açıkça herkese açtığı ve hâlâ aktif ilanlar)
 
 ## Rezervasyon akışı
 Müşteri talep oluşturur (`pending`) → otel onaylar/reddeder → konaklama sonrası "Çıkış yaptı" (`completed`)

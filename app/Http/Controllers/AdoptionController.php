@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdoptionListing;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ class AdoptionController extends Controller
     public function show(AdoptionListing $listing)
     {
         abort_unless($listing->status === 'active' || auth()->id() === $listing->user_id || auth()->user()?->isAdmin(), 404);
+        $listing->setRelation('user', User::find($listing->user_id));
         return view('adoption.show', compact('listing'));
     }
 

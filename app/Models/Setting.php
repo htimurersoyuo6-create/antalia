@@ -22,6 +22,7 @@ class Setting extends Model
         'home_sections', 'home_hero_prefix', 'home_hero_highlight', 'home_hero_suffix', 'home_hero_description', 'home_hero_image', 'home_hotels_title', 'home_hotels_description', 'site_phone', 'site_email',
         'social_whatsapp', 'site_address', 'social_instagram', 'social_facebook',
         'header_menu', 'footer_description', 'footer_booking_note', 'footer_explore', 'footer_corporate', 'footer_legal', 'footer_copyright', 'subscription_payment_instructions',
+        'booking_requests_enabled',
         'module_guest_crm', 'module_stay_updates', 'module_live_camera', 'module_private_calls', 'call_recording_days',
     ];
 

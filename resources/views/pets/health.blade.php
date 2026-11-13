@@ -43,16 +43,34 @@
       </form>
     </section>
     <section class="pet-health-card">
-      <div class="pet-health-card-head"><span class="pet-health-icon is-orange">!</span><div><h2>Kayıp pet bildirimi</h2><p>Konumunuzu paylaşın; çevredeki otel sahiplerine ve bölgedeki misafirlere anlık bildirim gider.</p></div></div>
-      <form class="pet-health-form" method="post" action="{{ route('pets.lost-alerts.store', $pet) }}">@csrf
-        <div class="pet-health-two">
-          <label>Enlem<input name="lat" inputmode="decimal" placeholder="36.8969" required></label>
-          <label>Boylam<input name="lng" inputmode="decimal" placeholder="30.7133" required></label>
-        </div>
-        <label>Yarıçap (metre)<input type="number" name="radius_m" min="500" max="50000" value="5000"></label>
-        <label>Kısa not<textarea name="note" rows="2" maxlength="500" placeholder="Tasma rengi, son görülme yeri..."></textarea></label>
-        <button class="btn sm" onclick="return confirm('Kayıp pet uyarısı tüm bölgeye gönderilecek. Onaylıyor musunuz?')">Uyarıyı yayınla</button>
-      </form>
+      <div class="pet-health-card-head"><span class="pet-health-icon is-orange">!</span><div><h2>Kayıp pet bildirimi</h2><p>Yakın çevrede bildirimleri etkinleştirmiş tesis sahiplerine ve yakın dönem misafirlerine uyarı gönderin; isterseniz paylaşılabilir ilan da oluşturun.</p></div></div>
+      @if($lostAlerts->isNotEmpty())
+        @foreach($lostAlerts as $alert)
+          <div class="pet-health-tip">
+            <b>{{ $pet->name }} için açık kayıp bildirimi · {{ $alert->reported_at?->format('d.m.Y H:i') }}</b>
+            <span>{{ $alert->is_public ? 'Herkese açık ilan paylaşımda.' : 'Bu bildirim herkese açık değildir.' }}</span>
+            <div class="pet-health-two">
+              @if($alert->is_public)<a class="btn sm" href="{{ route('lost-pets.show', $alert) }}">Paylaşılabilir ilanı görüntüle</a>@endif
+              <form method="post" action="{{ route('pets.lost-alerts.resolve', $alert) }}">@csrf @method('PATCH')<button class="btn sm" type="submit">Dostum bulundu · bildirimi kapat</button></form>
+            </div>
+          </div>
+        @endforeach
+      @else
+        <form class="pet-health-form" method="post" action="{{ route('pets.lost-alerts.store', $pet) }}">@csrf
+          <div class="pet-health-two">
+            <label>Enlem<input name="lat" inputmode="decimal" placeholder="36.8969" required></label>
+            <label>Boylam<input name="lng" inputmode="decimal" placeholder="30.7133" required></label>
+          </div>
+          <label>Uyarı yarıçapı (metre)<input type="number" name="radius_m" min="500" max="50000" value="5000"></label>
+          <label>Kısa not<textarea name="note" rows="2" maxlength="500" placeholder="Tasma rengi, yaklaşık son görülme yeri..."></textarea></label>
+          <label class="pet-health-consent"><input type="checkbox" name="public_listing" value="1"> Kayıp ilanını herkesin görebileceği paylaşılabilir listede yayınla</label>
+          <label>İlanla paylaşılacak telefon (isteğe bağlı)<input name="public_phone" type="tel" maxlength="30" autocomplete="tel" placeholder="+90 5xx xxx xx xx"></label>
+          <label class="pet-health-consent"><input type="checkbox" name="share_phone" value="1"> Telefon numaramın herkese açık ilanda görünmesine izin veriyorum</label>
+          <p class="pet-health-privacy">Herkese açık ilan seçilirse pet adı, kısa not ve yaklaşık konum görünür. Haritadaki konum yaklaşık 1 km hassasiyetinde gösterilir; kesin koordinatlar paylaşım sayfasında yer almaz. Telefon ancak ayrı paylaşım izni verdiğinizde gösterilir.</p>
+          <button class="btn sm" onclick="return confirm('Kayıp pet uyarısı yakın çevredeki uygun kullanıcılara gönderilecek. Onaylıyor musunuz?')">Kayıp bildirimi oluştur</button>
+        </form>
+      @endif
+      <p class="pet-health-privacy"><a href="{{ route('lost-pets.index') }}">Açık kayıp pet ilanlarını görüntüle</a></p>
     </section>
 
 @endsection

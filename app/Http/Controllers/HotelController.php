@@ -5,6 +5,7 @@ use App\Models\District;
 use App\Models\Hotel;
 use App\Models\Post;
 use App\Models\RoomType;
+use App\Models\Setting;
 
 class HotelController extends Controller
 {
@@ -18,6 +19,8 @@ class HotelController extends Controller
         'transfer'  => ['Transfer / pet taksi', ['transfer', 'taksi']],
         'klima'     => ['Klima', ['klima']],
         'kafessiz'  => ['Kafessiz konaklama', ['kafessiz']],
+        'bireysel'  => ['Bireysel konaklama', ['bireysel konaklama']],
+        'grup'      => ['Grup konaklama', ['grup konaklama']],
         'bakim'     => ['Kuaför / yıkama', ['kuaför', 'yıkama']],
         'egitim'    => ['Eğitim', ['eğitim']],
     ];
@@ -157,45 +160,86 @@ class HotelController extends Controller
 
         /* --- Fiyat araligi ve siralama ---
          * ?fiyat=500-700 -> bu araliktaki odalar (eski baglantilar icin korunur)
-         * ?sirala=ucuz|pahali|puan (eski ?fiyat=ucuz|pahali da calisir)
-         * hotels tablosunda fiyat kolonu YOK; fiyat siralamasi MIN(base_price) alt sorgusuyla yapilir.
+         * ?sirala=ucuz|pahali|puan|yorum|dogrulanmis (eski ?fiyat=ucuz|pahali da calisir)
+         * Otel fiyat siralamasi, uygun oda tiplerinin MIN/MAX(base_price) degerleriyle yapilir.
          * orderBy yalnizca 'asc' / 'desc' kabul eder. */
         $fiyat  = (string) request('fiyat', '');
         $sirala = (string) request('sirala', '');
         $fiyatAraligi = null;
+        $minFiyat = $maxFiyat = null;
+        $fiyatHata = null;
         if (preg_match('~^(\d{1,5}(?:\.\d{1,2})?)-(\d{1,5}(?:\.\d{1,2})?)$~', $fiyat, $m)
             && (float) $m[1] <= (float) $m[2]) {
             $fiyatAraligi = [(float) $m[1], (float) $m[2]];
-            $sorgu->whereHas('rooms', function ($x) use ($fiyatAraligi, $applyRoomFilters) {
-                $applyRoomFilters($x);
-                $x->whereBetween('base_price', $fiyatAraligi);
-            });
         } elseif ($sirala === '' && in_array($fiyat, ['ucuz', 'pahali'], true)) {
             $sirala = $fiyat;
         }
-        if (!in_array($sirala, ['ucuz', 'pahali', 'puan'], true)) $sirala = '';
-        $fiyatYonu = ['ucuz' => 'asc', 'pahali' => 'desc'][$sirala] ?? null;
+        $parsePrice = static function ($value): ?float {
+            if (!is_string($value) || !preg_match('~^\d{1,6}(?:\.\d{1,2})?$~D', $value)) return null;
+            return (float) $value;
+        };
+        $minInput = request('min_fiyat');
+        $maxInput = request('max_fiyat');
+        $minFiyat = $minInput === null || $minInput === '' ? null : $parsePrice($minInput);
+        $maxFiyat = $maxInput === null || $maxInput === '' ? null : $parsePrice($maxInput);
+        if (($minInput !== null && $minInput !== '' && $minFiyat === null)
+            || ($maxInput !== null && $maxInput !== '' && $maxFiyat === null)) {
+            $fiyatHata = 'Minimum ve maksimum fiyat için geçerli bir tutar girin.';
+            $minFiyat = $maxFiyat = null;
+        } elseif ($minFiyat !== null && $maxFiyat !== null && $minFiyat > $maxFiyat) {
+            $fiyatHata = 'Minimum fiyat, maksimum fiyattan yüksek olamaz.';
+            $minFiyat = $maxFiyat = null;
+        }
+        if (!in_array($sirala, ['ucuz', 'pahali', 'puan', 'yorum', 'dogrulanmis'], true)) $sirala = '';
+        if ($fiyatAraligi !== null || $minFiyat !== null || $maxFiyat !== null) {
+            $sorgu->whereHas('rooms', function ($x) use ($fiyatAraligi, $minFiyat, $maxFiyat, $applyRoomFilters) {
+                $applyRoomFilters($x);
+                if ($fiyatAraligi !== null) $x->whereBetween('base_price', $fiyatAraligi);
+                if ($minFiyat !== null) $x->where('base_price', '>=', $minFiyat);
+                if ($maxFiyat !== null) $x->where('base_price', '<=', $maxFiyat);
+            });
+        }
 
-        if ($fiyatYonu !== null) {
-            $enDusukOdaSorgusu = RoomType::query()->selectRaw('MIN(base_price)')
-                ->whereColumn('room_types.hotel_id', 'hotels.id')->where('base_price', '>', 0);
-            $applyRoomFilters($enDusukOdaSorgusu);
+        $odaFiyatSorgusu = static function (string $aggregate) use (
+            $applyRoomFilters, $fiyatAraligi, $minFiyat, $maxFiyat, $giris, $musaitOda
+        ) {
+            $query = RoomType::query()->selectRaw($aggregate . '(base_price)')
+                ->whereColumn('room_types.hotel_id', 'hotels.id')
+                ->where('base_price', '>', 0);
+            $applyRoomFilters($query);
+            if ($fiyatAraligi !== null) $query->whereBetween('base_price', $fiyatAraligi);
+            if ($minFiyat !== null) $query->where('base_price', '>=', $minFiyat);
+            if ($maxFiyat !== null) $query->where('base_price', '<=', $maxFiyat);
+            if ($giris !== null) $query->whereIn('id', $musaitOda ?: [0]);
+
+            return $query;
+        };
+
+        if ($sirala === 'pahali') {
             $sorgu->select('hotels.*')
-                ->selectSub($enDusukOdaSorgusu, 'en_ucuz_fiyat')
-                ->orderBy('en_ucuz_fiyat', $fiyatYonu)->orderBy('name');
+                ->selectSub($odaFiyatSorgusu('MAX'), 'en_yuksek_oda_fiyati')
+                ->orderByRaw('CASE WHEN EXISTS (SELECT 1 FROM room_types WHERE room_types.hotel_id = hotels.id AND room_types.base_price > 0) THEN 0 ELSE 1 END')
+                ->orderByDesc('en_yuksek_oda_fiyati')
+                ->orderBy('name');
+        } elseif ($sirala === 'ucuz') {
+            $sorgu->select('hotels.*')
+                ->selectSub($odaFiyatSorgusu('MIN'), 'en_ucuz_fiyat')
+                ->orderByRaw('CASE WHEN EXISTS (SELECT 1 FROM room_types WHERE room_types.hotel_id = hotels.id AND room_types.base_price > 0) THEN 0 ELSE 1 END')
+                ->orderBy('en_ucuz_fiyat')
+                ->orderBy('name');
         } elseif ($sirala === 'puan') {
             $sorgu->orderByDesc('rating_avg')->orderByDesc('rating_count')->orderBy('name');
+        } elseif ($sirala === 'yorum') {
+            $sorgu->orderByDesc('rating_count')->orderByDesc('rating_avg')->orderBy('name');
+        } elseif ($sirala === 'dogrulanmis') {
+            $sorgu->orderByRaw('CASE WHEN license_verified_at IS NULL THEN 1 ELSE 0 END')
+                ->orderByDesc('rating_count')->orderByDesc('rating_avg')->orderBy('name');
         } else {
             $sorgu->orderByDesc('rating_count')->orderBy('name');
         }
 
-        if ($fiyatAraligi !== null || $size !== '' || $capacity !== null || $giris !== null || $roomPetType !== null) {
-            $gosterilenFiyatSorgusu = RoomType::query()->selectRaw('MIN(base_price)')
-                ->whereColumn('room_types.hotel_id', 'hotels.id')->where('base_price', '>', 0);
-            $applyRoomFilters($gosterilenFiyatSorgusu);
-            if ($fiyatAraligi !== null) $gosterilenFiyatSorgusu->whereBetween('base_price', $fiyatAraligi);
-            if ($giris !== null) $gosterilenFiyatSorgusu->whereIn('id', $musaitOda ?: [0]);
-            $sorgu->addSelect(['rooms_min_base_price' => $gosterilenFiyatSorgusu]);
+        if ($fiyatAraligi !== null || $minFiyat !== null || $maxFiyat !== null || $size !== '' || $capacity !== null || $giris !== null || $roomPetType !== null) {
+            $sorgu->addSelect(['rooms_min_base_price' => $odaFiyatSorgusu('MIN')]);
         }
 
         $hotels = $sorgu->paginate(12)->withQueryString();
@@ -253,9 +297,11 @@ class HotelController extends Controller
             'secili' => $secili,
             'tarihli' => $tarihli,
             'tarihHata' => $tarihHata,
+            'fiyatHata' => $fiyatHata,
             'filtre' => [
                 'q' => $q, 'ilce' => $ilceSlug, 'puan' => $puan, 'sirala' => $sirala,
                 'size' => $size, 'kapasite' => $capacity,
+                'min_fiyat' => $minFiyat, 'max_fiyat' => $maxFiyat,
                 'giris' => $giris?->toDateString() ?? '', 'cikis' => $cikis?->toDateString() ?? '',
             ],
         ]);
@@ -306,9 +352,11 @@ class HotelController extends Controller
 
         $out[] = [
             'soru' => 'Rezervasyon talebi nasıl gönderilir?',
-            'cevap' => 'Seçtiğiniz tesisin detay sayfasında konaklama tarihlerinizi ve dostunuzun '
-                . 'bilgilerini girerek talep oluşturursunuz. Talep doğrudan tesise iletilir; ödeme '
-                . 'tesiste yapılır ve rezervasyon ancak tesise dönüş onaylandığında tamamlanmış sayılır.',
+            'cevap' => Setting::al('booking_requests_enabled', '0') === '1'
+                ? 'Seçtiğiniz tesisin detay sayfasında çevrimiçi talep oluşturabilirsiniz. Talep platforma '
+                    . 'kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. Rezervasyon işletme onayıyla kesinleşir.'
+                : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor. Müsaitlik ve konaklama koşullarını '
+                    . 'ilgili işletmeyle doğrudan teyit edin.',
         ];
 
         $out[] = [
@@ -340,7 +388,7 @@ class HotelController extends Controller
         $hotel->setAttribute('room_info_status', $roomInfoStatus);
 
         $reviews = $hotel->reviews()
-            ->whereIn('status', ['published', 'pending'])
+            ->where('status', 'published')
             ->with('user')->latest()->limit(20)->get();
 
         $pets = auth()->check() ? auth()->user()->pets()->orderBy('name')->get() : collect();
@@ -370,6 +418,9 @@ class HotelController extends Controller
 
         return view('hotels.show', [
             'hotel'   => $hotel,
+            'onlineBookingEnabled' => Setting::al('booking_requests_enabled', '0') === '1'
+                && $hotel->owner !== null
+                && !$hotel->sahipsizMi(),
             'reviews' => $reviews,
             'pets'    => $pets,
             'sss'     => $sss,
@@ -451,17 +502,18 @@ class HotelController extends Controller
             $liste = implode(', ', $am);
             $out[] = [
                 'soru' => $ad . ' konaklama sırasında neler sağlanıyor?',
-                'cevap' => 'Tesiste ' . $liste . ' bulunuyor. Bu hizmetlerin hangilerinin '
-                    . 'konaklama süresince kullanılacağı rezervasyon talebinde belirtilmelidir.',
+                'cevap' => 'İşletmenin bildirdiği olanaklar arasında ' . $liste . ' yer alıyor. Bu hizmetlerin hangilerinin '
+                    . (Setting::al('booking_requests_enabled', '0') === '1'
+                        ? 'konaklama süresince kullanılacağı rezervasyon talebinde belirtilmelidir.'
+                        : 'konaklama süresince kullanılacağını öğrenmek için işletmeyle doğrudan görüşün.'),
             ];
         }
 
-        /* 6) aşı ve kayıt */
+        /* 6) Sağlık koşulları işletmeye göre değişir; genel bir gereklilik uydurulmaz. */
         $out[] = [
             'soru' => 'Aşı ve sağlık kaydı için ne gerekiyor?',
-            'cevap' => 'Odaya girişte evcil hayvanın aşı karnesi, kimlik ve son parazit uygulaması '
-                . 'tarihi kontrol edilir. Eksik kayıt varsa konaklama başlatılmaz; aşı tarihi '
-                . 'gelmişse aile talebi üzerine uygulanabilir.',
+            'cevap' => 'Aşı ve sağlık koşulları işletmeye göre değişebilir. Bu tesisin kayıtlı konaklama '
+                . 'kurallarını inceleyin; burada belirtilmeyen gereklilikleri konaklama öncesinde işletmeyle teyit edin.',
         ];
 
         /* 7) konum */
@@ -469,7 +521,7 @@ class HotelController extends Controller
             $out[] = [
                 'soru' => $ad . ' nerede ve nasıl ulaşılır?',
                 'cevap' => $ad . ' ' . $ilce . ' ilçesinde, ' . $h->address . ' adresinde bulunuyor. '
-                    . 'Telefon ve WhatsApp bilgileri üye girişi sonrasında görüntülenir.',
+                    . 'İşletme iletişim bilgilerini paylaştıysa telefon ve WhatsApp bağlantıları bu sayfada görüntülenir.',
             ];
         }
 

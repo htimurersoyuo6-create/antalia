@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Middleware\ExternalWebsiteNofollow;
 use Tests\TestCase;
 
 class AdoptionReadAccessTest extends TestCase
@@ -51,7 +52,8 @@ class AdoptionReadAccessTest extends TestCase
         $this->makeListing($owner, ['pet_name' => 'Pending', 'breed' => 'Tekir', 'status' => 'pending']);
         $this->makeListing($owner, ['pet_name' => 'Other city', 'breed' => 'Tekir', 'city' => 'Alanya']);
 
-        $response = $this->get('/sahiplendir?species=cat&city=Antalya&q=Tekir&page=2');
+        $response = $this->withoutMiddleware(ExternalWebsiteNofollow::class)
+            ->get('/sahiplendir?species=cat&city=Antalya&q=Tekir&page=2');
 
         $response->assertOk();
         $listings = $response->viewData('listings');
@@ -69,12 +71,28 @@ class AdoptionReadAccessTest extends TestCase
         $admin = $this->makeUser('admin');
         $active = $this->makeListing($owner, ['pet_name' => 'Public pet']);
         $pending = $this->makeListing($owner, ['pet_name' => 'Private pet', 'status' => 'pending']);
+        $disclosedVaccination = $this->makeListing($owner, ['pet_name' => 'Vaccination disclosure', 'vaccinated' => true]);
 
         $this->get(route('adoption.show', $active))->assertOk()->assertSee('Public pet');
+        $this->get(route('adoption.show', $disclosedVaccination))
+            ->assertOk()
+            ->assertSee('İlan sahibinin beyanına göre aşılı');
         $this->get(route('adoption.show', $pending))->assertNotFound();
         $this->actingAs($owner)->get(route('adoption.show', $pending))->assertOk()->assertSee('Private pet');
         $this->actingAs($stranger)->get(route('adoption.show', $pending))->assertNotFound();
         $this->actingAs($admin)->get(route('adoption.show', $pending))->assertOk()->assertSee('Private pet');
+    }
+
+    public function test_public_adoption_detail_handles_a_missing_listing_account_without_exposing_contact_data(): void
+    {
+        $owner = $this->makeUser();
+        $listing = $this->makeListing($owner, ['contact_phone' => '+90 555 111 22 33']);
+        $owner->delete();
+
+        $this->get(route('adoption.show', $listing))
+            ->assertOk()
+            ->assertSee('İlanı veren hesabı artık bulunamadığı için iletişim bilgisi gösterilemiyor.')
+            ->assertDontSee('+90 555 111 22 33');
     }
 
     private function makeUser(string $role = 'customer'): User

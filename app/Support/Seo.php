@@ -255,24 +255,11 @@ if (!function_exists('sema_kirinti')) {
 
 if (!function_exists('sema_sss')) {
     /**
-     * FAQPage uretir.
-     * Giris: [['soru' => '...', 'cevap' => '...'], ...]
+     * Visible FAQs are rendered in HTML; FAQ rich results are no longer emitted.
      */
     function sema_sss(array $sss): string
     {
-        $ana = [];
-        foreach ($sss as $q) {
-            $soru = trim((string) ($q['soru'] ?? ''));
-            $cevap = seo_metin($q['cevap'] ?? '', 900, false);
-            if ($soru === '' || $cevap === '') continue;
-            $ana[] = [
-                '@type' => 'Question',
-                'name' => $soru,
-                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $cevap],
-            ];
-        }
-        if (!$ana) return '';
-        return sema_ld(sema_bolum('FAQPage', ['mainEntity' => $ana]));
+        return '';
     }
 }
 
@@ -359,7 +346,7 @@ if (!function_exists('seo_kurum')) {
 if (!function_exists('seo_otel_sema')) {
     /**
      * Otel detay sayfasinin schema.org paketi:
-     *   LocalBusiness + BreadcrumbList + FAQPage
+     *   LocalBusiness + BreadcrumbList
      *
      * $h      otel kaydi (Eloquent veya stdClass)
      * $adimlar breadcrumb adimlari
@@ -423,12 +410,12 @@ if (!function_exists('seo_otel_sema')) {
             ];
         }
 
-        // Pet konaklama tesisi insan konaklama oteli değildir; genel işletme
-        // türünü kullanır ve tahmini/fiyatı uyduran alan eklemez.
+        // Emit business schema only when the listing has a verified license
+        // and a usable street address; unverified listings remain ordinary pages.
         unset($ozellik['petsAllowed']);
-        $donus = sema_ld(sema_bolum('LocalBusiness', array_filter($ozellik)));
+        $verifiedAddress = !empty($h->license_verified_at) && trim((string) ($h->address ?? '')) !== '';
+        $donus = $verifiedAddress ? sema_ld(sema_bolum('LocalBusiness', array_filter($ozellik))) : '';
         if ($adimlar) $donus .= sema_kirinti($adimlar);
-        if ($sss)      $donus .= sema_sss($sss);
         return $donus;
     }
 }

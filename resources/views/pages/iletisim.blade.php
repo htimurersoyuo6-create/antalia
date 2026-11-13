@@ -39,9 +39,9 @@ mesajınızı hatırlatarak tek bir talepte bulunmanız işlenmesini hızlandır
 konusunda aciliyet varsa yalnızca formu kullanmayın, doğrudan tesisi arayın.</p>
 
 <h2>Rezervasyon talebi hakkında</h2>
-<p>Sitede rezervasyon talebi oluşturduğunuzda talep doğrudan ilgili işletmeye iletilir.
-Bu nedenle rezervasyon durumu için operasyonumuza değil, işletmenin kendisine yazmanız
-gerekir. İşletmenin dönüş yapmaması hâlinde bu formu kullanabilirsiniz.</p>
+<p>{{ \App\Models\Setting::al('booking_requests_enabled', '0') === '1'
+    ? 'Çevrimiçi talep platforma kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. Bu durumda veya işletmeden dönüş alamazsanız, telefon ya da WhatsApp üzerinden işletmeyle teyit edin. Rezervasyon işletme onayı olmadan kesinleşmez.'
+    : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor ve işletmelere iletilmiyor. Konaklama planı için ilgili işletmeyle doğrudan telefon veya WhatsApp üzerinden iletişime geçin.' }}</p>
 </article>
 
 <form class="form contact-help-form" method="post" action="{{ route('contact.send') }}">@csrf

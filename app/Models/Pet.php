@@ -15,6 +15,7 @@ class Pet extends Model
     public function tasks() { return $this->hasMany(PetTask::class); }
     public function belongings() { return $this->hasMany(ReservationBelonging::class); }
     public function vaccinations() { return $this->hasMany(PetVaccination::class); }
+    public function lostAlerts() { return $this->hasMany(GeofencedAlert::class); }
     public function getSpeciesLabelAttribute(): string { return self::SPECIES[$this->species] ?? $this->species; }
     public function getSizeLabelAttribute(): string { return self::SIZES[$this->size] ?? $this->size; }
 }

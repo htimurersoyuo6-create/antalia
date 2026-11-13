@@ -3,7 +3,8 @@
             : ($type === 'kopek-otelleri' ? 'Köpek Otelleri' : 'Pet Otelleri');
     $adet   = $hotels->total();
 
-    $fiyatFiltresiAktif = preg_match('~^\d{1,5}(?:\.\d{1,2})?-\d{1,5}(?:\.\d{1,2})?$~', (string) request('fiyat', '')) === 1;
+    $fiyatFiltresiAktif = preg_match('~^\d{1,5}(?:\.\d{1,2})?-\d{1,5}(?:\.\d{1,2})?$~', (string) request('fiyat', '')) === 1
+        || request()->filled('min_fiyat') || request()->filled('max_fiyat');
     $fiyatlar = [];
     foreach ($hotels as $x) {
         if ($fiyatFiltresiAktif || !empty(request('size')) || !empty(request('kapasite')) || $type !== '') {
@@ -47,7 +48,7 @@
      * KENDI KENDINI tekrarlayan bir varyanttir. Indexlenmemeli.
      * noindex,follow: Google linkleri takip eder, sayfayi depoda
      * tutmaz. Temiz adres (canonical) ise indexlenir. */
-    $filtreVar = request()->hasAny(['fiyat', 'ilce', 'giris', 'cikis', 'page', 'q', 'sirala', 'puan', 'size', 'kapasite', 'olanak']) || request()->routeIs('search');
+    $filtreVar = request()->hasAny(['fiyat', 'min_fiyat', 'max_fiyat', 'ilce', 'giris', 'cikis', 'page', 'q', 'sirala', 'puan', 'size', 'kapasite', 'olanak']) || request()->routeIs('search');
     $temizUrl = match ($type) {
         'kedi-otelleri' => route('hotels.cats'),
         'kopek-otelleri' => route('hotels.dogs'),
@@ -126,6 +127,12 @@
             <option value="1500.01-99999" @selected(request('fiyat') === '1500.01-99999')>1.500 ₺ üzeri</option>
           </select>
         </div>
+        <div class="apt-filter__price-bounds">
+          <label for="listing-min-price">En düşük (₺)</label>
+          <input id="listing-min-price" type="number" name="min_fiyat" min="0" max="999999" step="0.01" value="{{ $filtre['min_fiyat'] ?? request('min_fiyat') }}" inputmode="decimal">
+          <label for="listing-max-price">En yüksek (₺)</label>
+          <input id="listing-max-price" type="number" name="max_fiyat" min="0" max="999999" step="0.01" value="{{ $filtre['max_fiyat'] ?? request('max_fiyat') }}" inputmode="decimal">
+        </div>
         <button class="apt-btn apt-btn--ghost apt-btn--full" type="submit">Filtreyi uygula</button>
       </form>
     </div>
@@ -191,8 +198,10 @@
           <select id="listing-sort" name="sirala" onchange="this.form.submit()">
             <option value="" @selected(empty($filtre['sirala']))>Önerilen sıralama</option>
             <option value="ucuz" @selected(($filtre['sirala'] ?? '') === 'ucuz')>Önce en ucuz</option>
-            <option value="pahali" @selected(($filtre['sirala'] ?? '') === 'pahali')>Önce en pahalı</option>
+            <option value="pahali" @selected(($filtre['sirala'] ?? '') === 'pahali')>En yüksek oda fiyatı</option>
             <option value="puan" @selected(($filtre['sirala'] ?? '') === 'puan')>En yüksek puan</option>
+            <option value="yorum" @selected(($filtre['sirala'] ?? '') === 'yorum')>En çok yorum alan</option>
+            <option value="dogrulanmis" @selected(($filtre['sirala'] ?? '') === 'dogrulanmis')>Önce ruhsatı doğrulananlar</option>
           </select>
         </div>
         <noscript><button class="apt-btn apt-btn--ghost apt-btn--full" type="submit">Uygula</button></noscript>
@@ -216,6 +225,9 @@
 
     @if($tarihHata)
       <div class="apt-date-error" role="alert">{{ $tarihHata }}</div>
+    @endif
+    @if($fiyatHata)
+      <div class="apt-date-error" role="alert">{{ $fiyatHata }}</div>
     @endif
 
     <div class="apt-listhead">
@@ -257,7 +269,7 @@
       <a class="apt-chip {{ $type === 'kopek-otelleri' ? 'is-on' : '' }}" href="{{ route('hotels.dogs') }}">Köpek Otelleri</a>
       <a class="apt-chip {{ $type === 'kedi-otelleri' ? 'is-on' : '' }}" href="{{ route('hotels.cats') }}">Kedi Otelleri</a>
       <a class="apt-chip {{ ($filtre['sirala'] ?? '') === 'ucuz' ? 'is-on' : '' }}" href="{{ request()->fullUrlWithQuery(['sirala' => 'ucuz', 'page' => null]) }}">Önce en ucuz</a>
-      <a class="apt-chip {{ ($filtre['sirala'] ?? '') === 'pahali' ? 'is-on' : '' }}" href="{{ request()->fullUrlWithQuery(['sirala' => 'pahali', 'page' => null]) }}">Önce en pahalı</a>
+      <a class="apt-chip {{ ($filtre['sirala'] ?? '') === 'pahali' ? 'is-on' : '' }}" href="{{ request()->fullUrlWithQuery(['sirala' => 'pahali', 'page' => null]) }}">En yüksek oda fiyatı</a>
     </div>
 
     <div class="apt-grid">
@@ -265,7 +277,7 @@
         @include('hotels._card')
       @empty
         <div class="apt-card">
-          <p class="apt-card__body" style="margin:0">Bu kriterlere uygun bir tesis listelenmiyor. <a href="{{ route('hotels.all') }}">Tüm tesisleri</a> görüntüleyebilirsiniz.</p>
+          <p class="apt-card__body" style="margin:0">Bu kriterlere uygun bir tesis listelenmiyor. Tarihleri veya fiyat aralığını değiştirebilir, filtreleri kaldırabilir ya da <a href="{{ route('hotels.all') }}">tüm tesisleri</a>, <a href="{{ route('hotels.dogs') }}">köpek otellerini</a> veya <a href="{{ route('hotels.cats') }}">kedi otellerini</a> inceleyebilirsiniz.</p>
         </div>
       @endforelse
     </div>
@@ -290,7 +302,7 @@
         <span class="apt-card__icon"><x-ui-icon name="check" size="18" /></span>
         <div>
           <h2 class="apt-card__title" id="liste-cta">Dostunuz için doğru konaklamayı kolayca seçin.</h2>
-          <p class="apt-card__sub">Oda tiplerini, hizmetleri ve günlük ücretleri inceleyin. Rezervasyon talebinizi beğendiğiniz tesise doğrudan gönderin.</p>
+          <p class="apt-card__sub">Oda tiplerini, hizmetleri ve günlük ücretleri inceleyin. {{ \App\Models\Setting::al('booking_requests_enabled', '0') === '1' ? 'Çevrimiçi talep oluşturmadan önce işletmeyle müsaitliği teyit edin.' : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor; işletmeyle doğrudan iletişim kurun.' }}</p>
         </div>
       </div>
       <div class="apt-card__body">

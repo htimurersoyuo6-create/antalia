@@ -50,7 +50,7 @@
     $gm = $galleryImages->take(3)->values();
     $galleryThumbs = $hasCoverImage ? $gm : $gm->skip(1)->values();
     $bookingGallery = $hasCoverImage ? $galleryImages->take(2) : $galleryImages->skip(1)->take(2);
-    $temsiliKapak = $hasCoverImage && str_contains((string) $hotel->cover_path, 'cover-generated.');
+    $temsiliKapak = $hotel->hasRepresentativeCover();
     $kapakWebp = preg_replace('~\.jpe?g$~i', '.webp', (string) $hotel->cover_path);
     $kapakWebpUrl = $temsiliKapak && $kapakWebp && \Illuminate\Support\Facades\Storage::disk('public')->exists($kapakWebp) ? asset('storage/' . $kapakWebp) : null;
     $galeriToplam = ($hasCoverImage ? 1 : 0) + $galleryImages->count();
@@ -238,7 +238,7 @@
             <div class="hotel-public-room-facts"><span>{{ \App\Models\RoomType::PET_TYPES[$room->pet_type] ?? 'Evcil' }}</span>@if($room->pet_type === 'dog' && $room->size !== 'any')<span>{{ \App\Models\RoomType::SIZES[$room->size] ?? 'Belirtilmemiş' }} ırk</span>@endif<span>{{ max(1, (int) $room->capacity) }} dost kapasitesi</span><span>{{ $unitCount }} fiziksel oda</span></div>
             <small>Oda, rezervasyon tarihlerinize göre otomatik atanır.</small>
           </div>
-          <div class="hotel-public-room-price"><strong>{{ number_format((float) $room->base_price, 0, ',', '.') }} ₺</strong><span>/ gece</span><button type="button" class="hotel-select-room" data-booking-open data-booking-room-id="{{ $room->id }}">Bu odayı seç <span aria-hidden="true">→</span></button>@if($hotel->phone)<a class="hotel-room-whatsapp" data-room-whatsapp data-room-id="{{ $room->id }}" data-room-name="{{ $room->name }}" data-pet-type="{{ \App\Models\RoomType::PET_TYPES[$room->pet_type] ?? 'Evcil hayvan' }}" data-room-size="{{ \App\Models\RoomType::SIZES[$room->size] ?? 'Her boy' }}" data-room-price="{{ number_format((float) $room->base_price, 0, '.', '') }}" href="https://wa.me/{{ \App\Support\PhoneNumber::whatsapp($hotel->phone) }}?text={{ rawurlencode('Merhaba '.$hotel->name.', '.$room->name.' odası için bilgi almak istiyorum.') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $room->name }} için WhatsApp ile bilgi alın"><x-ui-icon name="whatsapp" size="16" /> Bu oda için WhatsApp’tan sor</a>@endif</div>
+          <div class="hotel-public-room-price"><strong>{{ number_format((float) $room->base_price, 0, ',', '.') }} ₺</strong><span>/ gece</span>@if($onlineBookingEnabled)<button type="button" class="hotel-select-room" data-booking-open data-booking-room-id="{{ $room->id }}">Bu odayı seç <span aria-hidden="true">→</span></button>@endif @if($hotel->phone)<a class="hotel-room-whatsapp" data-room-whatsapp data-room-id="{{ $room->id }}" data-room-name="{{ $room->name }}" data-pet-type="{{ \App\Models\RoomType::PET_TYPES[$room->pet_type] ?? 'Evcil hayvan' }}" data-room-size="{{ \App\Models\RoomType::SIZES[$room->size] ?? 'Her boy' }}" data-room-price="{{ number_format((float) $room->base_price, 0, '.', '') }}" href="https://wa.me/{{ \App\Support\PhoneNumber::whatsapp($hotel->phone) }}?text={{ rawurlencode('Merhaba '.$hotel->name.', '.$room->name.' odası için bilgi almak istiyorum.') }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $room->name }} için WhatsApp ile bilgi alın"><x-ui-icon name="whatsapp" size="16" /> Bu oda için WhatsApp’tan sor</a>@endif</div>
         </article>
       @empty
         <div class="hotel-empty-rooms"><span aria-hidden="true">🐾</span><div><b>Oda bilgileri hazırlanıyor</b><p>Bu tesis henüz oda tipi eklemedi. Güncel seçenekleri doğrudan işletmeden öğrenebilirsiniz.</p></div></div>
@@ -425,10 +425,12 @@
         @endif
       </div>
 
-      <p class="apt-seller__note">Rezervasyon talebiniz doğrudan işletmeye iletilir. Ödeme konaklama sırasında tesiste yapılır.</p>
+      <p class="apt-seller__note">{{ $onlineBookingEnabled ? 'Talep platforma kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. Rezervasyon işletme onayı olmadan kesinleşmez.' : 'Çevrimiçi rezervasyon talepleri şu anda alınmıyor. Müsaitlik için işletmeyle doğrudan iletişim kurun.' }}</p>
 
       <div class="apt-seller__actions">
-        <button type="button" class="apt-btn apt-btn--full" data-booking-open>Rezervasyon talebi gönder</button>
+        @if($onlineBookingEnabled)
+          <button type="button" class="apt-btn apt-btn--full" data-booking-open>Rezervasyon talebi gönder</button>
+        @endif
         @if($hotel->phone)
           <a class="apt-btn apt-btn--ghost apt-btn--full" data-hotel-phone-call href="tel:{{ preg_replace('/[^0-9+]/', '', $hotel->phone) }}">
             <x-ui-icon name="phone" size="16" /> {{ $hotel->phone }}
@@ -475,13 +477,14 @@
   </aside>
 </div>
 
+@if($onlineBookingEnabled)
 <aside class="booking-modal" id="rezervasyon-talebi" role="dialog" aria-modal="true" aria-labelledby="booking-dialog-title" aria-hidden="true" hidden>
   <div class="booking-modal-panel">
     <header class="booking-modal-header"><div class="booking-modal-hotel-photo">@if($primaryPhotoUrl)<img src="{{ $primaryPhotoUrl }}" alt="{{ $ad }} tesis görseli" width="88" height="68">@else<span><x-ui-icon name="building" size="24" /></span>@endif</div><div class="booking-modal-hotel-title"><span class="booking-modal-kicker">{{ $hotel->license_verified_at?'✓ RUHSATI DOĞRULANDI':'ANTALYA PET OTEL' }} · {{ $ilce }}</span><h2 id="booking-dialog-title">{{ $ad }}</h2><small><x-ui-icon name="pin" size="14" /> {{ $ilce }}, {{ $sehir }}</small></div><button type="button" class="booking-modal-close" data-booking-close aria-label="Pencereyi kapat">×</button></header>
     <div class="booking-modal-tabs" role="tablist"><button type="button" role="tab" aria-selected="true" class="is-active" data-booking-tab="form"><x-ui-icon name="clock" size="18" /> <span>Online rezervasyon</span></button><button type="button" role="tab" aria-selected="false" data-booking-tab="details"><x-ui-icon name="home" size="18" /> <span>Tesis detayları & hizmetler</span></button></div>
     <div class="booking-modal-body"><section class="booking-pane" data-booking-pane="form">
 
-<section class="booking-request-intro" aria-label="Çevrimiçi rezervasyon bilgisi"><span class="booking-request-icon"><x-ui-icon name="book" size="22" /></span><div><span class="booking-request-eyebrow">ÇEVRİMİÇİ REZERVASYON</span><h3>{{ $ad }} için konaklamanızı planlayın</h3><p>Oda, dostunuz ve tarihleri seçerek rezervasyonunuzu çevrimiçi gönderin. Tesis uygunluğu onaylar; ödemeyi konaklama sırasında otelde yaparsınız.</p></div></section><div class="booking-trust-row"><span><x-ui-icon name="check" size="15" /> Online rezervasyon</span><span><x-ui-icon name="building" size="15" /> Ödeme tesiste</span><span><x-ui-icon name="clock" size="15" /> Tesis onayı gerekir</span></div><div class="booking-form-section-heading"><span><x-ui-icon name="paw" size="18" /></span><div><b>Konaklama bilgileri</b><small>Dostunuzu, oda tipini ve tarihleri seçin</small></div></div>
+<section class="booking-request-intro" aria-label="Çevrimiçi rezervasyon bilgisi"><span class="booking-request-icon"><x-ui-icon name="book" size="22" /></span><div><span class="booking-request-eyebrow">ÇEVRİMİÇİ REZERVASYON</span><h3>{{ $ad }} için konaklamanızı planlayın</h3><p>Oda, dostunuz ve tarihleri seçerek talep oluşturun. Talep platforma kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. Rezervasyon işletme onayı olmadan kesinleşmez.</p></div></section><div class="booking-trust-row"><span><x-ui-icon name="check" size="15" /> Online talep</span><span><x-ui-icon name="building" size="15" /> Ödeme tesiste</span><span><x-ui-icon name="clock" size="15" /> Tesis onayı gerekir</span></div><div class="booking-form-section-heading"><span><x-ui-icon name="paw" size="18" /></span><div><b>Konaklama bilgileri</b><small>Dostunuzu, oda tipini ve tarihleri seçin</small></div></div>
 @if($indirimler->isNotEmpty())<p class="hint" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 10px;margin:0 0 12px">&#127991; @foreach($indirimler as $dc){{ $dc->min_nights }}+ gece %{{ $dc->percent }} indirim @if(!$loop->last)· @endif @endforeach</p>@endif
 
 @guest
@@ -614,7 +617,7 @@
 @endguest
 @if($hotel->phone)<p class="hotel-contact-links"><a data-hotel-phone-call href="tel:{{ preg_replace('/[^0-9+]/', '', $hotel->phone) }}">☎ {{ $hotel->phone }}</a><a class="hotel-whatsapp-link" href="https://wa.me/{{ \App\Support\PhoneNumber::whatsapp($hotel->phone) }}?text={{ rawurlencode('Merhaba '.$hotel->name.', tesisiniz hakkında bilgi almak istiyorum.') }}" target="_blank" rel="noopener noreferrer">WhatsApp ile yazın</a></p>@endif
 </section><section class="booking-pane booking-details-pane" data-booking-pane="details" hidden>
-<div class="booking-details-photo-grid" aria-label="{{ $ad }} tesis fotoğrafları">@if($primaryPhotoUrl)<img class="booking-details-photo-main" src="{{ $primaryPhotoUrl }}" alt="{{ $ad }} tesis görünümü" loading="lazy">@endif @foreach($bookingGallery as $bookingPhoto)<img src="{{ $bookingPhoto }}" alt="{{ $ad }} tesis görseli" loading="lazy">@endforeach</div><div class="booking-info-banner"><span class="booking-info-banner-icon"><x-ui-icon name="message" size="19" /></span><div><b>{{ $ad }} çevrimiçi rezervasyon</b><p>Rezervasyonunuz doğrudan tesise ulaşır. İşletme müsaitlik durumunu onaylar; ödemeyi tesiste yaparsınız.</p></div></div>
+<div class="booking-details-photo-grid" aria-label="{{ $ad }} tesis fotoğrafları">@if($primaryPhotoUrl)<img class="booking-details-photo-main" src="{{ $primaryPhotoUrl }}" alt="{{ $ad }} tesis görünümü{{ $temsiliKapak ? ', temsili görsel; tesis fotoğrafı paylaşılmadı' : '' }}" loading="lazy">@endif @foreach($bookingGallery as $bookingPhoto)<img src="{{ $bookingPhoto }}" alt="{{ $ad }} tesis görseli" loading="lazy">@endforeach</div>@if($temsiliKapak)<p class="hint">Kapak görseli temsili görünümdür; işletme tesis fotoğrafı paylaşmamıştır.</p>@endif<div class="booking-info-banner"><span class="booking-info-banner-icon"><x-ui-icon name="message" size="19" /></span><div><b>{{ $ad }} çevrimiçi rezervasyon</b><p>Talep platforma kaydedilir; e-posta iletimi doğrulanamazsa uyarı gösterilir. Rezervasyon işletme onayı olmadan kesinleşmez.</p></div></div>
 <h3>Tesis hakkında</h3><p>{{ \Illuminate\Support\Str::limit(strip_tags((string)$hotel->description),900) ?: $ad.' · '.$ilce.', Antalya’da hizmet vermektedir.' }}</p>
 <h3>Oda seçenekleri</h3><div class="booking-room-list">
 @foreach($hotel->rooms as $room)
@@ -627,6 +630,7 @@
 </section></div>
   </div>
 </aside>
+@endif
 <script>
 (function(){
   var modal=document.getElementById('rezervasyon-talebi');if(!modal)return;

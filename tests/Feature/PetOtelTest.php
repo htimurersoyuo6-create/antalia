@@ -1,16 +1,23 @@
 <?php
 namespace Tests\Feature;
 
-use App\Models\{City, DailyReport, ForumReply, ForumTopic, Hotel, HotelSubscription, Pet, PriceRule, Reservation, ReservationPaymentAttempt, RoomType, RoomUnit, SubscriptionPlan, User};
+use App\Models\{City, DailyReport, ForumReply, ForumTopic, GeofencedAlert, Hotel, HotelSubscription, Pet, PriceRule, Reservation, ReservationPaymentAttempt, RoomType, RoomUnit, Setting, SubscriptionPlan, User};
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
 use App\Models\PendingPhoneRegistration;
+use App\Services\GeofencedAlertService;
 use Tests\TestCase;
 
 class PetOtelTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Setting::kaydet(['booking_requests_enabled' => '1']);
+    }
 
     private function captchaPost(string $url, array $data, string $key)
     {
@@ -168,6 +175,219 @@ class PetOtelTest extends TestCase
         // Bitişik tarih (çıkış günü = başka giriş günü) çakışma sayılmaz
         $this->actingAs($other)->post('/pet-otel/test-otel/rezervasyon', ['pet_id' => $pet2->id, 'check_in' => $out, 'check_out' => now()->addDays(13)->toDateString()] + $body)->assertSessionHasNoErrors();
         $this->assertSame(2, Reservation::count());
+    }
+
+    public function test_booking_requests_fail_closed_by_default_and_for_unclaimed_hotels(): void
+    {
+        [$hotel, $room, $owner] = $this->mkHotel();
+        $customer = $this->mkUser();
+        $pet = $this->mkPet($customer);
+        $body = [
+            'room_type_id' => $room->id,
+            'pet_id' => $pet->id,
+            'check_in' => now()->addDays(3)->toDateString(),
+            'check_out' => now()->addDays(5)->toDateString(),
+            'terms' => 1,
+        ];
+
+        Setting::query()->where('skey', 'booking_requests_enabled')->delete();
+        \Illuminate\Support\Facades\Cache::forget('site_ayarlari');
+        $quoteUrl = route('reservations.quote', $hotel->slug).'?check_in='
+            .now()->addDays(3)->toDateString().'&check_out='.now()->addDays(5)->toDateString();
+
+        $this->get(route('hotels.show', $hotel->slug))
+            ->assertOk()
+            ->assertDontSee('id="rezervasyon-talebi"')
+            ->assertDontSee('Rezervasyon talebi gönder');
+        $this->actingAs($customer)->post(route('reservations.store', $hotel->slug), $body)->assertStatus(503);
+        $this->getJson($quoteUrl)->assertStatus(503)->assertJsonPath('ok', false);
+        $this->assertDatabaseCount('reservations', 0);
+
+        Setting::kaydet(['booking_requests_enabled' => '1']);
+        $owner->update(['email' => Hotel::YER_TUTUCU_SAHIP]);
+        $this->actingAs($customer)->post(route('reservations.store', $hotel->slug), $body)->assertStatus(503);
+        $this->getJson($quoteUrl)->assertStatus(503)->assertJsonPath('ok', false);
+        $this->assertDatabaseCount('reservations', 0);
+    }
+
+    public function test_booking_requires_server_side_acceptance_of_cancellation_terms(): void
+    {
+        [$hotel, $room] = $this->mkHotel();
+        $customer = $this->mkUser();
+        $pet = $this->mkPet($customer);
+
+        $this->actingAs($customer)->post(route('reservations.store', $hotel->slug), [
+            'room_type_id' => $room->id,
+            'pet_id' => $pet->id,
+            'check_in' => now()->addDays(3)->toDateString(),
+            'check_out' => now()->addDays(5)->toDateString(),
+            'terms' => '0',
+        ])->assertSessionHasErrors('terms');
+
+        $this->assertDatabaseCount('reservations', 0);
+    }
+
+    public function test_rejecting_a_pending_reservation_releases_its_room_capacity(): void
+    {
+        [$hotel, $room, $owner] = $this->mkHotel(units: 1);
+        $checkIn = now()->addDays(5)->toDateString();
+        $checkOut = now()->addDays(7)->toDateString();
+        $firstCustomer = $this->mkUser();
+        $firstPet = $this->mkPet($firstCustomer);
+        $booking = [
+            'room_type_id' => $room->id,
+            'check_in' => $checkIn,
+            'check_out' => $checkOut,
+            'terms' => 1,
+        ];
+
+        $this->actingAs($firstCustomer)->post(route('reservations.store', $hotel->slug), $booking + [
+            'pet_id' => $firstPet->id,
+        ])->assertSessionHasNoErrors();
+        $firstReservation = Reservation::latest('id')->firstOrFail();
+        $this->assertSame('pending', $firstReservation->status);
+
+        $secondCustomer = $this->mkUser();
+        $secondPet = $this->mkPet($secondCustomer);
+        $this->actingAs($secondCustomer)->post(route('reservations.store', $hotel->slug), $booking + [
+            'pet_id' => $secondPet->id,
+        ])->assertSessionHasErrors('check_in');
+
+        $this->actingAs($owner)->patch("/panel/rezervasyonlar/{$firstReservation->id}", [
+            'action' => 'reject',
+        ])->assertSessionHasNoErrors();
+        $this->assertSame('rejected', $firstReservation->fresh()->status);
+
+        $this->actingAs($secondCustomer)->post(route('reservations.store', $hotel->slug), $booking + [
+            'pet_id' => $secondPet->id,
+        ])->assertSessionHasNoErrors();
+        $this->assertSame(2, Reservation::where('hotel_id', $hotel->id)->count());
+        $this->assertSame('pending', Reservation::latest('id')->firstOrFail()->status);
+    }
+
+    public function test_admin_can_toggle_online_booking_requests(): void
+    {
+        $admin = $this->mkUser('admin');
+        $url = route('admin.settings.save');
+        $settings = ['site_name' => 'Pet Otel', 'call_recording_days' => 30];
+
+        $this->actingAs($admin)->put($url, $settings + ['booking_requests_enabled' => '1'])->assertSessionHas('ok');
+        $this->assertSame('1', Setting::al('booking_requests_enabled', '0'));
+
+        $this->actingAs($admin)->put($url, $settings)->assertSessionHas('ok');
+        $this->assertSame('0', Setting::al('booking_requests_enabled', '0'));
+    }
+
+    public function test_faqs_remain_visible_without_faqpage_schema(): void
+    {
+        [$hotel] = $this->mkHotel();
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Antalya’da kaç pet otel var?')
+            ->assertSee('Organization')
+            ->assertSee('WebSite')
+            ->assertDontSee('FAQPage');
+
+        $this->get(route('hotels.show', $hotel->slug))
+            ->assertOk()
+            ->assertSee('BreadcrumbList')
+            ->assertDontSee('LocalBusiness')
+            ->assertDontSee('FAQPage');
+
+        $hotel->update(['license_verified_at' => now(), 'address' => 'Test adresi']);
+        $this->get(route('hotels.show', $hotel->slug))
+            ->assertOk()
+            ->assertSee('LocalBusiness')
+            ->assertSee('BreadcrumbList')
+            ->assertDontSee('FAQPage');
+    }
+
+    public function test_hotel_search_filters_room_price_capacity_and_declared_stay_type(): void
+    {
+        [$hotel, $room] = $this->mkHotel();
+        $hotel->update(['amenities' => json_encode(['Bireysel konaklama'])]);
+        $room->update(['capacity' => 2, 'base_price' => 1000]);
+
+        $this->get('/ara?min_fiyat=1200')->assertDontSee('Test Otel');
+        $this->get('/ara?min_fiyat=800&max_fiyat=1200&kapasite=2&olanak%5B%5D=bireysel')
+            ->assertOk()->assertSee('Test Otel');
+        $this->get('/ara?kapasite=3')->assertDontSee('Test Otel');
+        $this->get('/ara?olanak%5B%5D=grup')->assertDontSee('Test Otel');
+        $this->get('/ara?min_fiyat=1200&max_fiyat=800')
+            ->assertOk()
+            ->assertSee('Minimum fiyat, maksimum fiyattan yüksek olamaz.');
+    }
+
+    public function test_minimum_and_maximum_price_facets_are_not_indexed_as_category_pages(): void
+    {
+        $this->mkHotel();
+
+        foreach (['min_fiyat=800', 'max_fiyat=1200'] as $filter) {
+            $this->get(route('hotels.dogs').'?'.$filter)
+                ->assertOk()
+                ->assertSee('<meta name="robots" content="noindex, follow">', false)
+                ->assertSee('<link rel="canonical" href="'.route('hotels.dogs').'">', false);
+        }
+    }
+
+    public function test_pending_reviews_are_not_exposed_on_public_hotel_pages(): void
+    {
+        [$hotel, $room] = $this->mkHotel();
+        $customer = $this->mkUser();
+        $pet = $this->mkPet($customer);
+        $reservation = Reservation::create([
+            'code' => 'POTESTRV01', 'user_id' => $customer->id, 'hotel_id' => $hotel->id,
+            'room_type_id' => $room->id, 'pet_id' => $pet->id,
+            'check_in' => now()->addDays(5), 'check_out' => now()->addDays(7),
+            'nights' => 2, 'total_price' => 2000, 'status' => 'completed',
+        ]);
+        \App\Models\Review::create([
+            'reservation_id' => $reservation->id, 'user_id' => $customer->id, 'hotel_id' => $hotel->id,
+            'rating' => 5, 'title' => 'Yayında yorum', 'comment' => 'Yayımlanmış doğrulanmış yorum.',
+            'status' => 'published', 'created_at' => now(),
+        ]);
+        \App\Models\Review::create([
+            'reservation_id' => Reservation::create([
+                'code' => 'POTESTRV02', 'user_id' => $customer->id, 'hotel_id' => $hotel->id,
+                'room_type_id' => $room->id, 'pet_id' => $pet->id,
+                'check_in' => now()->addDays(8), 'check_out' => now()->addDays(10),
+                'nights' => 2, 'total_price' => 2000, 'status' => 'completed',
+            ])->id, 'user_id' => $customer->id, 'hotel_id' => $hotel->id,
+            'rating' => 1, 'title' => 'Bekleyen yorum', 'comment' => 'Bu içerik henüz moderasyonda.',
+            'status' => 'pending', 'created_at' => now(),
+        ]);
+
+        $this->get(route('hotels.show', $hotel->slug))
+            ->assertOk()
+            ->assertSee('Yayımlanmış doğrulanmış yorum.')
+            ->assertDontSee('Bu içerik henüz moderasyonda.');
+    }
+
+    public function test_local_brand_cover_is_marked_as_representative(): void
+    {
+        [$hotel] = $this->mkHotel();
+        $hotel->update(['slug' => 'belekpatievi']);
+        $this->assertTrue($hotel->hasRepresentativeCover());
+        $this->get('/')->assertOk()->assertSee('Temsili görsel')->assertSee('Temsili görsel · Tesis fotoğrafı paylaşılmadı');
+    }
+
+    public function test_booking_request_with_unavailable_mailer_does_not_show_success(): void
+    {
+        Config::set('mail.default', 'log');
+        [$hotel, $room] = $this->mkHotel();
+        $customer = $this->mkUser();
+        $pet = $this->mkPet($customer);
+
+        $this->actingAs($customer)->post(route('reservations.store', $hotel->slug), [
+            'room_type_id' => $room->id,
+            'pet_id' => $pet->id,
+            'check_in' => now()->addDays(3)->toDateString(),
+            'check_out' => now()->addDays(5)->toDateString(),
+            'terms' => 1,
+        ])->assertSessionHas('warning')->assertSessionMissing('ok');
+
+        $this->assertDatabaseCount('reservations', 1);
     }
 
     public function test_concurrent_inventory_is_assigned_and_visible_to_hotel_owner(): void
@@ -394,6 +614,70 @@ class PetOtelTest extends TestCase
         $this->get('/ara?giris=2027-02-31&cikis=2027-03-04')
             ->assertOk()
             ->assertSee('Tarihler okunamadı. Hem giriş hem çıkış tarihini seçin.');
+    }
+
+    public function test_search_supports_room_price_review_and_verification_sorting(): void
+    {
+        [$lowest, $lowestRoom] = $this->mkHotel();
+        $city = City::where('slug', 'antalya')->firstOrFail();
+        $district = $city->districts()->where('slug', 'kemer')->firstOrFail();
+
+        $middleOwner = $this->mkUser('hotel_owner');
+        $middle = Hotel::create([
+            'owner_id' => $middleOwner->id, 'name' => 'Orta Fiyat Otel', 'slug' => 'orta-fiyat-otel',
+            'city_id' => $city->id, 'district_id' => $district->id, 'status' => 'active',
+            'accepts_dogs' => true, 'accepts_cats' => true, 'rating_avg' => 4.1, 'rating_count' => 40,
+        ]);
+        RoomType::create([
+            'hotel_id' => $middle->id, 'name' => 'Standart', 'pet_type' => 'dog',
+            'size' => 'any', 'units' => 1, 'base_price' => 800,
+        ]);
+        RoomType::create([
+            'hotel_id' => $middle->id, 'name' => 'Aile', 'pet_type' => 'dog',
+            'size' => 'any', 'units' => 1, 'base_price' => 3000,
+        ]);
+
+        $highestRatingOwner = $this->mkUser('hotel_owner');
+        $highestRating = Hotel::create([
+            'owner_id' => $highestRatingOwner->id, 'name' => 'Yüksek Puan Otel', 'slug' => 'yuksek-puan-otel',
+            'city_id' => $city->id, 'district_id' => $district->id, 'status' => 'active',
+            'accepts_dogs' => true, 'accepts_cats' => true, 'rating_avg' => 4.8, 'rating_count' => 20,
+            'license_verified_at' => now(),
+        ]);
+        RoomType::create([
+            'hotel_id' => $highestRating->id, 'name' => 'Standart', 'pet_type' => 'dog',
+            'size' => 'any', 'units' => 1, 'base_price' => 700,
+        ]);
+        RoomType::create([
+            'hotel_id' => $highestRating->id, 'name' => 'Aile', 'pet_type' => 'dog',
+            'size' => 'any', 'units' => 1, 'base_price' => 2000,
+        ]);
+
+        $lowest->update(['rating_avg' => 4.5, 'rating_count' => 25]);
+        $lowestRoom->update(['base_price' => 500]);
+        RoomType::create([
+            'hotel_id' => $lowest->id, 'name' => 'Aile', 'pet_type' => 'dog',
+            'size' => 'any', 'units' => 1, 'base_price' => 1000,
+        ]);
+
+        $assertOrder = function (string $sort, array $expected) {
+            $response = $this->get('/ara?sirala=' . $sort)->assertOk();
+            $content = $response->getContent();
+            $positions = array_map(
+                fn (Hotel $hotel) => strpos($content, '>' . e($hotel->name) . '</a>'),
+                $expected
+            );
+            $this->assertNotContains(false, $positions);
+            $ordered = $positions;
+            sort($ordered);
+            $this->assertSame($ordered, $positions, 'Unexpected order for ' . $sort);
+        };
+
+        $assertOrder('ucuz', [$lowest, $highestRating, $middle]);
+        $assertOrder('pahali', [$middle, $highestRating, $lowest]);
+        $assertOrder('puan', [$highestRating, $lowest, $middle]);
+        $assertOrder('yorum', [$middle, $lowest, $highestRating]);
+        $assertOrder('dogrulanmis', [$highestRating, $middle, $lowest]);
     }
 
     public function test_available_room_ids_batches_inventory_queries_and_preserves_legacy_capacity(): void
@@ -753,4 +1037,71 @@ class PetOtelTest extends TestCase
         $this->actingAs($admin)->get(route('admin.hotel-chats').'?arsiv=1')->assertOk()->assertSee('Ziyaretçi Test');
     }
 
+    public function test_lost_pet_public_sharing_is_opt_in_and_phone_requires_separate_consent(): void
+    {
+        $owner = $this->mkUser();
+        $pet = $this->mkPet($owner);
+        $service = \Mockery::mock(GeofencedAlertService::class)->makePartial();
+        $service->shouldReceive('notify')->once()->andReturn(0);
+        $this->app->instance(GeofencedAlertService::class, $service);
+
+        $response = $this->actingAs($owner)->post(route('pets.lost-alerts.store', $pet), [
+            'lat' => 36.8969, 'lng' => 30.7133, 'note' => 'Kırmızı tasma',
+            'public_listing' => '1', 'share_phone' => '1', 'public_phone' => '+90 555 111 22 33',
+        ]);
+
+        $alert = GeofencedAlert::where('pet_id', $pet->id)->firstOrFail();
+        $response->assertRedirect(route('lost-pets.show', $alert));
+        $alert->refresh();
+        $this->assertTrue($alert->is_public);
+        $this->assertSame('Kırmızı tasma', $alert->public_note);
+        $this->assertSame('+90 555 111 22 33', $alert->public_contact_phone);
+    }
+
+    public function test_private_lost_pet_report_does_not_store_public_note_or_phone(): void
+    {
+        $owner = $this->mkUser();
+        $pet = $this->mkPet($owner);
+        $service = \Mockery::mock(GeofencedAlertService::class)->makePartial();
+        $service->shouldReceive('notify')->once()->andReturn(0);
+        $this->app->instance(GeofencedAlertService::class, $service);
+
+        $this->actingAs($owner)->from('/evcil-hayvanlarim/'.$pet->id.'/saglik')->post(route('pets.lost-alerts.store', $pet), [
+            'lat' => 36.8969, 'lng' => 30.7133, 'note' => 'Özel not',
+        ])->assertRedirect('/evcil-hayvanlarim/'.$pet->id.'/saglik')->assertSessionHasNoErrors();
+
+        $alert = GeofencedAlert::where('pet_id', $pet->id)->firstOrFail();
+        $this->assertFalse($alert->is_public);
+        $this->assertNull($alert->public_note);
+        $this->assertNull($alert->public_contact_phone);
+        $this->get(route('lost-pets.index'))->assertDontSee('Özel not');
+    }
+
+    public function test_public_lost_pet_pages_hide_exact_coordinates_and_only_show_active_shared_alerts(): void
+    {
+        $owner = $this->mkUser();
+        $publicPet = $this->mkPet($owner);
+        $publicPet->update(['name' => 'Luna Açık']);
+        $publicAlert = GeofencedAlert::create([
+            'pet_id' => $publicPet->id, 'lat' => 36.8969123, 'lng' => 30.7133456, 'radius_m' => 5000,
+            'status' => 'open', 'reported_at' => now(), 'is_public' => true, 'public_note' => 'Kırmızı tasma',
+            'notified_user_ids' => [$owner->id],
+        ]);
+        $privatePet = $this->mkPet($owner);
+        $privatePet->update(['name' => 'Gizli İlan']);
+        GeofencedAlert::create([
+            'pet_id' => $privatePet->id, 'lat' => 36.8969123, 'lng' => 30.7133456, 'radius_m' => 5000,
+            'status' => 'open', 'reported_at' => now(), 'is_public' => false,
+        ]);
+
+        $this->get(route('lost-pets.index'))
+            ->assertOk()->assertSee('Luna Açık')->assertDontSee('Gizli İlan')
+            ->assertSee('noindex, follow', false);
+        $this->get(route('lost-pets.show', $publicAlert))
+            ->assertOk()->assertSee('36.90, 30.71')
+            ->assertDontSee('36.8969123');
+
+        $this->actingAs($owner)->patch(route('pets.lost-alerts.resolve', $publicAlert))->assertRedirect();
+        $this->get(route('lost-pets.show', $publicAlert))->assertNotFound();
+    }
 }

@@ -1,0 +1,148 @@
+/* Otel detay ve ortak bileşen düzeltmeleri. site-redesign.css'ten SONRA yüklenir.
+   Neden: şablon .apt-* sınıflarına geçmiş, bazı eski kurallar hâlâ .det / .hotel-breadcrumb kapsamında kalmıştı. */
+
+/* 1) Sayfa yolu (breadcrumb): kutu içinde, okunabilir */
+.hotel-detail-page .apt-crumb{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;width:fit-content;max-width:100%;margin:14px 0 16px;padding:9px 16px;border:1px solid var(--public-line);border-radius:14px;background:var(--public-surface);box-shadow:0 1px 2px rgba(27,39,58,.04);font-size:13px;line-height:1.4;color:var(--public-muted)}
+.hotel-detail-page .apt-crumb a{color:#4d5b70!important;font-weight:600;text-decoration:none}
+.hotel-detail-page .apt-crumb a:hover{color:var(--public-orange-dark)!important;text-decoration:underline}
+.hotel-detail-page .apt-crumb span[aria-hidden]{margin:0;color:#b3bcc9}
+.hotel-detail-page .apt-crumb [aria-current=page]{margin:0;max-width:min(62vw,460px);overflow:hidden;color:var(--public-ink);font-weight:700;text-overflow:ellipsis;white-space:nowrap}
+
+/* 2) Galeri: küçük resim sütunu yoksa ana görsel tüm genişliği doldursun */
+.apt-gallery:not(:has(.apt-gallery__strip)){grid-template-columns:minmax(0,1fr)}
+
+/* 3) Diğer ilçeler bağlantıları: kapsülleşmiş */
+.hotel-detail-page .hotel-district-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.hotel-detail-page .hotel-district-links a{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border:1px solid var(--public-line);border-radius:999px;background:#fff;color:#3b475a;font-size:13px;font-weight:600;text-decoration:none;transition:border-color .15s,background .15s,color .15s}
+.hotel-detail-page .hotel-district-links a:hover{border-color:#ffc4b3;background:var(--public-orange-soft);color:var(--public-orange-dark)}
+.hotel-detail-page .hotel-district-links a span{color:var(--public-orange)}
+
+/* 4) Oda kartı: fiyat ve düğmeler hizalı */
+.hotel-detail-page .hotel-public-room-price{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;column-gap:6px;row-gap:8px;min-width:0}
+.hotel-detail-page .hotel-public-room-price>strong{justify-self:end;text-align:right}
+.hotel-detail-page .hotel-public-room-price .hotel-select-room,
+.hotel-detail-page .hotel-public-room-price .hotel-room-whatsapp{grid-column:1/-1;width:100%;box-sizing:border-box;justify-content:center;text-align:center}
+
+/* 5) Kurallar: satırlar liste olarak */
+.hotel-detail-page .hotel-rules-list{display:grid;flex:1;gap:7px;margin:0;padding:0;list-style:none}
+.hotel-detail-page .hotel-rules-list li{position:relative;padding-left:16px;line-height:1.55}
+.hotel-detail-page .hotel-rules-list li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--public-orange)}
+
+/* 6) Hakkında metni: gövde ölçüsü, iç içe kutu yok */
+.hotel-detail-page .otel-aciklama{padding:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;font-size:16px;line-height:1.75;color:#33405a}
+.hotel-detail-page .otel-aciklama p{font-size:inherit;line-height:inherit}
+
+/* 7) Bölüm başlıkları aynı ölçüde */
+.hotel-detail-page section.apt-card .apt-card__title{font-size:clamp(21px,2vw,26px)!important;font-weight:800!important;line-height:1.22;letter-spacing:-.01em}
+
+/* 8) Üst menü arama: simge hizası */
+header nav form.hsearch{display:flex;align-items:center;gap:8px}
+header nav form.hsearch span[aria-hidden]{display:inline-flex;align-items:center;font-size:14px;line-height:1;transform:none}
+
+
+/* Make property-license verification status visible before users open a listing. */
+.apt-lcard__verification{margin:0 12px 9px;padding:0}
+.apt-verification-badge{display:inline-flex;align-items:center;min-height:23px;padding:3px 8px;border:1px solid;border-radius:999px;font-size:10px;font-weight:750;line-height:1.35}
+.apt-verification-badge.is-verified{border-color:#b9dfc7;background:#eff9f2;color:#246b43}
+.apt-verification-badge.is-unverified{border-color:#ead6aa;background:#fff9eb;color:#735516}
+.apt-verification-note{margin:12px 0 16px;padding:12px 14px;border:1px solid #e8dfc8;border-radius:12px;background:#fffaf0;color:#51462f;font-size:12px;line-height:1.55}
+.apt-verification-note strong{display:block;margin-bottom:3px;font-size:12px}
+.apt-verification-note p{margin:0}
+
+
+/* A calmer, clearer partner call to action. */
+.pw-bolum .cta{background:#f4f7f3;color:#20342b;border:1px solid #dce7de;border-left:4px solid #39745a;border-radius:20px;padding:clamp(24px,4vw,40px);box-shadow:0 12px 30px rgba(27,52,40,.08)}
+.pw-bolum .cta>div{max-width:580px}
+.pw-bolum .cta h2{color:#20342b;font-size:clamp(1.35rem,2.4vw,1.8rem);line-height:1.25;margin:0 0 10px}
+.pw-bolum .cta p{color:#52645a;font-size:1rem;line-height:1.65;opacity:1}
+.pw-bolum .cta .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 20px;border:1px solid #246b52;border-radius:12px;background:#246b52;color:#fff;font-weight:700;text-decoration:none;transition:background-color .18s ease,border-color .18s ease,transform .18s ease}
+.pw-bolum .cta .btn:hover{background:#1d5844;border-color:#1d5844;transform:translateY(-1px)}
+.pw-bolum .cta .btn:focus-visible{outline:3px solid #8ac7a5;outline-offset:3px}
+@media(max-width:640px){.pw-bolum .cta{align-items:stretch;padding:24px}.pw-bolum .cta .btn{width:100%;text-align:center}}
+
+
+/* Mediterranean palette for the public site: sea teal, sea-glass and warm sand. */
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)){
+  --public-orange:#176447;
+  --public-orange-dark:#104d37;
+  --public-orange-soft:#e8f2eb;
+  --public-warm:#d77932;
+  --public-ink:#20342b;
+  --public-muted:#61746a;
+  --public-line:#dce7df;
+  --public-surface:#fffefa;
+  --public-canvas:#f7f6ef;
+  --public-shadow:0 12px 30px rgba(25,70,50,.08);
+  --brand:var(--public-orange);
+  --brand-d:var(--public-orange-dark);
+  --brand-l:var(--public-orange-soft);
+  --ink:var(--public-ink);
+  --ink-2:#3d565b;
+  --mut:var(--public-muted);
+  --line:var(--public-line);
+  --line-soft:#e8efec;
+  --soft:#f1f6f3;
+  --apt-accent:var(--public-orange);
+  --apt-accent-soft:var(--public-orange-soft);
+}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo{gap:10px;color:var(--public-ink)}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-paw{display:inline-grid;flex:0 0 42px;width:42px;height:42px;font-size:0;line-height:1}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-paw svg{display:block;width:100%;height:100%}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark{display:flex;flex-direction:column;gap:3px;color:var(--public-ink);font-size:17px;font-weight:850;line-height:1.05;letter-spacing:-.035em}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark small{color:var(--public-muted);font-size:9px;font-weight:750;line-height:1.2;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .dnav .dnav-register{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 11px;border:1px solid #c9e2df;border-radius:999px;background:var(--public-orange-soft);color:var(--public-orange-dark);font-weight:750;white-space:nowrap}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .dnav .dnav-register:hover{background:#d6ece9;color:#084f55}
+.pw-bolum .cta{background:linear-gradient(115deg,#edf4ed,#fffefa);color:var(--public-ink);border-color:#d6e5d8;border-left-color:#176447}
+.pw-bolum .cta h2{color:var(--public-ink)}
+.pw-bolum .cta p{color:#4d6255}
+.pw-bolum .cta .btn{border-color:#176447;background:#176447;color:#fff}
+.pw-bolum .cta .btn:hover{border-color:#104d37;background:#104d37}
+@media(max-width:760px){
+  body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-paw{flex-basis:38px;width:38px;height:38px}
+  body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark{font-size:15px}
+  body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark small{font-size:8px;letter-spacing:.06em}
+  header nav .mnav .mpanel{box-sizing:border-box;width:min(360px,calc(100vw - 24px));max-height:calc(100vh - 100px);max-height:calc(100dvh - 100px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .mnav .mpanel .mnav-auth-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 14px}
+  .mnav .mpanel .mnav-auth-shortcuts a{display:flex;align-items:center;justify-content:center;min-height:46px;padding:10px;border:1px solid #d6e6e1;border-radius:12px;background:#fff;color:#29474a;font-weight:750;text-align:center}
+  .mnav .mpanel .mnav-auth-shortcuts a:last-child{border-color:#176447;background:#176447;color:#fff}
+  .mnav .mpanel .mnav-partner-cta{display:flex;flex-direction:column;gap:4px;margin:6px 0 14px;padding:13px 14px;border:1px solid #cfe3df;border-radius:14px;background:linear-gradient(120deg,#e8f4f2,#f8f4e9);color:#24484a;text-decoration:none}
+  .mnav .mpanel .mnav-partner-cta strong{font-size:14px;font-weight:850}
+  .mnav .mpanel .mnav-partner-cta span{color:#104d37;font-size:13px;font-weight:750}
+  .apt-lcard .apt-lcard__quick,.hotel-room-whatsapp,.hotel-contact-links a{min-width:44px;min-height:44px}
+}
+@media(max-width:380px){
+  body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark small{display:none}
+}
+
+/* Distinguish real property photos from missing-media placeholders. */
+.apt-lcard__placeholder,.oda-image-placeholder{display:grid;place-items:center;color:var(--public-orange-dark);background:linear-gradient(145deg,#edf4ed,#f8f5e9)}
+.apt-lcard__placeholder{width:100%;height:100%;min-height:180px;gap:8px;padding:18px;box-sizing:border-box;text-align:center}
+.apt-lcard__placeholder svg,.oda-image-placeholder svg{opacity:.72}
+.apt-lcard__placeholder::after{content:'Tesis fotoğrafı henüz paylaşılmadı';font-size:12px;font-weight:650;line-height:1.4}
+.apt-gallery__empty{display:grid;place-content:center;justify-items:center;gap:10px;background:linear-gradient(145deg,#edf4ed,#f8f5e9);color:var(--public-orange-dark);font-size:14px;font-weight:700;text-align:center}
+.oda-image-placeholder{position:absolute;inset:0}
+.apt-filter__fieldset{min-width:0;margin:0;padding:0;border:0}
+.apt-filter__fieldset legend{margin-bottom:8px;color:var(--public-ink);font-size:13px;font-weight:700}
+.apt-filter__checklist{display:grid;gap:7px;max-height:230px;overflow:auto;padding:2px 2px 2px 0}
+.apt-filter__check{display:flex!important;align-items:flex-start;gap:9px;color:var(--public-ink);font-size:13px!important;font-weight:500;line-height:1.4}
+.apt-filter__check input{flex:0 0 16px;width:16px;height:16px;margin:2px 0 0;accent-color:var(--public-orange)}
+.apt-lcard__price{background:var(--public-warm)!important;color:#fff!important}
+
+/* 9) Başlık kartı: turuncu şerit köşe yuvarlağına uysun */
+.hotel-detail-page .apt-head{position:relative;overflow:hidden}
+
+/* 10) Boş yorum kutusu (.det kapsamı olmadan) */
+.hotel-detail-page .hotel-empty-note{display:flex;align-items:center;gap:14px;padding:18px 20px;border:1px dashed #e3d9cf;border-radius:16px;background:#fffdf9}
+.hotel-detail-page .hotel-empty-note>span{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:13px;background:var(--public-orange-soft);color:var(--public-orange-dark)}
+.hotel-detail-page .hotel-empty-note b{display:block;color:var(--public-ink);font-size:15px}
+.hotel-detail-page .hotel-empty-note p{margin:3px 0 0;color:var(--public-muted);font-size:14px;line-height:1.55}
+
+/* 11) Yorum kartları (yorum olduğunda) */
+.hotel-detail-page .hotel-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hotel-detail-page .hotel-review-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hotel-detail-page .hotel-review-top .stars{color:#e99a27;font-size:14px;letter-spacing:.05em}
+.hotel-detail-page .hotel-review-top small{color:var(--public-muted);font-size:12px}
+@media(max-width:700px){.hotel-detail-page .hotel-review-grid{grid-template-columns:1fr}}
+
+/* 12) Asistan düğmesi tablet genişliğinde alt sabit çubuğun üstünde dursun */
+@media(min-width:761px) and (max-width:900px){body.hotel-detail-body .site-assistant{bottom:calc(86px + env(safe-area-inset-bottom))}}

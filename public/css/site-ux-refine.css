@@ -1,0 +1,182 @@
+/* Shared public-page UX: preserve brand styles while improving readability and mobile flow. */
+:root{--ux-text:#24332d;--ux-muted:#65756d;--ux-line:#dce6df;--ux-surface:#fff;--ux-soft:#f4f8f5}
+body{color:var(--ux-text);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+main#icerik .apt-date-error{margin:0 0 16px;padding:12px 14px;border:1px solid #e7b6aa;border-radius:12px;background:#fff3ef;color:#812b1d;font-size:.95rem;line-height:1.5}
+main#icerik{min-width:0;overflow-wrap:anywhere}
+main#icerik img,main#icerik video{max-width:100%}
+main#icerik :where(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea){max-width:100%;font:500 15px/1.45 Poppins,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main#icerik :where(button,.btn,[type=submit]){font-family:Poppins,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.25;white-space:normal}
+main#icerik :where(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea){min-height:44px}
+main#icerik :where(textarea){min-height:112px}
+main#icerik :where(table){width:100%;border-collapse:collapse}
+main#icerik :where(th,td){overflow-wrap:anywhere}
+main#icerik :where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #147c63;outline-offset:3px}
+main#icerik :where(.wrap){min-width:0}
+@media(max-width:760px){
+  main#icerik{font-size:15px}
+  main#icerik :where(.wrap){width:min(100% - 28px,100%);padding-left:0;padding-right:0}
+  main#icerik :where(h1){font-size:clamp(27px,7vw,38px);line-height:1.13;letter-spacing:-.025em}
+  main#icerik :where(h2){font-size:clamp(22px,5.5vw,30px);line-height:1.2}
+  main#icerik :where(h3){font-size:clamp(18px,4.5vw,23px);line-height:1.25}
+  main#icerik :where(p,li){line-height:1.65}
+  main#icerik :where(.grid,.cards,.hotel-grid,.vet-grid){grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+  main#icerik :where(table){display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  main#icerik :where(.btn,button[type=submit]){min-height:44px}
+}
+@media(max-width:380px){
+  main#icerik :where(.wrap){width:calc(100% - 22px)}
+  main#icerik :where(input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea){font-size:14px}
+}/* Content navigation must size to its own links, not inherit the global header height. */
+main#icerik nav{height:auto;min-height:0;white-space:normal}
+main#icerik .vet-index section.vet-results{padding:0}
+main#icerik .vet-index .vet-guide{margin-top:28px}
+main#icerik .blog-index section.blog-topic{margin-block:12px;padding-block:16px}
+@media(max-width:760px){
+  main#icerik .vet-index .vet-guide{margin-top:24px}
+  main#icerik .blog-index section.blog-topic{margin-block:10px;padding-block:12px}
+}
+
+/* Hotel detail UX fixes: sticky section tabs, consistent photo crop, compact rhythm. */
+.hotel-detail-page .det .otel-section-nav{position:sticky!important;top:var(--head,80px)!important;z-index:35!important;box-sizing:border-box;width:100%;gap:8px;margin:0 0 14px!important;padding:8px!important;border:1px solid #e1e9e2;border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 8px 22px rgba(37,58,43,.09);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hotel-detail-page .det [id^="otel-"]{scroll-margin-top:calc(var(--head,80px) + 18px)}
+.hotel-detail-page .det .meta{box-sizing:border-box;min-height:48px;margin:0 0 12px!important;padding:9px 12px!important;gap:8px!important;border:1px solid #e1e9e2;border-radius:15px;background:linear-gradient(110deg,#fff,#f5f8f4);box-shadow:0 4px 12px rgba(37,58,43,.05)}
+.hotel-detail-page .det .pw-mozaik.n0 .hotel-photo-cover img.m0{height:100%!important;max-height:none!important;object-fit:cover}
+.hotel-detail-page .det .hotel-rooms-section{padding:0!important}
+
+/* Keep the sticky tab bar in the full detail-page flow, not its short intro wrapper. */
+.hotel-detail-page .det>div:first-child{display:contents!important}
+
+/* Keep homepage category tabs and search controls in separate visible rows. */
+@media(min-width:900px){body:has(section.home-hero-shell) .home-hero-grid{min-height:500px!important}}
+@media(min-width:601px) and (max-width:700px){body:has(section.home-hero-shell) .home-hero-grid{min-height:600px!important}}
+@media(max-width:600px){body:has(section.home-hero-shell) .home-hero-grid{min-height:625px!important}}
+
+/* Pricing guide: a compact editorial header, readable comparison tables and mobile-safe grids. */
+.pricing-page{padding-top:14px;padding-bottom:52px;color:#2c3c32}
+.pricing-page>.crumb{display:inline-flex;align-items:center;gap:7px;max-width:100%;margin:8px 0 14px;padding:8px 12px;border:1px solid #e4e9e1;border-radius:999px;background:linear-gradient(110deg,#fffaf5,#f5f8f3);color:#69776e;font-size:12px;line-height:1.4}
+.pricing-page>.crumb a{color:#557361;font-weight:700;text-decoration:none}
+.pricing-page>.crumb a:hover{color:#d94a20;text-decoration:underline;text-underline-offset:3px}
+.pricing-page>h1{position:relative;box-sizing:border-box;display:flex;align-items:center;min-height:74px;margin:0;padding:17px 22px 17px 27px;border:1px solid #e2e9e1;border-radius:20px;background:linear-gradient(110deg,#fffdfa,#f7faf6);box-shadow:0 8px 24px rgba(40,55,43,.045);color:#293b31;font-size:clamp(27px,3.4vw,36px);font-weight:850;line-height:1.2;letter-spacing:-.04em}
+.pricing-page>h1:before{position:absolute;top:16px;bottom:16px;left:0;width:4px;border-radius:0 5px 5px 0;background:linear-gradient(180deg,#f04416,#ffae57);content:""}
+.pricing-page>p.sub{display:inline-flex;align-items:center;gap:6px;margin:13px 0 18px;padding:8px 12px;border:1px solid #efe5d8;border-radius:999px;background:#fffaf4;color:#96502f;font-size:13px;font-weight:750;line-height:1.4}
+.pricing-page>article.prose{max-width:none!important;margin:0 0 27px!important;padding:22px 25px;border:1px solid #e7ebe4;border-radius:19px;background:#fff;box-shadow:0 8px 23px rgba(40,55,43,.04);color:#53645a;font-size:15px;line-height:1.7}
+.pricing-page>article.prose p{margin:0 0 10px;line-height:1.7}
+.pricing-page>article.prose p:last-child{margin-bottom:0}
+.pricing-page>h2{position:relative;margin:27px 0 11px;padding-left:13px;color:#2b493a;font-size:clamp(21px,2.7vw,27px);font-weight:850;line-height:1.25;letter-spacing:-.03em}
+.pricing-page>h2:before{position:absolute;top:2px;bottom:2px;left:0;width:4px;border-radius:4px;background:linear-gradient(180deg,#5c8b6b,#a7bd91);content:""}
+.pricing-page>.pricing-table-wrap{box-sizing:border-box;margin:0 0 14px;padding:10px;border:1px solid #e1e8e1;border-radius:17px;background:#fff;box-shadow:0 7px 20px rgba(40,55,43,.04)}
+.pricing-page .pricing-table{width:100%;border-collapse:separate!important;border-spacing:0!important;color:#45564b;font-size:13px;line-height:1.5}
+.pricing-page .pricing-table th{padding:11px 12px!important;border-bottom:1px solid #dfe7df!important;background:#f1f6f1;color:#35483b;font-size:12px;font-weight:850;text-align:left!important;white-space:nowrap}
+.pricing-page .pricing-table td{padding:11px 12px!important;border-bottom:1px solid #edf0ec!important;color:#536157;vertical-align:middle}
+.pricing-page .pricing-table tbody tr:nth-child(even){background:#fafcf9}
+.pricing-page .pricing-table tbody tr:last-child td{border-bottom:0!important}
+.pricing-page .pricing-table a{color:#3b6c52;font-weight:750;text-decoration:none}
+.pricing-page .pricing-table a:hover{color:#d94a20;text-decoration:underline;text-underline-offset:3px}
+.pricing-page>.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:0 0 14px}
+.pricing-page>.grid>.box{margin:0;padding:18px;border:1px solid #e3e9e2;border-radius:17px;background:linear-gradient(145deg,#fff,#f8fbf7);box-shadow:0 6px 18px rgba(40,55,43,.035)}
+.pricing-page>.grid>.box>b{color:#304538;font-size:15px;font-weight:850}
+.pricing-page>.grid>.box>.sub{color:#64746a;font-size:13px;line-height:1.55}
+.pricing-page>.grid>.box>.chip{align-self:flex-start;margin-top:5px;border-color:#d9e6da;background:#edf5ee;color:#41684b}
+.pricing-page>.box:has(>.faq){padding:10px 16px}
+.pricing-page>.box>.faq{border-bottom:1px solid #edf0eb}
+.pricing-page>.box>.faq:last-child{border-bottom:0}
+.pricing-page>.box>.faq>summary{padding:13px 4px;color:#35483b;font-size:14px;font-weight:750;cursor:pointer}
+.pricing-page>.box>.faq>p{margin:0;padding:0 4px 14px;color:#637168;font-size:13px;line-height:1.65}
+@media(max-width:760px){
+  .pricing-page{padding:12px 14px 38px}
+  .pricing-page>.crumb{margin:5px 0 11px;padding:7px 10px;font-size:11px}
+  .pricing-page>h1{min-height:62px;padding:14px 16px 14px 21px;border-radius:16px;font-size:clamp(24px,7vw,31px)}
+  .pricing-page>h1:before{top:12px;bottom:12px}
+  .pricing-page>p.sub{margin:10px 0 13px;padding:7px 10px;font-size:12px}
+  .pricing-page>article.prose{margin-bottom:20px!important;padding:16px 17px;border-radius:16px;font-size:14px}
+  .pricing-page>article.prose p{margin-bottom:8px}
+  .pricing-page>h2{margin:21px 0 9px;font-size:20px}
+  .pricing-page>.pricing-table-wrap{margin-bottom:11px;padding:7px;border-radius:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .pricing-page .pricing-table{display:table!important;min-width:100%;font-size:12px}
+  .pricing-page .pricing-table th,.pricing-page .pricing-table td{padding:9px 9px!important}
+  .pricing-page>.pricing-table-districts .pricing-table{min-width:470px}
+  .pricing-page>.pricing-table-hotels .pricing-table{min-width:650px}
+  .pricing-page>.grid{grid-template-columns:1fr;gap:9px;margin-bottom:11px}
+  .pricing-page>.grid>.box{padding:15px;border-radius:14px}
+}
+
+/* Veri yoksa durum kartlarını gizle */
+.home-status-strip[hidden],.home-status-card[hidden]{display:none!important}
+
+/* Forum redesign: consistent editorial, topic and reply layouts. */
+main#icerik .forum-page{box-sizing:border-box;width:min(100% - 40px,1160px);max-width:1160px;margin-inline:auto;padding:30px 0 64px;color:#26382e}
+main#icerik .forum-hero{position:relative;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(290px,.7fr);align-items:center;gap:clamp(24px,4vw,56px);min-height:320px;margin:0 0 24px;padding:clamp(28px,5vw,58px);overflow:hidden;border:1px solid #e1e9df;border-radius:28px;background:radial-gradient(circle at 89% 12%,#fff 0 8%,transparent 8.3%),linear-gradient(125deg,#f3f8f1 0%,#fbf8f1 60%,#fff2e8 100%);box-shadow:0 18px 48px rgba(38,56,46,.07)}
+main#icerik .forum-hero:after{position:absolute;right:27%;bottom:-210px;width:340px;height:340px;border:1px solid #e3e9df;border-radius:50%;box-shadow:0 0 0 32px rgba(255,255,255,.32),0 0 0 66px rgba(255,255,255,.22);content:"";pointer-events:none}
+main#icerik .forum-hero-copy{position:relative;z-index:1;max-width:660px}
+main#icerik .forum-hero .eyebrow{display:inline-flex;align-items:center;min-height:30px;padding:6px 11px;border:1px solid #e2eade;border-radius:999px;background:rgba(255,255,255,.76);color:#55745d;font-size:10px;font-weight:800;letter-spacing:.11em}
+main#icerik .forum-hero h1{margin:17px 0 12px;color:#26382e;font-size:clamp(36px,5vw,58px);font-weight:800;line-height:1.03;letter-spacing:-.055em}
+main#icerik .forum-hero p{max-width:570px;margin:0;color:#627167;font-size:clamp(15px,1.5vw,18px);line-height:1.7}
+main#icerik .forum-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:24px}
+main#icerik .forum-live-count{color:#65736a;font-size:13px}
+main#icerik .forum-live-count strong{color:#304a39;font-size:19px}
+main#icerik .forum-welcome-card{position:relative;z-index:1;padding:25px;border:1px solid rgba(255,255,255,.9);border-radius:22px;background:rgba(255,255,255,.82);box-shadow:0 16px 38px rgba(37,54,42,.08);backdrop-filter:blur(10px)}
+main#icerik .forum-welcome-card h2{margin:9px 0 17px;color:#2e4335;font-size:21px;line-height:1.35;letter-spacing:-.025em}
+main#icerik .forum-welcome-card ul{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+main#icerik .forum-welcome-card li{display:flex;align-items:center;gap:11px;color:#58675d;font-size:13px;line-height:1.45}
+main#icerik .forum-welcome-card li span{color:#bc6845;font-size:10px;font-weight:800;letter-spacing:.1em}
+main#icerik .forum-card-icon{display:grid;place-items:center;width:42px;height:42px;margin-bottom:14px;border-radius:14px;background:#fff0e7;color:#d95028;font-size:22px}
+main#icerik .forum-card-label{display:block;color:#a35b3b;font-size:10px;font-weight:850;letter-spacing:.12em}
+main#icerik .forum-cats{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:3px 0}
+main#icerik .forum-cats .chip{display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;border:1px solid #e1e8e1;border-radius:999px;background:#fff;color:#536258;font-size:13px;font-weight:650;text-decoration:none;transition:background .18s,border-color .18s,color .18s}
+main#icerik .forum-cats .chip:hover{border-color:#b9cbb9;background:#f6faf5}
+main#icerik .forum-cats .chip[aria-current=page]{border-color:#c9dcc9;background:#edf5ed;color:#315d3d}
+main#icerik .forum-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin:0 0 18px;padding:9px;border:1px solid #e3e9e3;border-radius:16px;background:#fff;box-shadow:0 6px 18px rgba(37,54,42,.035)}
+main#icerik .forum-search input{box-sizing:border-box;width:100%;min-width:0;min-height:46px;padding:11px 14px;border:1px solid transparent!important;border-radius:10px;background:#f7f9f6;box-shadow:none!important;color:#2d3f33;font-family:inherit;font-size:14px;font-weight:500;line-height:1.45}
+main#icerik .forum-search input:focus{border-color:#a8c3a9!important;outline:3px solid rgba(67,117,77,.12)}
+main#icerik .forum-search .btn{min-height:46px;padding-inline:20px}
+main#icerik .forum-list{display:grid;gap:10px}
+main#icerik .forum-topic{display:grid;grid-template-columns:minmax(0,1fr) 64px;align-items:center;gap:20px;padding:22px 24px;border:1px solid #e6ebe5;border-radius:18px;background:#fff;box-shadow:0 5px 16px rgba(37,54,42,.035);color:inherit;text-decoration:none;transition:transform .18s,border-color .18s,box-shadow .18s}
+main#icerik .forum-topic:hover{transform:translateY(-2px);border-color:#cadbca;box-shadow:0 12px 26px rgba(37,54,42,.08)}
+main#icerik .forum-topic>div{min-width:0}
+main#icerik .forum-topic .chip{display:inline-flex;max-width:100%;margin:0;padding:5px 9px;border:1px solid #e2ebe0;border-radius:999px;background:#f2f7f0;color:#4c7053;font-size:11px;font-weight:750;line-height:1.35}
+main#icerik .forum-topic h2{margin:10px 0 6px;color:#2b3c31;font-size:clamp(17px,2vw,20px);font-weight:750;line-height:1.35;letter-spacing:-.02em;text-decoration:underline;text-decoration-color:#c4d2c2;text-underline-offset:4px;overflow-wrap:anywhere}
+main#icerik .forum-topic p{display:-webkit-box;overflow:hidden;margin:0 0 10px;color:#65736a;font-size:14px;line-height:1.6;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+main#icerik .forum-topic small{color:#89938b;font-size:12px}
+main#icerik .forum-count{display:grid;place-content:center;gap:2px;box-sizing:border-box;width:58px;height:58px;border:1px solid #e2ebe1;border-radius:17px;background:#f5f8f3;color:#4b6d50;text-align:center}
+main#icerik .forum-count strong{font-size:19px;line-height:1.1}
+main#icerik .forum-count small{font-size:10px}
+main#icerik .forum-empty{grid-template-columns:minmax(140px,.35fr) minmax(0,1fr);align-items:center;gap:clamp(22px,4vw,48px);min-height:260px;padding:clamp(22px,4vw,40px);border:1px solid #e5ebe3;border-radius:22px;background:linear-gradient(120deg,#fff 0%,#f8faf6 100%);box-shadow:0 12px 32px rgba(37,54,42,.045)}
+main#icerik .forum-empty-art{min-height:180px;border-radius:18px;background:radial-gradient(ellipse at 50% 100%,#f2dfd1 0 12%,transparent 12.5%),linear-gradient(145deg,#fff3e8,#edf5ed)}
+main#icerik .forum-empty-art>span{width:82px;height:82px;border:1px solid #f0e9df;border-radius:26px;background:#fff;color:#d95028;font-size:40px;box-shadow:0 10px 28px rgba(54,48,35,.08)}
+main#icerik .forum-empty-copy h2{margin:9px 0;color:#2c4033;font-size:clamp(24px,3vw,34px);line-height:1.2;letter-spacing:-.04em}
+main#icerik .forum-empty-copy>p{max-width:640px;margin:0;color:#65736a;font-size:15px;line-height:1.7}
+main#icerik .forum-prompt-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:19px;padding-top:16px;border-top:1px solid #e9eee7;color:#66746a;font-size:12px}
+main#icerik .forum-prompt-list span{grid-column:1/-1;color:#8a948b;font-size:11px;font-weight:750}
+main#icerik .forum-prompt-list b{padding:10px 11px;border:1px solid #e5ebe3;border-radius:12px;background:#fff;color:#526357;font-size:11px;font-weight:650;line-height:1.45}
+main#icerik .forum-page .pagination{margin-top:20px}
+main#icerik .forum-back-link{display:inline-flex;align-items:center;min-height:40px;margin-bottom:13px;color:#507458;font-size:13px;font-weight:750}
+main#icerik .forum-back-link:hover{text-decoration:underline;text-underline-offset:3px}
+main#icerik .forum-post,main#icerik .forum-reply,main#icerik .forum-compose{box-sizing:border-box;margin:0;padding:clamp(20px,4vw,36px);border:1px solid #e4eae2;border-radius:21px;background:#fff;box-shadow:0 10px 28px rgba(37,54,42,.05)}
+main#icerik .forum-post .chip{display:inline-flex;margin:0 0 11px}
+main#icerik .forum-post h1{margin:0 0 10px;color:#293d31;font-size:clamp(28px,4vw,42px);line-height:1.15;letter-spacing:-.04em;overflow-wrap:anywhere}
+main#icerik .forum-post-meta{margin:0 0 22px;color:#78857b;font-size:12px}
+main#icerik .forum-body{padding-top:20px;border-top:1px solid #edf0eb;color:#45574a;font-size:16px;line-height:1.8;white-space:pre-line;overflow-wrap:anywhere}
+main#icerik .forum-replies{margin-top:28px}
+main#icerik .forum-section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:12px}
+main#icerik .forum-section-heading h2{margin:5px 0 0;color:#2e4335;font-size:24px;letter-spacing:-.03em}
+main#icerik .forum-section-heading h2 span{color:#819087;font-size:16px;font-weight:600}
+main#icerik .forum-reply-list{display:grid;gap:10px}
+main#icerik .forum-reply{padding:19px 22px}
+main#icerik .forum-reply-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+main#icerik .forum-reply-heading b{color:#34483a;font-size:14px}
+main#icerik .forum-reply-heading time{color:#89938b;font-size:11px}
+main#icerik .forum-reply p{margin:11px 0 0;color:#536258;font-size:14px;line-height:1.7;white-space:pre-line;overflow-wrap:anywhere}
+main#icerik .forum-empty-reply{padding:20px;border:1px dashed #dce5da;border-radius:15px;background:#f8faf7;color:#6a786e;font-size:14px}
+main#icerik .forum-compose{display:grid;gap:10px;max-width:780px;margin:28px auto 0}
+main#icerik .forum-compose h1,main#icerik .forum-compose h2{margin:0;color:#2d4235;letter-spacing:-.035em}
+main#icerik .forum-compose h1{font-size:clamp(27px,4vw,38px)}
+main#icerik .forum-compose-intro{margin:0 0 8px;color:#68776c;font-size:14px;line-height:1.65}
+main#icerik .forum-compose label{margin-top:5px;color:#3e5144;font-size:13px;font-weight:750}
+main#icerik .forum-compose :where(input,select,textarea){box-sizing:border-box;width:100%;min-width:0;min-height:46px;padding:11px 13px;border:1px solid #dfe7dd;border-radius:11px;background:#fbfcfa;color:#2e4034;font:inherit}
+main#icerik .forum-compose textarea{min-height:150px;resize:vertical}
+main#icerik .forum-compose :where(input,select,textarea):focus{border-color:#9cbd9f;outline:3px solid rgba(67,117,77,.12)}
+main#icerik .forum-compose .btn{justify-self:start;margin-top:6px}
+main#icerik .forum-login-note{margin-top:24px;color:#66746a}
+main#icerik .forum-login-note a{color:#3f7049;font-weight:750;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:900px){main#icerik .forum-hero{grid-template-columns:minmax(0,1fr) minmax(260px,.8fr);gap:22px}main#icerik .forum-prompt-list{grid-template-columns:1fr}}
+@media(max-width:700px){main#icerik .forum-page{width:min(100% - 28px,1160px);padding:18px 0 42px}main#icerik .forum-hero{grid-template-columns:1fr;gap:22px;min-height:0;padding:25px 22px;border-radius:22px}main#icerik .forum-hero:after{right:-55px;bottom:-220px}main#icerik .forum-hero h1{font-size:clamp(34px,9vw,46px)}main#icerik .forum-welcome-card{padding:20px;border-radius:18px}main#icerik .forum-cats{flex-wrap:nowrap;overflow-x:auto;margin-right:-14px;padding:3px 14px 9px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}main#icerik .forum-cats::-webkit-scrollbar{display:none}main#icerik .forum-cats .chip{flex:none}main#icerik .forum-search{grid-template-columns:1fr;padding:8px}main#icerik .forum-search .btn{width:100%}main#icerik .forum-topic{grid-template-columns:minmax(0,1fr) 46px;gap:12px;padding:16px 14px;border-radius:15px}main#icerik .forum-count{width:44px;height:48px;border-radius:13px}main#icerik .forum-count strong{font-size:16px}main#icerik .forum-topic p{font-size:13px}main#icerik .forum-empty{grid-template-columns:1fr;gap:16px;min-height:0;padding:19px;border-radius:18px}main#icerik .forum-empty-art{min-height:110px}main#icerik .forum-empty-art>span{width:66px;height:66px;border-radius:21px;font-size:32px}main#icerik .forum-prompt-list{grid-template-columns:1fr}main#icerik .forum-prompt-list span{grid-column:auto}main#icerik .forum-post,main#icerik .forum-compose{padding:20px 17px;border-radius:17px}main#icerik .forum-body{font-size:15px}main#icerik .forum-reply{padding:16px}main#icerik .forum-compose .btn{width:100%}}

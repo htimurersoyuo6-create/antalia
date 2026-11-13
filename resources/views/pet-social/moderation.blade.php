@@ -1,0 +1,8 @@
+@extends('layouts.app')
+@section('title', 'Pet Akışı moderasyonu')
+@section('content')
+<main class="wrap" style="max-width:1100px;margin:30px auto 64px;padding:0 18px"><h1>Pet Akışı moderasyonu</h1><p>Yalnızca açıkça paylaşım izni verilmiş gönderiler burada incelenir.</p>@if(session('status'))<div class="alert alert-success">{{ session('status') }}</div>@endif
+<div style="display:grid;gap:16px">@forelse($posts as $post)<article style="display:grid;grid-template-columns:minmax(150px,280px) 1fr;gap:18px;padding:16px;border:1px solid #ddd;border-radius:14px">@if($post->status!=='rejected')<img src="{{ asset('storage/'.$post->photo_path) }}" alt="Moderasyon için gönderilen fotoğraf" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px">@else<div>Görsel silindi</div>@endif<div><strong>{{ $post->user->name }}</strong> · {{ $post->user->email }}<p>{{ $post->pet?->name }} — {{ $post->caption }}</p><p>Durum: {{ $post->status }} · İzin: {{ $post->public_consent_at?->format('d.m.Y H:i') }}</p>
+@if($post->status==='pending')<div style="display:flex;gap:8px"><form method="post" action="{{ route('admin.pet-social.moderate',$post) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="approved"><button class="btn btn-success" type="submit">Yayınla</button></form><form method="post" action="{{ route('admin.pet-social.moderate',$post) }}">@csrf @method('PATCH')<input type="hidden" name="status" value="rejected"><button class="btn btn-outline-danger" type="submit">Reddet ve fotoğrafı sil</button></form></div>@endif
+</div></article>@empty<p>Moderasyon kuyruğu boş.</p>@endforelse</div><div style="margin-top:20px">{{ $posts->links() }}</div></main>
+@endsection

@@ -1,0 +1,1268 @@
+/* Public-site visual system inspired by PawBooking; application and owner panels are excluded. */
+:root {
+  --public-orange: #ff4315;
+  --public-orange-dark: #df390f;
+  --public-orange-soft: #fff1eb;
+  --public-ink: #172338;
+  --public-muted: #637086;
+  --public-line: #e5e9ef;
+  --public-surface: #ffffff;
+  --public-canvas: #f6f7fa;
+  --public-radius: 22px;
+  --public-shadow: 0 12px 32px rgba(27, 39, 58, .07);
+}
+
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) {
+  background: var(--public-canvas);
+  color: var(--public-ink);
+}
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  border-bottom: 1px solid rgba(226, 231, 238, .9);
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 4px 18px rgba(27, 39, 58, .045);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .logo { color: var(--public-ink); }
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav a,
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav-account { transition: color .18s ease, background .18s ease; }
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav a:hover { color: var(--public-orange-dark); }
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav .dnav-cta,
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .hsearch button {
+  border-radius: 999px;
+  background: var(--public-orange);
+  border-color: var(--public-orange);
+  color: #fff;
+}
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav .dnav-cta:hover,
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .hsearch button:hover { background: var(--public-orange-dark); }
+
+main#icerik:not(.owner-panel) {
+  --brand: var(--public-orange);
+  --brand-d: var(--public-orange-dark);
+  --brand-l: var(--public-orange-soft);
+  --ink: var(--public-ink);
+  --ink-2: #3d4b61;
+  --line: var(--public-line);
+  color: var(--public-ink);
+}
+main#icerik:not(.owner-panel) .wrap { max-width: 1240px; }
+main#icerik:not(.owner-panel) :where(a) { text-underline-offset: 3px; }
+main#icerik:not(.owner-panel) :where(button, .btn, .apt-btn) { transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
+main#icerik:not(.owner-panel) :where(button:hover, .btn:hover, .apt-btn:hover) { box-shadow: 0 7px 18px rgba(223, 57, 15, .16); }
+main#icerik:not(.owner-panel) :where(input:not([type=checkbox]):not([type=radio]), select, textarea) {
+  border-color: #dce2eb;
+  border-radius: 12px;
+  color: var(--public-ink);
+}
+main#icerik:not(.owner-panel) :where(input:focus, select:focus, textarea:focus) {
+  border-color: var(--public-orange);
+  box-shadow: 0 0 0 4px rgba(255, 67, 21, .12);
+}
+
+/* Search-led homepage: keep the current local photography and booking controls. */
+.home-hero-shell {
+  max-width: 1512px;
+  width: calc(100% - 40px);
+  margin: 14px auto 38px;
+  border: 1px solid rgba(255, 255, 255, .72);
+  border-radius: 30px;
+  box-shadow: 0 18px 48px rgba(23, 35, 56, .14);
+}
+.home-hero-copy {
+  width: min(54%, 650px);
+  max-width: 650px;
+  padding: 25px 27px;
+  border: 1px solid rgba(255, 255, 255, .9);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 16px 40px rgba(18, 30, 48, .18);
+  color: var(--public-ink);
+  text-shadow: none;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+.home-hero-copy .home-eyebrow, .home-hero-copy .pw-alt { color: #526078; text-shadow: none; }
+.home-hero-copy .pw-h1 { color: var(--public-ink); text-shadow: none; letter-spacing: -.045em; }
+.home-hero-copy .pw-h1 em { color: var(--public-orange); }
+.home-hero-copy .pw-tabs a { border-color: #e2e6ed; background: #fff; color: #34425a; }
+.home-hero-copy .pw-tabs a.on { border-color: var(--public-orange); background: var(--public-orange); color: #fff; }
+.home-hero-wrap > .pw-search {
+  border: 1px solid rgba(255, 255, 255, .92);
+  border-radius: 24px;
+  box-shadow: 0 16px 38px rgba(18, 30, 48, .2);
+}
+.home-hero-wrap > .pw-search .btn { border-radius: 16px; background: var(--public-orange); }
+.home-hotels-section { padding-top: 20px; }
+.home-hotels-heading {
+  border: 1px solid var(--public-line);
+  border-radius: 24px;
+  background: linear-gradient(120deg, #fff 0%, #fffaf7 100%);
+  box-shadow: var(--public-shadow);
+}
+.home-hotels-section :where(.hotel-card-shell, .hotel-card) {
+  border: 1px solid var(--public-line);
+  border-radius: 20px;
+  background: var(--public-surface);
+  box-shadow: 0 8px 24px rgba(27, 39, 58, .055);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.home-hotels-section :where(.hotel-card-shell, .hotel-card):hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(27, 39, 58, .11); }
+
+/* Search and category pages share a calm two-column layout and clear filter surfaces. */
+.apt-list { gap: 22px; padding-top: 24px; padding-bottom: 52px; }
+.apt-list__side { gap: 14px; }
+.apt-panel, .apt-card {
+  border: 1px solid var(--public-line);
+  border-radius: var(--public-radius);
+  background: var(--public-surface);
+  box-shadow: 0 8px 24px rgba(27, 39, 58, .045);
+}
+.apt-panel { padding: 18px; }
+.apt-panel__title { color: var(--public-ink); font-weight: 800; }
+.apt-tree a { border-radius: 11px; color: #47556a; }
+.apt-tree a:hover, .apt-tree a.is-active { background: var(--public-orange-soft); color: var(--public-orange-dark); }
+.apt-list__main > :where(.apt-card, .hotel-discovery-hero) { margin-bottom: 16px; }
+.apt-card { padding: clamp(18px, 2.4vw, 28px); }
+.apt-card__head { gap: 14px; }
+.apt-card__icon { border-radius: 13px; background: var(--public-orange-soft); color: var(--public-orange); }
+.apt-card__title { color: var(--public-ink); letter-spacing: -.025em; }
+.apt-card__sub { color: var(--public-muted); }
+.apt-list :where(.hotel-card-shell, .hotel-card, article.hotel-card) {
+  overflow: hidden;
+  border: 1px solid var(--public-line);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(27, 39, 58, .055);
+}
+.apt-list :where(.hotel-card-shell, .hotel-card, article.hotel-card):hover { box-shadow: 0 16px 34px rgba(27, 39, 58, .11); }
+
+/* Hotel detail: clear hierarchy, consistent cards, and a visible booking summary. */
+.hotel-detail-page { padding-top: 16px; padding-bottom: 50px; }
+.hotel-detail-page .apt-crumb { color: var(--public-muted); }
+.hotel-detail-page .apt-head {
+  margin-bottom: 18px;
+  padding: clamp(20px, 3vw, 34px);
+  border: 1px solid var(--public-line);
+  border-radius: 26px;
+  background: linear-gradient(125deg, #fff 0%, #fff8f4 100%);
+  box-shadow: var(--public-shadow);
+}
+.hotel-detail-page .apt-title { color: var(--public-ink); letter-spacing: -.045em; }
+.hotel-detail-page .apt-eyebrow { color: var(--public-orange-dark); }
+.hotel-detail-page .apt-badge--price { border-color: #ffd5c8; background: var(--public-orange-soft); color: var(--public-orange-dark); }
+.hotel-detail-page .apt-sectionnav {
+  border: 1px solid var(--public-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 8px 24px rgba(27, 39, 58, .08);
+}
+.hotel-detail-page .apt-sectionnav a { border-radius: 10px; }
+.hotel-detail-page .apt-sectionnav a:hover, .hotel-detail-page .apt-sectionnav a[aria-current] { background: var(--public-orange-soft); color: var(--public-orange-dark); }
+.hotel-detail-page .apt-card { margin-bottom: 16px; }
+.hotel-detail-page .apt-card__title { font-size: clamp(20px, 2.4vw, 26px); }
+.hotel-detail-page :where(.hotel-public-room-card, .hotel-review-card, .hotel-related-card) {
+  border: 1px solid var(--public-line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 7px 20px rgba(27, 39, 58, .045);
+}
+.hotel-detail-page .hotel-select-room { border-radius: 12px; background: var(--public-orange); }
+.hotel-detail-page .hotel-select-room:hover { background: var(--public-orange-dark); }
+.hotel-detail-page .booking-summary, .hotel-detail-page .booking-sidebar {
+  border: 1px solid var(--public-line);
+  border-radius: 22px;
+  box-shadow: 0 14px 32px rgba(27, 39, 58, .09);
+}
+
+/* Public editorial, help, pricing and directory pages use the same surface language. */
+main#icerik:not(.owner-panel) :where(.pricing-page, .blog-index, .blog-detail, .page-content, .help-center, .vet-index) {
+  color: var(--public-ink);
+}
+main#icerik:not(.owner-panel) :where(.pricing-page, .blog-index, .blog-detail, .page-content, .help-center, .vet-index) :where(.box, article, .card, .faq, .blog-card, .vet-card) {
+  border-color: var(--public-line);
+  border-radius: 18px;
+}
+main#icerik:not(.owner-panel) :where(.pricing-page, .blog-index, .blog-detail, .page-content, .help-center, .vet-index) :where(h1, h2, h3) { color: var(--public-ink); letter-spacing: -.025em; }
+main#icerik:not(.owner-panel) :where(.pricing-page, .blog-index, .blog-detail, .page-content, .help-center, .vet-index) :where(a:not(.btn)) { color: #354e70; }
+main#icerik:not(.owner-panel) :where(.pricing-page, .blog-index, .blog-detail, .page-content, .help-center, .vet-index) :where(a:not(.btn):hover) { color: var(--public-orange-dark); }
+
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer {
+  margin-top: 36px;
+  border-top: 1px solid var(--public-line);
+  background: #fff;
+  color: #46546a;
+}
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer :where(h2, h3, b) { color: var(--public-ink); }
+body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { color: var(--public-orange-dark); }
+
+@media (max-width: 900px) {
+  .home-hero-shell { width: calc(100% - 28px); margin: 12px auto 28px; border-radius: 24px; }
+  .home-hero-copy { width: min(70%, 620px); }
+  .apt-list { gap: 14px; }
+}
+@media (max-width: 700px) {
+  .home-hero-shell { width: calc(100% - 20px); margin: 10px auto 22px; border-radius: 20px; }
+  .home-hero-copy { width: auto; max-width: none; padding: 20px; border-radius: 18px; }
+  .home-hero-copy .pw-h1 { font-size: clamp(31px, 9vw, 42px); }
+  .home-hero-wrap > .pw-search { border-radius: 18px; padding: 9px; }
+  .home-hotels-heading { border-radius: 18px; }
+  .apt-list { padding-top: 14px; padding-bottom: 30px; }
+  .apt-panel, .apt-card { border-radius: 17px; }
+  .hotel-detail-page { padding-top: 8px; }
+  .hotel-detail-page .apt-head { border-radius: 20px; }
+  .hotel-detail-page .apt-card { padding: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  main#icerik:not(.owner-panel) *, .home-hero-shell * { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+/* The legacy homepage layer uses several !important declarations; explicitly replace its old hero skin. */
+.home-hero-copy {
+  width: min(54%, 650px) !important;
+  max-width: 650px !important;
+  padding: 25px 27px !important;
+  border: 1px solid rgba(255, 255, 255, .92) !important;
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, .95) !important;
+  box-shadow: 0 16px 40px rgba(18, 30, 48, .18) !important;
+  color: var(--public-ink) !important;
+  text-shadow: none !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+}
+.home-hero-copy .home-eyebrow, .home-hero-copy .pw-alt {
+  color: #526078 !important;
+  text-shadow: none !important;
+}
+.home-hero-copy .pw-h1 { color: var(--public-ink) !important; text-shadow: none !important; }
+.home-hero-copy .pw-h1 em { color: var(--public-orange) !important; }
+.home-hero-copy .pw-tabs > a { border-color: #e2e6ed !important; background: #fff !important; color: #34425a !important; }
+.home-hero-copy .pw-tabs > a.on { border-color: var(--public-orange) !important; background: var(--public-orange) !important; color: #fff !important; }
+@media (max-width: 700px) {
+  .home-hero-copy {
+    width: calc(100% - 40px) !important;
+    max-width: none !important;
+    padding: 18px !important;
+    border-radius: 18px !important;
+  }
+  .home-hero-copy .pw-h1 { font-size: clamp(29px, 8vw, 40px) !important; }
+}
+@media (max-width: 700px) {
+  .home-hero-copy .pw-h1 { width: 100% !important; max-width: 100% !important; }
+  .home-hero-shell .home-weather-card { display: none !important; }
+}
+
+/* Give primary detail and category content priority over older one-off component resets. */
+.apt-list__main > .apt-card, .hotel-detail-page .apt-main > .apt-card {
+  border: 1px solid var(--public-line) !important;
+  border-radius: 20px !important;
+  background: #fff !important;
+  box-shadow: 0 10px 28px rgba(27, 39, 58, .055) !important;
+}
+@media (min-width: 421px) and (max-width: 700px) {
+  .apt-list__side { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 10px; }
+  .apt-list__side > .apt-panel:first-child, .apt-list__side > .apt-panel:last-child { grid-column: 1 / -1; }
+  .apt-list__side > .apt-panel { padding: 14px; }
+  .apt-list__side > .apt-panel:first-child .apt-tree { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  .apt-list__side > .apt-panel:first-child .apt-tree a { min-height: 38px; padding: 7px 9px; }
+}
+@media (max-width: 420px) {
+  .apt-list__side { gap: 10px; }
+  .apt-list__side > .apt-panel { padding: 15px; }
+  .apt-list__side > .apt-panel:first-child .apt-tree { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+  .apt-list__side > .apt-panel:first-child .apt-tree a { min-height: 38px; padding: 7px 9px; }
+}
+@media (max-width: 700px) {
+  .apt-list__main > .apt-card, .hotel-detail-page .apt-main > .apt-card { border-radius: 17px !important; }
+}
+
+/* Hotel-detail amenity labels are compact feature tiles, not full-width text rows. */
+.hotel-detail-page .hotel-amenity-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+}
+.hotel-detail-page .hotel-amenity-item {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  min-width: 0;
+  min-height: 54px;
+  padding: 11px 13px;
+  border: 1px solid #e8ebf0;
+  border-radius: 14px;
+  background: linear-gradient(115deg, #fff 0%, #fbfcfe 100%);
+  color: var(--public-ink);
+}
+.hotel-detail-page .hotel-amenity-item > span {
+  box-sizing: border-box;
+  flex: 0 0 28px;
+  display: grid !important;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
+}
+.hotel-detail-page .hotel-amenity-item > b {
+  min-width: 0;
+  color: #34425a;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.hotel-detail-page .hotel-amenity-item:hover {
+  border-color: #ffd3c5;
+  background: #fffaf7;
+}
+@media (max-width: 420px) {
+  .hotel-detail-page .hotel-amenity-grid { gap: 8px !important; }
+  .hotel-detail-page .hotel-amenity-item { gap: 8px !important; min-height: 50px; padding: 9px; border-radius: 12px; }
+  .hotel-detail-page .hotel-amenity-item > span { flex-basis: 25px; width: 25px; height: 25px; }
+  .hotel-detail-page .hotel-amenity-item > b { font-size: 12px; }
+}
+
+/* Nearby-hotel links need a compact, predictable card layout at every breakpoint. */
+.hotel-detail-page .hotel-related-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: stretch;
+  gap: 10px !important;
+  margin-top: 16px;
+}
+.hotel-detail-page .hotel-related-card {
+  box-sizing: border-box;
+  display: flex !important;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  min-height: 76px;
+  padding: 12px;
+  border: 1px solid var(--public-line) !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  color: var(--public-ink) !important;
+  text-decoration: none !important;
+  box-shadow: 0 6px 18px rgba(27, 39, 58, .045) !important;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.hotel-detail-page .hotel-related-card:hover {
+  transform: translateY(-2px);
+  border-color: #ffd3c5 !important;
+  box-shadow: 0 12px 25px rgba(27, 39, 58, .09) !important;
+}
+.hotel-detail-page .hotel-related-icon {
+  box-sizing: border-box;
+  flex: 0 0 38px;
+  display: grid !important;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
+}
+.hotel-detail-page .hotel-related-copy {
+  flex: 1 1 auto;
+  display: flex !important;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--public-ink) !important;
+}
+.hotel-detail-page .hotel-related-copy b {
+  display: block !important;
+  color: #233149;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.hotel-detail-page .hotel-related-copy small {
+  display: block !important;
+  color: var(--public-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.hotel-detail-page .hotel-related-arrow {
+  flex: 0 0 26px;
+  display: grid !important;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f3f5f8;
+  color: var(--public-orange-dark);
+  font-size: 15px;
+  transition: background-color .18s ease, color .18s ease;
+}
+.hotel-detail-page .hotel-related-card:hover .hotel-related-arrow { background: var(--public-orange); color: #fff; }
+@media (max-width: 420px) {
+  .hotel-detail-page .hotel-related-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
+  .hotel-detail-page .hotel-related-card { min-height: 68px; padding: 10px; }
+}
+
+/* Restore the public hotel detail components whose legacy styles only target .det. */
+.hotel-detail-page .hotel-faq-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 16px;
+}
+.hotel-detail-page .hotel-faq-item {
+  overflow: hidden;
+  border: 1px solid #e5e9ef;
+  border-radius: 13px;
+  background: #fff;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.hotel-detail-page .hotel-faq-item:hover {
+  border-color: #f0c4b4;
+  box-shadow: 0 5px 16px rgba(27, 39, 58, .05);
+}
+.hotel-detail-page .hotel-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 56px;
+  padding: 13px 15px;
+  color: #172338;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.45;
+  list-style: none;
+}
+.hotel-detail-page .hotel-faq-item summary::-webkit-details-marker { display: none; }
+.hotel-detail-page .hotel-faq-item summary i {
+  display: grid;
+  place-items: center;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff0e9;
+  color: #e3471b;
+  font-size: 18px;
+  font-style: normal;
+  line-height: 1;
+  transition: transform .18s ease;
+}
+.hotel-detail-page .hotel-faq-item[open] summary { background: #fffaf7; }
+.hotel-detail-page .hotel-faq-item[open] summary i { transform: rotate(45deg); }
+.hotel-detail-page .hotel-faq-item summary:focus-visible {
+  outline: 3px solid rgba(255, 67, 21, .35);
+  outline-offset: -3px;
+}
+.hotel-detail-page .hotel-faq-answer {
+  padding: 0 15px 15px;
+  color: #566578;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.hotel-detail-page .hotel-claim-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 22px;
+  border: 1px solid #f1dfd3;
+  border-radius: 20px;
+  background: linear-gradient(115deg, #fff8f2, #f7faf6);
+  box-shadow: 0 9px 24px rgba(27, 39, 58, .045);
+}
+.hotel-detail-page .hotel-claim-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #fff0e8;
+  color: #e3471b;
+}
+.hotel-detail-page .hotel-claim-banner > div { flex: 1; min-width: 0; }
+.hotel-detail-page .hotel-claim-banner .detail-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #c54b27;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+.hotel-detail-page .hotel-claim-banner h2 {
+  margin: 0;
+  color: #172338;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.hotel-detail-page .hotel-claim-banner p {
+  margin: 6px 0 0;
+  color: #566578;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.hotel-detail-page .hotel-claim-banner > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 12px;
+  background: #ff4315;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background-color .18s ease, transform .18s ease;
+}
+.hotel-detail-page .hotel-claim-banner > a:hover { background: #df390f; transform: translateY(-1px); }
+.hotel-detail-page .hotel-address-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #e5e9ef;
+  border-radius: 15px;
+  background: #f9fafb;
+}
+.hotel-detail-page .hotel-address-card > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #fff0e8;
+  color: #e3471b;
+}
+.hotel-detail-page .hotel-address-card > div { flex: 1; min-width: 0; }
+.hotel-detail-page .hotel-address-card small {
+  display: block;
+  color: #8a6c5e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+.hotel-detail-page .hotel-address-card p {
+  margin: 3px 0 0;
+  color: #263648;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.hotel-detail-page .hotel-address-card > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #dfe5ec;
+  border-radius: 11px;
+  background: #fff;
+  color: #263648;
+  font-size: 13px;
+  font-weight: 750;
+  text-decoration: none;
+  transition: border-color .18s ease, color .18s ease, background-color .18s ease;
+}
+.hotel-detail-page .hotel-address-card > a:hover {
+  border-color: #f0c4b4;
+  background: #fff8f4;
+  color: #df390f;
+}
+.hotel-detail-page .hotel-address-card > a b { color: #df390f; }
+.vet-index .vet-filter.is-active { color: #fff !important; }
+@media (max-width: 700px) {
+  .hotel-detail-page .hotel-claim-banner { flex-wrap: wrap; padding: 18px; }
+  .hotel-detail-page .hotel-claim-banner > div { flex-basis: calc(100% - 62px); }
+  .hotel-detail-page .hotel-claim-banner > a { width: 100%; }
+  .hotel-detail-page .hotel-address-card { flex-wrap: wrap; }
+  .hotel-detail-page .hotel-address-card > div { flex-basis: calc(100% - 50px); }
+  .hotel-detail-page .hotel-address-card > a { margin-left: 50px; }
+}
+@media (max-width: 480px) {
+  .hotel-detail-page .hotel-faq-item summary { min-height: 52px; padding: 12px; font-size: 14px; }
+  .hotel-detail-page .hotel-faq-answer { padding: 0 12px 13px; font-size: 13px; }
+  .hotel-detail-page .hotel-claim-banner { gap: 12px; padding: 15px; }
+  .hotel-detail-page .hotel-claim-banner h2 { font-size: 18px; }
+  .hotel-detail-page .hotel-claim-banner p { font-size: 13px; }
+}
+
+/* Hotel cards: keep save controls on the image and make actions easy to distinguish. */
+.apt-lcard {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e3e8ee;
+  border-radius: 18px;
+  box-shadow: 0 5px 18px rgba(27, 39, 58, .055);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.apt-lcard:hover {
+  transform: translateY(-3px);
+  border-color: #d7dee7;
+  box-shadow: 0 13px 28px rgba(27, 39, 58, .11);
+}
+.apt-lcard__media { overflow: hidden; }
+.apt-lcard__media img { transition: transform .3s ease; }
+.apt-lcard:hover .apt-lcard__media img { transform: scale(1.035); }
+.apt-lcard .apt-lcard__fav {
+  top: 12px;
+  right: 12px;
+  bottom: auto;
+  z-index: 4;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(226, 231, 238, .85);
+  background: rgba(255, 255, 255, .96);
+  color: #647084;
+  font-size: 22px;
+  box-shadow: 0 4px 12px rgba(23, 35, 56, .16);
+  transition: color .18s ease, background-color .18s ease, transform .18s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.apt-lcard .apt-lcard__fav:hover,
+.apt-lcard .apt-lcard__fav.is-saved,
+.apt-lcard .apt-lcard__fav.on {
+  color: #e3471b;
+}
+.apt-lcard .apt-lcard__fav:hover { transform: scale(1.06); }
+.apt-lcard .apt-lcard__foot { gap: 8px; padding: 0 13px 13px; }
+.apt-lcard .apt-lcard__cta {
+  min-height: 40px;
+  border-color: #ff4315;
+  border-radius: 11px;
+  background: #ff4315;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.apt-lcard .apt-lcard__cta:hover {
+  transform: translateY(-1px);
+  border-color: #df390f;
+  background: #df390f;
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(223, 57, 15, .2);
+}
+.apt-lcard .apt-lcard__quick {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: #f7f9fb;
+  color: #46566b;
+  font-size: 17px;
+  transition: transform .18s ease, border-color .18s ease, background-color .18s ease, color .18s ease;
+}
+.apt-lcard .apt-lcard__quick:hover { transform: translateY(-1px); }
+.apt-lcard .apt-lcard__quick[href^="https://wa.me"] {
+  border-color: #ccebd9;
+  background: #eef9f2;
+  color: #16834e;
+}
+.apt-lcard .apt-lcard__quick[href^="https://wa.me"]:hover {
+  border-color: #16834e;
+  background: #16834e;
+  color: #fff;
+}
+.apt-lcard .apt-lcard__quick[data-hotel-phone-call] {
+  border-color: #dce4ed;
+  background: #f1f5f9;
+  color: #34465c;
+}
+.apt-lcard .apt-lcard__quick[data-hotel-phone-call]:hover {
+  border-color: #315f47;
+  background: #315f47;
+  color: #fff;
+}
+.apt-lcard :where(a, button):focus-visible {
+  outline: 3px solid rgba(255, 67, 21, .45);
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .apt-lcard { border-radius: 16px; }
+  .apt-lcard .apt-lcard__fav { top: 10px; right: 10px; width: 38px; height: 38px; }
+  .apt-lcard .apt-lcard__foot { gap: 7px; padding: 0 11px 11px; }
+  .apt-lcard .apt-lcard__quick { flex-basis: 38px; width: 38px; height: 38px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apt-lcard, .apt-lcard__media img, .apt-lcard__fav, .apt-lcard__cta, .apt-lcard__quick { transition: none; }
+}
+.apt-lcard .apt-lcard__cta { padding-right: 6px; padding-left: 6px; font-size: 12px; white-space: nowrap; }
+
+.hotel-detail-page .hotel-rules-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 14px 15px;
+  border: 1px solid #f0e5cf;
+  border-radius: 14px;
+  background: #fffaf0;
+}
+.hotel-detail-page .hotel-rules-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff0cb;
+  color: #a96a13;
+  font-size: 14px;
+  font-weight: 850;
+  line-height: 1;
+}
+.hotel-detail-page .hotel-rules-content p {
+  min-width: 0;
+  margin: 1px 0 0;
+  color: #515c54;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+@media (max-width: 560px) {
+  .hotel-detail-page .hotel-rules-content { gap: 9px; padding: 12px; }
+  .hotel-detail-page .hotel-rules-content p { font-size: 12px; line-height: 1.65; }
+}
+
+/* Make the hotel facts scannable instead of presenting them as a compressed table. */
+.hotel-detail-page .apt-specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.hotel-detail-page .apt-specs__row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 62px;
+  padding: 11px 13px;
+  border: 1px solid #e8ebf0;
+  border-radius: 13px;
+  background: #fbfcfe;
+}
+.hotel-detail-page .apt-specs__key {
+  color: #647084;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+  white-space: normal;
+}
+.hotel-detail-page .apt-specs__val {
+  color: #172338;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.hotel-detail-page .apt-specs__row:last-child { border-bottom: 1px solid #e8ebf0; }
+@media (max-width: 640px) {
+  .hotel-detail-page .apt-specs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .hotel-detail-page .apt-specs__row { min-height: 60px; padding: 10px; }
+  .hotel-detail-page .apt-specs__key { font-size: 11px; }
+  .hotel-detail-page .apt-specs__val { font-size: 13px; }
+}
+
+/* Mobile-first homepage and persistent quick navigation. */
+.mobile-bottom-nav { display: none; }
+@media (max-width: 760px) {
+  body:has(.mobile-bottom-nav) { padding-bottom: calc(74px + env(safe-area-inset-bottom)); }
+  .mobile-bottom-nav {
+    position: fixed;
+    z-index: 120;
+    inset: auto 0 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    min-height: 64px;
+    padding: 7px 7px calc(7px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(226, 231, 238, .95);
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 -7px 24px rgba(27, 39, 58, .08);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+  .mobile-bottom-nav > a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    min-height: 48px;
+    padding: 3px 1px;
+    border-radius: 12px;
+    color: #647084;
+    font-size: 10px;
+    font-weight: 750;
+    line-height: 1.15;
+    text-decoration: none;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-bottom-nav > a svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mobile-bottom-nav > a[aria-current="page"] { color: #df390f; }
+  .mobile-bottom-nav > a.mobile-bottom-nav__search {
+    justify-self: center;
+    min-width: 54px;
+    margin-top: -20px;
+    padding: 7px 10px 6px;
+    border: 4px solid #fff;
+    border-radius: 18px;
+    background: #ff4315;
+    color: #fff;
+    box-shadow: 0 5px 14px rgba(223, 57, 15, .26);
+  }
+  .mobile-bottom-nav__search svg { width: 21px !important; height: 21px !important; }
+  .mobile-bottom-nav > a:focus-visible { outline: 3px solid rgba(255, 67, 21, .45); outline-offset: 2px; }
+
+  body:has(section.home-hero-shell) > header { margin-bottom: 0 !important; }
+  .home-hero-shell {
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 auto 18px !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 0 22px 22px !important;
+    background: #f1f4f2 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+  .home-hero-wrap {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 14px 14px 0 !important;
+  }
+  .home-hero-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+  .home-hero-copy {
+    position: relative !important;
+    inset: auto !important;
+    order: 0;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 19px !important;
+    border: 1px solid #e5e9ef !important;
+    border-radius: 19px !important;
+    background: #fff !important;
+    box-shadow: 0 6px 18px rgba(27, 39, 58, .06) !important;
+    color: #172338 !important;
+    text-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .home-hero-copy .home-eyebrow {
+    margin-bottom: 9px !important;
+    color: #526078 !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+    letter-spacing: .07em;
+  }
+  .home-hero-copy .pw-h1 {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 0 10px !important;
+    color: #172338 !important;
+    font-size: clamp(29px, 8.3vw, 35px) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -.04em !important;
+    text-shadow: none !important;
+  }
+  .home-hero-copy .pw-h1 em { color: #ff4315 !important; }
+  .home-hero-copy .pw-alt {
+    margin: 0 0 13px !important;
+    color: #566578 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+  .home-hero-copy .pw-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 7px !important;
+    width: 100%;
+    margin: 0 -2px;
+    overflow-x: auto;
+    padding: 2px 2px 5px;
+    scrollbar-width: none;
+  }
+  .home-hero-copy .pw-tabs::-webkit-scrollbar { display: none; }
+  .home-hero-copy .pw-tabs > a {
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 9px 11px !important;
+    border: 1px solid #e2e6ed !important;
+    border-radius: 999px !important;
+    background: #fff !important;
+    color: #34425a !important;
+    font-size: 12px !important;
+    line-height: 1.2;
+    text-shadow: none !important;
+  }
+  .home-hero-copy .pw-tabs > a.on {
+    border-color: #ff4315 !important;
+    background: #ff4315 !important;
+    color: #fff !important;
+  }
+  .home-hero-art {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    margin: 12px 0 0 !important;
+  }
+  .home-hero-photo, .home-hero-photo-main {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    margin: 0 !important;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .9);
+    border-radius: 16px;
+    box-shadow: 0 7px 18px rgba(27, 39, 58, .12);
+  }
+  .home-hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .home-hero-photo figcaption { bottom: 10px; left: 10px; }
+  .home-hero-image-proof, .home-hero-shell .home-weather-card { display: none !important; }
+  .home-hero-wrap > .pw-search {
+    position: relative !important;
+    inset: auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    width: 100% !important;
+    margin: 12px 0 0 !important;
+    padding: 12px !important;
+    border: 1px solid #e5e9ef !important;
+    border-radius: 18px !important;
+    background: #fff !important;
+    box-shadow: 0 6px 18px rgba(27, 39, 58, .06) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .home-hero-wrap > .pw-search .sf { position: relative; min-width: 0; }
+  .home-hero-wrap > .pw-search select,
+  .home-hero-wrap > .pw-search input {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 46px !important;
+    padding: 9px 7px 9px 31px !important;
+    border: 1px solid #dfe5ec !important;
+    border-radius: 11px !important;
+    background: #fff !important;
+    color: #263648 !important;
+    font-size: 12px !important;
+  }
+  .home-hero-wrap > .pw-search .sf .ic { left: 9px !important; font-size: 12px !important; }
+  .home-hero-wrap > .pw-search button,
+  .home-hero-wrap > .pw-search .btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 48px !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+    font-weight: 850;
+  }
+  .home-hero-wrap > .pw-search:target { scroll-margin-top: 84px; }
+  .home-hotels-section { padding-top: 8px !important; }
+  .home-hotels-section > .wrap { width: calc(100% - 28px) !important; }
+  .home-hotels-section .home-hotels-heading { padding: 15px !important; border-radius: 16px !important; }
+  .home-hotels-section .grid { grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; }
+  .home-hotels-section .apt-lcard { width: 100%; }
+  body > footer .footer-navigation .fcol {
+    padding: 13px 12px;
+    border: 1px solid #e7ebf0;
+    border-radius: 14px;
+    background: #fbfcfe;
+  }
+  body > footer .footer-navigation .fcol:last-child { padding: 13px 12px; }
+}
+@media (max-width: 380px) {
+  .mobile-bottom-nav { padding-right: 4px; padding-left: 4px; }
+  .mobile-bottom-nav > a { font-size: 9px; }
+  .mobile-bottom-nav > a svg { width: 19px; height: 19px; }
+  .home-hero-copy { padding: 16px !important; }
+  .home-hero-wrap > .pw-search { gap: 7px !important; padding: 10px !important; }
+}
+@media (max-width: 760px) {
+  body:has(section.home-hero-shell) .home-hero-grid {
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    background: none !important;
+    background-image: none !important;
+  }
+  body:has(section.home-hero-shell) .home-hero-wrap { box-sizing: border-box !important; }
+  body:has(section.home-hero-shell) .home-hero-photo { min-height: 0 !important; }
+  body:has(section.home-hero-shell) .home-hero-wrap > .pw-search { transform: none !important; }
+}
+@media (max-width: 760px) {
+  body:has(section.home-hero-shell) .home-hero-wrap {
+    display: flex !important;
+    flex-direction: column;
+  }
+  body:has(section.home-hero-shell) .home-hero-grid {
+    display: contents !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  body:has(section.home-hero-shell) .home-hero-copy { order: 0; }
+  body:has(section.home-hero-shell) .home-hero-wrap > .pw-search { order: 1; }
+  body:has(section.home-hero-shell) .home-hero-art { order: 2; min-height: 0 !important; }
+}
+
+/* Warm, approachable public-site refresh. */
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) {
+  --public-orange: #ed7154;
+  --public-orange-dark: #cf563b;
+  --public-orange-soft: #fff0e8;
+  --public-ink: #29344a;
+  --public-muted: #6b7483;
+  --public-line: #ece5dd;
+  --public-surface: #fffefa;
+  --public-canvas: #fffaf5;
+  --public-radius: 22px;
+  --public-shadow: 0 12px 30px rgba(81, 58, 43, .07);
+  background: var(--public-canvas) !important;
+  color: var(--public-ink);
+}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header {
+  border-bottom-color: #f0e7df;
+  background: rgba(255, 254, 250, .96);
+  box-shadow: 0 4px 18px rgba(81, 58, 43, .045);
+}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav a:not(.dnav-cta) {
+  border-radius: 999px;
+}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav a:not(.dnav-cta):hover {
+  background: #fff0e8;
+  color: #cf563b;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) {
+  background: var(--public-canvas) !important;
+  color: var(--public-ink);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(h1, h2, h3) {
+  color: var(--public-ink) !important;
+  letter-spacing: -.025em;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(input:not([type=checkbox]):not([type=radio]), select, textarea) {
+  border-color: #e8dfd7;
+  border-radius: 14px;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(input:focus, select:focus, textarea:focus) {
+  border-color: var(--public-orange);
+  box-shadow: 0 0 0 4px rgba(237, 113, 84, .14);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-panel, .apt-card, .apt-lcard, .hotel-card-shell, .hotel-card, .hotel-public-room-card, .hotel-related-card, .hotel-review-card, .booking-sidebar, .booking-summary, .blog-card, .vet-card) {
+  border-color: var(--public-line);
+  box-shadow: 0 9px 26px rgba(81, 58, 43, .055);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-panel, .apt-card, .apt-lcard, .hotel-card-shell, .hotel-card, .hotel-public-room-card, .hotel-related-card, .hotel-review-card, .booking-sidebar, .booking-summary, .blog-card, .vet-card) :where(h2, h3, .apt-card__title) {
+  color: var(--public-ink);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-card__icon, .apt-lcard__fav, .hotel-related-icon, .hotel-claim-icon) {
+  background-color: #fff0e8;
+  color: #d65b40;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-btn--primary, .btn-primary, .apt-lcard__cta, .hotel-select-room, .home-hero-wrap > .pw-search .btn) {
+  border-color: var(--public-orange);
+  background-color: var(--public-orange);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-btn--primary, .btn-primary, .apt-lcard__cta, .hotel-select-room, .home-hero-wrap > .pw-search .btn):hover {
+  border-color: var(--public-orange-dark);
+  background-color: var(--public-orange-dark);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) .home-hotels-heading {
+  border-color: #eee5db;
+  background: linear-gradient(120deg, #fffefa 0%, #fff4ec 100%);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.pw-neden > *, .steps > *, .pw-rehber, .pw-seffaf > *, .pw-oda > *, .pw-blog > *, .pw-bolum .faq, .pw-bolum .cta) {
+  border-color: var(--public-line);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(81, 58, 43, .045);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) .pw-bolum .chips a {
+  border-color: #eee2d8;
+  border-radius: 999px;
+  background: #fffefa;
+  color: #53627a;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) .pw-bolum .chips a:hover {
+  border-color: #f2b9a7;
+  background: #fff0e8;
+  color: #cf563b;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) .hotel-detail-page .hotel-faq-item[open] summary,
+body:not(.a-body) main#icerik:not(.owner-panel) .hotel-detail-page .hotel-address-card {
+  background-color: #fff9f4;
+}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer {
+  border-top-color: #eee5dc;
+  background: #fff7ef;
+  color: #596477;
+}
+body:not(.a-body) .mobile-bottom-nav > a[aria-current="page"] { color: #cf563b; }
+body:not(.a-body) .mobile-bottom-nav > a.mobile-bottom-nav__search {
+  background: #ed7154;
+  box-shadow: 0 5px 14px rgba(207, 86, 59, .24);
+}
+
+body:not(.a-body) main#icerik .pw-bas h2,
+body:not(.a-body) main#icerik .pw-bas .alt,
+body:not(.a-body) main#icerik .pw-satir-bas h2,
+body:not(.a-body) main#icerik .pw-satir-bas p,
+body:not(.a-body) main#icerik .pw-satir-bas .alt,
+body:not(.a-body) main#icerik > section.pw-bolum > .wrap > h2:first-child {
+  color: var(--public-ink) !important;
+}
+
+body:not(.a-body) .home-hero-copy .pw-h1 em {
+  color: var(--public-orange) !important;
+}
+body:not(.a-body) .home-hero-copy .pw-tabs > a.on {
+  border-color: var(--public-orange) !important;
+  background: var(--public-orange) !important;
+}
+body:not(.a-body) .hotel-detail-page .apt-eyebrow,
+body:not(.a-body) .hotel-detail-page .apt-badge--price,
+body:not(.a-body) .hotel-detail-page .apt-sectionnav a:hover,
+body:not(.a-body) .hotel-detail-page .apt-sectionnav a[aria-current] {
+  color: var(--public-orange-dark);
+}
+body:not(.a-body) .hotel-detail-page .apt-badge--price {
+  border-color: #f3c9bb;
+  background: var(--public-orange-soft);
+}
+
+body:not(.a-body) main#icerik .home-hotels-section .home-hotels-heading {
+  border-color: #eee5db !important;
+  background: linear-gradient(120deg, #fffefa 0%, #fff4ec 100%) !important;
+}
+body:not(.a-body) main#icerik .home-hotels-section .home-hotels-heading h2 {
+  color: var(--public-ink) !important;
+}
+
+/* Visitor FAQ assistant: lightweight, model-free and available on public pages. */
+.site-assistant {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: 24px;
+  z-index: 125;
+  color: #29344a;
+  font-family: inherit;
+}
+.site-assistant__launcher {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 52px;
+  padding: 0 18px;
+  border: 1px solid #e6a18e;
+  border-radius: 999px;
+  background: #ed7154;
+  color: #fff;
+  box-shadow: 0 8px 25px rgba(106, 63, 47, .2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.site-assistant__launcher:hover { transform: translateY(-2px); background: #cf563b; box-shadow: 0 12px 28px rgba(106, 63, 47, .24); }
+.site-assistant__launcher svg { width: 21px; height: 21px; fill: currentColor; }
+.site-assistant__launcher:focus-visible, .site-assistant button:focus-visible, .site-assistant textarea:focus-visible { outline: 3px solid rgba(237, 113, 84, .48); outline-offset: 3px; }
+.site-assistant__panel {
+  position: absolute;
+  right: 0;
+  bottom: 64px;
+  display: flex;
+  flex-direction: column;
+  width: min(390px, calc(100vw - 28px));
+  max-height: min(560px, calc(100dvh - 112px));
+  overflow: hidden;
+  border: 1px solid #ece5dd;
+  border-radius: 22px;
+  background: #fffefa;
+  box-shadow: 0 20px 60px rgba(41, 52, 74, .22);
+}
+.site-assistant__panel[hidden] { display: none; }
+.site-assistant__header { display: flex; align-items: center; gap: 11px; padding: 16px; border-bottom: 1px solid #f0e7df; background: linear-gradient(120deg, #fffefa, #fff4ec); }
+.site-assistant__mark { display: grid; place-items: center; flex: 0 0 42px; height: 42px; border-radius: 15px; background: #fff0e8; font-size: 22px; }
+.site-assistant__header h2 { margin: 0; color: #29344a; font-size: 15px; line-height: 1.3; }
+.site-assistant__header p { margin: 3px 0 0; color: #6b7483; font-size: 11px; }
+.site-assistant__close { margin-left: auto; width: 36px; height: 36px; border: 0; border-radius: 50%; background: #fff; color: #596477; font-size: 24px; line-height: 1; cursor: pointer; }
+.site-assistant__messages { display: flex; flex: 1 1 auto; flex-direction: column; gap: 10px; min-height: 130px; overflow-y: auto; padding: 15px; overscroll-behavior: contain; }
+.site-assistant__message { max-width: 90%; padding: 11px 13px; border: 1px solid #ece5dd; border-radius: 16px 16px 16px 5px; background: #fff7ef; color: #34425a; font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-wrap; }
+.site-assistant__message--user { align-self: flex-end; border-color: #f0d7ca; border-radius: 16px 16px 5px 16px; background: #fff0e8; color: #513c39; }
+.site-assistant__suggestions { display: flex; flex-wrap: wrap; gap: 7px; }
+.site-assistant__suggestions button { padding: 8px 10px; border: 1px solid #eee2d8; border-radius: 999px; background: #fffefa; color: #53627a; font: inherit; font-size: 11px; cursor: pointer; }
+.site-assistant__suggestions button:hover { border-color: #f2b9a7; background: #fff0e8; color: #cf563b; }
+.site-assistant__form { display: flex; align-items: flex-end; gap: 8px; padding: 12px 14px; border-top: 1px solid #f0e7df; background: #fff; }
+.site-assistant__form textarea { flex: 1 1 auto; min-width: 0; min-height: 44px; max-height: 110px; resize: vertical; padding: 10px 12px; border: 1px solid #e8dfd7; border-radius: 14px; color: #29344a; font: inherit; font-size: 13px; line-height: 1.45; }
+.site-assistant__form > button { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border: 0; border-radius: 14px; background: #ed7154; color: #fff; cursor: pointer; }
+.site-assistant__form > button:hover { background: #cf563b; }
+.site-assistant__form > button:disabled { opacity: .6; cursor: wait; }
+.site-assistant__form svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.site-assistant__note { margin: 0; padding: 0 14px 12px; background: #fff; color: #727b88; font-size: 10px; line-height: 1.45; }
+.site-assistant__sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 760px) {
+  .site-assistant { right: max(14px, env(safe-area-inset-right)); bottom: calc(82px + env(safe-area-inset-bottom)); }
+  .site-assistant__panel {
+    right: 0;
+    left: auto;
+    box-sizing: border-box;
+    width: min(390px, calc(100vw - 28px));
+    max-width: calc(100vw - 28px);
+    max-height: min(520px, calc(100dvh - 170px));
+  }
+  .site-assistant__header > div { flex: 1 1 auto; min-width: 0; }
+  .site-assistant__header h2, .site-assistant__header p { overflow-wrap: anywhere; }
+  .site-assistant__messages, .site-assistant__form, .site-assistant__note { min-width: 0; box-sizing: border-box; }
+  body.hotel-detail-body .site-assistant { bottom: calc(142px + env(safe-area-inset-bottom)); }
+  body.hotel-detail-body .site-assistant__panel { max-height: min(440px, calc(100dvh - 225px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-assistant__launcher { transition: none; }
+}

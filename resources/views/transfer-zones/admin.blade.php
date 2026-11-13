@@ -1,0 +1,12 @@
+@extends('layouts.app')
+@section('title','Pet transfer sabit bölge tarifeleri')
+@section('content')
+<main class="wrap page" style="max-width:1000px;margin:auto;padding:32px 16px"><h1>Pet transfer bölge tarifeleri</h1>
+@if(session('ok'))<p role="status">{{ session('ok') }}</p>@endif @if($errors->any())<div role="alert">{{ $errors->first() }}</div>@endif
+<p>OSRM rota hesabı yapılamazsa bu tarifeler sabit tek yön ücreti olarak kullanılır. Tesis tarifesi genel tarifenin önüne geçer.</p>
+<form method="get"><label>Tesis filtresi <select name="hotel_id"><option value="">Genel ve tüm tesisler</option>@foreach($hotels as $hotel)<option value="{{ $hotel->id }}" @selected($selectedHotelId===$hotel->id)>{{ $hotel->name }}</option>@endforeach</select></label><button type="submit">Filtrele</button></form>
+<form method="post" action="{{ route('admin.transfer-zones.store') }}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0;padding:16px;border:1px solid #ddd;border-radius:12px">@csrf
+<label>Tesis (boş = genel)<select name="hotel_id"><option value="">Tüm tesisler</option>@foreach($hotels as $hotel)<option value="{{ $hotel->id }}" @selected($selectedHotelId===$hotel->id)>{{ $hotel->name }}</option>@endforeach</select></label>
+<label>Başlangıç bölgesi<input name="from_zone" required maxlength="120" placeholder="Muratpaşa"></label><label>Varış bölgesi<input name="to_zone" required maxlength="120" placeholder="Lara"></label><label>Tek yön ücret (₺)<input name="fee" type="number" min="0" max="100000" step="0.01" required></label><label><input type="checkbox" name="is_active" value="1" checked> Aktif</label><button type="submit">Tarife kaydet</button></form>
+<table style="width:100%;border-collapse:collapse"><thead><tr><th>Tesis</th><th>Başlangıç → varış</th><th>Tek yön</th><th>Durum</th><th></th></tr></thead><tbody>@forelse($rates as $rate)<tr><td>{{ $rate->hotel?->name ?? 'Genel' }}</td><td>{{ $rate->from_zone }} → {{ $rate->to_zone }}</td><td>{{ number_format((float)$rate->fee,2,',','.') }} ₺</td><td>{{ $rate->is_active?'Aktif':'Kapalı' }}</td><td><form method="post" action="{{ route('admin.transfer-zones.destroy',$rate) }}" onsubmit="return confirm('Bu tarife silinsin mi?')">@csrf @method('DELETE')<button>Sil</button></form></td></tr>@empty<tr><td colspan="5">Henüz tarife yok.</td></tr>@endforelse</tbody></table>{{ $rates->links() }}</main>
+@endsection

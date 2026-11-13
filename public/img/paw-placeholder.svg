@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 56" role="img" aria-label="Antalya Pet Otel">
+  <rect x="2" y="2" width="52" height="52" rx="17" fill="#f4511e"/>
+  <g fill="#fff">
+    <ellipse cx="28" cy="37" rx="11.5" ry="9.2"/>
+    <ellipse cx="14.5" cy="24" rx="3.7" ry="5" transform="rotate(-22 14.5 24)"/>
+    <ellipse cx="23" cy="19" rx="3.8" ry="5.2" transform="rotate(-8 23 19)"/>
+    <ellipse cx="33" cy="19" rx="3.8" ry="5.2" transform="rotate(8 33 19)"/>
+    <ellipse cx="41.5" cy="24" rx="3.7" ry="5" transform="rotate(22 41.5 24)"/>
+  </g>
+  <text x="66" y="36" font-family="Nunito,system-ui,sans-serif" font-size="19" font-weight="800" fill="#26332c">Antalya <tspan fill="#f4511e">Pet Otel</tspan></text>
+</svg>

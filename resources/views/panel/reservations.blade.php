@@ -1,0 +1,42 @@
+@extends('layouts.app')
+@section('title', 'Rezervasyonlar – Panel')
+@section('content')
+<div class="wrap page"><div class="crumb" style="padding-top:0"><a href="{{ route('panel.index') }}">Panel</a> › Rezervasyonlar</div><h1>Rezervasyonlar</h1><div class="acts" style="margin:0 0 14px"><a class="btn sm" href="{{ route('panel.care.dashboard') }}">Bakım panosu</a><a class="btn sm ghost" href="{{ route('panel.pricing.index') }}">Dinamik fiyatlandırma</a><a class="btn sm ghost" href="{{ route('panel.franchise.index') }}">Franchise</a><a class="btn sm ghost" href="{{ route('panel.forecast.index') }}">Talep tahmini</a><a class="btn sm ghost" href="{{ route('panel.assistant.index') }}">Asistan</a></div>
+<nav class="reservation-view-filters" aria-label="Konaklama durumu"><a class="{{ !request('konaklama') ? 'active' : '' }}" href="{{ route('panel.reservations') }}"><span class="reservation-view-icon">▦</span><span>Tüm rezervasyonlar<small>Tüm durumlar</small></span></a><a class="staying {{ request('konaklama') === 'konaklayan' ? 'active' : '' }}" href="{{ route('panel.reservations', ['konaklama' => 'konaklayan']) }}"><span class="reservation-view-icon">⌂</span><span>Konaklayanlar<small>Şu an tesiste</small></span><b>{{ $stayingCount }}</b></a><a class="checked-out {{ request('konaklama') === 'cikis-yapan' ? 'active' : '' }}" href="{{ route('panel.reservations', ['konaklama' => 'cikis-yapan']) }}"><span class="reservation-view-icon">✓</span><span>Çıkış yapanlar<small>Çıkışı tamamlandı</small></span><b>{{ $checkedOutCount }}</b></a></nav>
+<div class="reservation-status-filters"><a class="chip {{ !request('durum')?'on':'' }}" href="{{ route('panel.reservations') }}">Tümü</a>@foreach(\App\Models\Reservation::STATUS as $k=>$v)<a class="chip {{ request('durum')===$k?'on':'' }}" href="{{ route('panel.reservations',['durum'=>$k]) }}">{{ $v }}</a>@endforeach</div>
+<table class="table"><tr><th>Kod</th><th>Misafir / Hayvan</th><th>Oda & tarih</th><th>Tutar</th><th>Durum</th><th>İşlem</th></tr>
+@forelse($reservations as $r)
+<tr><td>{{ $r->code }}<br><small>{{ $r->hotel->name }}</small></td>
+<td>{{ $r->user->name }}<br><small>{{ $r->user->phone }} · {{ $r->user->email }}</small><br><b>{{ $r->pet->name }}</b> ({{ $r->pet->species_label }}, {{ $r->pet->size_label }}, {{ $r->pet->vaccinated ? 'aşılı' : 'aşı bilgisi yok' }}@if($r->pet->vaccination_expires_at), geçerlilik {{ $r->pet->vaccination_expires_at->format('d.m.Y') }}@endif)@if($r->pet->notes)<br><small>Not: {{ $r->pet->notes }}</small>@endif @if($r->customer_note)<br><small>Misafir notu: {{ $r->customer_note }}</small>@endif</td>
+<td>{{ $r->room->name }}@if($r->roomUnit) · {{ $r->roomUnit->name }}@endif<?php if($r->extras->isNotEmpty()): ?><br><small>Ekstra: {{ $r->extras->pluck('name')->implode(', ') }}</small><?php endif; ?><br>{{ $r->check_in->format('d.m.Y') }} → {{ $r->check_out->format('d.m.Y') }} ({{ $r->nights }} gece) @if($r->early_departure_status === 'requested')<br><span class="st pending">ERKEN ÇIKIŞ TALEBİ</span>@elseif($r->early_departure_status === 'approved')<br><span class="st confirmed">ERKEN ÇIKIŞ</span>@endif</td>
+<td>{{ number_format($r->total_price,0,',','.') }} ₺<br><small>{{ $r->payment_status==='paid' ? 'Ödendi' : 'Ödenmedi' }}</small></td>
+<td><span class="st {{ $r->status }}">{{ $r->status_label }}</span>@if($r->status === 'completed')<span class="stay-state checked-out"><i aria-hidden="true">✓</i> Çıkış yaptı</span>@elseif($r->status === 'confirmed' && $r->check_in->lte(today()) && $r->check_out->gt(today()))<span class="stay-state staying"><i aria-hidden="true">●</i> Konaklıyor</span>@elseif($r->status === 'confirmed' && $r->check_out->lte(today()))<span class="stay-state needs-checkout"><i aria-hidden="true">!</i> Çıkış işaretlenmedi</span>@elseif($r->status === 'confirmed' && $r->check_in->gt(today()))<span class="stay-state upcoming"><i aria-hidden="true">◷</i> Giriş bekleniyor</span>@endif</td>
+<td><div class="acts">
+@if($r->status==='pending')
+<form method="post" action="{{ route('panel.reservations.update',$r) }}">@csrf @method('PATCH')<input type="hidden" name="action" value="confirm"><button class="btn sm">Onayla</button></form>
+<form method="post" action="{{ route('panel.reservations.update',$r) }}">@csrf @method('PATCH')<input type="hidden" name="action" value="reject"><button class="btn sm danger">Reddet</button></form>
+@endif
+@if($r->status==='confirmed')
+<form method="post" action="{{ route('panel.reservations.update',$r) }}">@csrf @method('PATCH')<input type="hidden" name="action" value="complete"><button class="btn sm">Çıkış yaptı</button></form>
+@endif
+@if(in_array($r->status,['confirmed','completed']) && $r->payment_status==='unpaid')
+<form method="post" action="{{ route('panel.reservations.update',$r) }}">@csrf @method('PATCH')<input type="hidden" name="action" value="mark_paid"><button class="btn sm ghost">Ödeme alındı</button></form>
+@elseif(in_array($r->status,['confirmed','completed']) && $r->payment_status==='paid' && !($r->invoice?->isIssued()))
+<form method="post" action="{{ route('panel.reservations.update',$r) }}" onsubmit="return confirm('Tahsilat kaydı geri alınacak ve muhasebe defterinde iptal olarak tutulacak. Devam edilsin mi?')">@csrf @method('PATCH')<input type="hidden" name="action" value="mark_unpaid"><button class="btn sm danger">Ödeme alınmadı</button></form>
+@endif
+@if(\App\Support\PlatformModules::enabled('private_calls', (int) $r->hotel_id) && $r->status === 'confirmed' && $r->check_in->lte(today()) && $r->check_out->gte(today()))
+<a class="btn sm" href="{{ route('panel.reservations.show', $r) }}#apo-private-call" style="background:#17784d">Görüşmeye katıl</a>
+@endif
+<a class="btn sm" href="{{ route('panel.care.show', $r) }}">Bakım</a>
+<a class="btn sm ghost" href="{{ route('panel.reservations.show', $r) }}">Detay / mesaj</a>
+</div></td></tr>
+@empty<tr><td colspan="6">Rezervasyon yok.</td></tr>@endforelse</table>
+<div style="margin:24px 0">{{ $reservations->links() }}</div></div>
+<style>
+.reservation-view-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 20px}.reservation-view-filters>a{display:flex;align-items:center;gap:12px;min-width:0;padding:14px 16px;border:1px solid #e8ebe5;border-radius:16px;background:linear-gradient(145deg,#fff,#fbfcfa);color:#38483f;text-decoration:none;box-shadow:0 5px 18px #24372f08}.reservation-view-filters>a.active{border-color:#f3c9b8;background:linear-gradient(120deg,#fff6f0,#fff)}.reservation-view-icon{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:13px;background:#f2f5f1;color:#66756a;font-size:19px;font-weight:850}.reservation-view-filters .staying .reservation-view-icon{background:#eaf6ef;color:#18764c}.reservation-view-filters .checked-out .reservation-view-icon{background:#eaf0fb;color:#436797}.reservation-view-filters>a>span:nth-child(2){display:grid;gap:3px;font-size:13px;font-weight:850}.reservation-view-filters small{color:#838d86;font-size:10px;font-weight:550}.reservation-view-filters>a>b{margin-left:auto;font-size:23px;color:#2d3d33}.reservation-view-filters .staying>b{color:#18764c}.reservation-view-filters .checked-out>b{color:#436797}.stay-state{display:flex;align-items:center;gap:5px;width:max-content;margin-top:6px;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800}.stay-state i{font-style:normal}.stay-state.staying{background:#eaf6ef;color:#18764c}.stay-state.checked-out{background:#edf1fa;color:#4d6592}.stay-state.needs-checkout{background:#fff1e4;color:#a15d12}.stay-state.upcoming{background:#f2f3f1;color:#778078}@media(max-width:700px){main.owner-panel .wrap.page .reservation-view-filters{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;position:static!important;height:auto!important;min-height:max-content!important;overflow:visible!important;margin:18px 0 20px!important}main.owner-panel .wrap.page .reservation-view-filters>a{position:static!important;display:flex!important;float:none!important;transform:none!important;flex:0 0 auto!important;width:100%!important;box-sizing:border-box!important;padding:11px 13px}.reservation-view-icon{width:36px;height:36px}main.owner-panel .wrap.page .reservation-status-filters{position:static!important;display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin:0 0 17px!important}}
+<style>.reservation-status-filters{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 17px}</style>
+@endsection
+
+
+
+

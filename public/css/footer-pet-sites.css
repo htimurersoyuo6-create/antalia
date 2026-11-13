@@ -1,0 +1,3 @@
+body>footer .footer-navigation{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+@media (min-width:761px) and (max-width:900px){body>footer .footer-main{grid-template-columns:minmax(0,1fr)!important}body>footer .footer-navigation{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}body>footer .footer-navigation .fcol:last-child{grid-column:auto!important;display:flex!important}}
+@media(max-width:760px){body>footer .footer-navigation{grid-template-columns:repeat(2,minmax(0,1fr))!important}}

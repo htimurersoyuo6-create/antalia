@@ -1,0 +1,16 @@
+RewriteEngine On
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{HTTP_HOST} !^www\.antalyapetotel\.com$
+RewriteCond %{HTTP_HOST} !^antalyapetotel\.com$
+RewriteCond %{HTTP_HOST} ^([a-z0-9-]+)\.antalyapetotel\.com$
+RewriteCond %{DOCUMENT_ROOT}/subdomains/%1/index.php -f
+RewriteRule ^(.*)$ subdomains/%1/index.php [L]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^ index.php [L]

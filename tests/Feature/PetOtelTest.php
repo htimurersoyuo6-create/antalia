@@ -65,11 +65,70 @@ class PetOtelTest extends TestCase
     {
         [$h] = $this->mkHotel();
         foreach (['/', '/ara', '/kategori/pet-otelleri/antalya', '/kategori/pet-otelleri/antalya/kopek-otelleri', '/pet-otel/test-otel',
-                  '/blog', '/iletisim', '/partner', '/giris', '/kayit', '/sitemap.xml', '/sayfa/gizlilik', '/sayfa/iptal-iade', '/sayfa/hakkimizda', '/sayfa/kullanim-kosullari'] as $url) {
+                  '/blog', '/iletisim', '/partner', '/giris', '/kayit', '/sitemap.xml', '/sayfa/gizlilik', '/sayfa/cerez-politikasi', '/sayfa/iptal-iade', '/sayfa/hakkimizda', '/sayfa/kullanim-kosullari'] as $url) {
             $this->followingRedirects()->get($url)->assertOk();
         }
         $this->get('/sayfa/yok')->assertNotFound();
         $this->get(route('sitemap.main'))->assertSee(route('hotels.show', $h), false);
+    }
+
+    public function test_dog_breed_groups_are_suggested_and_filter_by_real_room_size(): void
+    {
+        [$hotel, $room] = $this->mkHotel();
+        $room->update(['size' => 'small']);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Chihuahua')
+            ->assertSee('Border Collie')
+            ->assertSee('Kangal');
+        $this->get('/ara?size=small')->assertSee('Test Otel');
+        $this->get('/ara?size=large')->assertDontSee('Test Otel');
+
+        $this->actingAs($this->mkUser())
+            ->get(route('pets.create'))
+            ->assertOk()
+            ->assertSee('pet-breed-catalog', false)
+            ->assertSee('Toy Poodle');
+    }
+
+    public function test_google_analytics_requires_opt_in_and_search_console_tag_is_configurable(): void
+    {
+        Config::set('services.google.analytics_measurement_id', 'G-AB12345678');
+        Config::set('services.google.site_verification', 'test-verification-token');
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('<meta name="google-site-verification" content="test-verification-token">', false)
+            ->assertSee('id="analytics-consent"', false)
+            ->assertDontSee('googletagmanager.com/gtag/js');
+
+        $this->post(route('cookie-preferences.analytics'), [
+            'choice' => 'accepted',
+            'return_to' => '/?from=consent',
+        ])->assertRedirect('/?from=consent')->assertCookie('analytics_consent', 'accepted');
+
+        $this->withCookie('analytics_consent', 'accepted')
+            ->get(route('home'))
+            ->assertSee('googletagmanager.com/gtag/js?id=G-AB12345678');
+
+        $this->actingAs($this->mkUser())
+            ->withCookie('analytics_consent', 'accepted')
+            ->get(route('home'))
+            ->assertDontSee('googletagmanager.com/gtag/js');
+    }
+
+    public function test_cookie_preferences_reject_external_redirects_and_invalid_choices(): void
+    {
+        $this->post(route('cookie-preferences.analytics'), [
+            'choice' => 'accepted',
+            'return_to' => 'https://example.org/',
+        ])->assertRedirect(route('home'));
+
+        $this->post(route('cookie-preferences.analytics'), [
+            'choice' => 'maybe',
+            'return_to' => '/',
+        ])->assertSessionHasErrors('choice');
     }
 
     public function test_sitemap_includes_public_community_pages_and_active_listings_only(): void
@@ -317,6 +376,19 @@ class PetOtelTest extends TestCase
         $this->get('/ara?min_fiyat=1200&max_fiyat=800')
             ->assertOk()
             ->assertSee('Minimum fiyat, maksimum fiyattan yüksek olamaz.');
+    }
+
+    public function test_hotel_search_filters_declared_indoor_and_outdoor_spaces(): void
+    {
+        [$hotel] = $this->mkHotel();
+        $hotel->update(['amenities' => json_encode(['Açık alan'], JSON_UNESCAPED_UNICODE)]);
+
+        $this->get('/ara?olanak%5B%5D=acik-alan')->assertOk()->assertSee('Test Otel');
+        $this->get('/ara?olanak%5B%5D=kapali-alan')->assertOk()->assertDontSee('Test Otel');
+
+        $hotel->update(['amenities' => json_encode(['Kapalı alan'], JSON_UNESCAPED_UNICODE)]);
+        $this->get('/ara?olanak%5B%5D=kapali-alan')->assertOk()->assertSee('Test Otel');
+        $this->get('/ara?olanak%5B%5D=acik-alan')->assertOk()->assertDontSee('Test Otel');
     }
 
     public function test_minimum_and_maximum_price_facets_are_not_indexed_as_category_pages(): void

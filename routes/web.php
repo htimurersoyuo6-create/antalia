@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function(){
  Route::post('/siparislerim/{order}/iptal', [\App\Http\Controllers\Shop\MarketplaceController::class, 'cancel'])->name('shop.cancel');
 });
 Route::post('/asistan/yanit', [\App\Http\Controllers\Api\AssistantApiController::class, 'answerFromWeb'])->middleware('throttle:12,1')->name('assistant.answer');
+Route::post('/cookie-preferences/analytics', [\App\Http\Controllers\CookiePreferenceController::class, 'update'])->middleware('throttle:10,1')->name('cookie-preferences.analytics');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/api/weather/antalya', [HomeController::class, 'weather'])->middleware('throttle:60,1')->name('weather.antalya');
 Route::get('/api/occupancy/antalya', [HomeController::class, 'occupancy'])->middleware('throttle:60,1')->name('occupancy.antalya');

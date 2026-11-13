@@ -15,9 +15,26 @@
     $defaultMetaDescription = ($sitePlace ?: $siteBrand) . ' bölgesindeki kedi ve köpek otellerini, konaklama seçeneklerini ve fiyatları karşılaştırın.';
     $headerMenuDefault = ($siteCity ?: $siteBrand) . ' Pet Otel|/kedi-kopek-otelleri' . "\nKedi Oteli|/kedi-otelleri\nKöpek Oteli|/kopek-otelleri\nFiyatlar|/fiyatlar\nMağaza|/magaza\nBlog|/blog\nKayıp İlanları|/kayip-patiler\nSahiplendir|/sahiplendir\nForum|/forum\nPet Akışı|/pet-akisi\nOtelini Kaydet|/partner";
     $footerExploreDefault = ($siteCity ?: $siteBrand) . ' Pet Otelleri|/kedi-kopek-otelleri' . "\nKöpek Otelleri|/kopek-otelleri\nKedi Otelleri|/kedi-otelleri\nBlog|/blog\nKayıp İlanları|/kayip-patiler\nSahiplendir|/sahiplendir\nForum|/forum\nPet Akışı|/pet-akisi\nGünlük Fiyatlar|/fiyatlar";
+    $analyticsId = config('services.google.analytics_measurement_id');
+    $analyticsId = is_string($analyticsId) && preg_match('/\AG-[A-Z0-9]{4,20}\z/D', $analyticsId) ? $analyticsId : null;
+    $googleVerification = config('services.google.site_verification');
+    $analyticsPageAllowed = !auth()->check() && !request()->routeIs('panel.*', 'admin.*');
+    $analyticsConsent = request()->cookie('analytics_consent');
 @endphp
 <title>@yield('title', \App\Models\Setting::al('meta_title', $defaultMetaTitle))</title>
 <meta name="description" content="@yield('desc', \App\Models\Setting::al('meta_description', $defaultMetaDescription))">
+@if(is_string($googleVerification) && trim($googleVerification) !== '')
+<meta name="google-site-verification" content="{{ trim($googleVerification) }}">
+@endif
+@if($analyticsId && $analyticsPageAllowed && $analyticsConsent === 'accepted')
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ urlencode($analyticsId) }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
+  window.gtag('js', new Date());
+  window.gtag('config', @json($analyticsId), {allow_google_signals:false,allow_ad_personalization_signals:false});
+</script>
+@endif
 @php
     /* Canonical ve robots: izleme parametrelerinden arindirilmis.
      *
@@ -367,6 +384,7 @@ $footerLegal = $siteLinks(\App\Models\Setting::al('footer_legal', "Gizlilik Poli
   <div class="fcol">
     <b>Yasal</b>
     @foreach($footerLegal as $link)<a href="{{ $link['url'] }}">{{ $link['label'] }}</a>@endforeach
+    @if($analyticsId && $analyticsPageAllowed)<a href="#analytics-consent" data-cookie-preferences>Çerez tercihlerini yönet</a>@endif
   </div>
 </nav>
 </div>
@@ -564,6 +582,9 @@ $footerLegal = $siteLinks(\App\Models\Setting::al('footer_legal', "Gizlilik Poli
 </script>
 @if(!request()->routeIs('panel.*') && !request()->routeIs('admin.*'))
 @include('partials.site-assistant')
+@endif
+@if($analyticsId && $analyticsPageAllowed)
+@include('components.analytics-consent', ['consent' => $analyticsConsent])
 @endif
 @include('admin.live-edit')
 </body>

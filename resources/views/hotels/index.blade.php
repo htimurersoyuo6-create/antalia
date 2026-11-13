@@ -94,13 +94,14 @@
           @endif
         @endforeach
         <div>
-          <label for="listing-dog-size">Kabul edilen evcil hayvan boyutu</label>
+          <label for="listing-dog-size">Kabul edilen köpek boyutu veya ırk grubu</label>
           <select id="listing-dog-size" name="size">
             <option value="" @selected(empty($filtre['size']))>Tüm boylar</option>
-            <option value="small" @selected(($filtre['size'] ?? '') === 'small')>Küçük ırk</option>
-            <option value="medium" @selected(($filtre['size'] ?? '') === 'medium')>Orta ırk</option>
-            <option value="large" @selected(($filtre['size'] ?? '') === 'large')>Büyük ırk</option>
+            @foreach(\App\Support\DogBreedGroups::groups() as $size => $group)
+              <option value="{{ $size }}" @selected(($filtre['size'] ?? '') === $size)>{{ $group['label'] }} ({{ implode(', ', $group['examples']) }})</option>
+            @endforeach
           </select>
+          <small class="hint">Örnek ırklar yaklaşık gruplandırılmıştır. Melez veya farklı ölçüdeki köpeklerde gerçek boyutu seçin.</small>
         </div>
         <button class="apt-btn apt-btn--ghost apt-btn--full" type="submit">Filtreyi uygula</button>
       </form>

@@ -194,14 +194,15 @@
       </select>
     </div>
     <div class="sf" id="f-size-wrap" @if(request('tur') !== 'Köpek') hidden @endif>
-      <label for="f-size" class="sr-only">Köpek boyutu</label>
+      <label for="f-size" class="sr-only">Köpek boyutu veya ırk grubu</label>
       <span class="ic" aria-hidden="true">🐕</span>
       <select name="size" id="f-size" @disabled(request('tur') !== 'Köpek')>
         <option value="" @selected(!request('size'))>Tüm boylar</option>
-        <option value="small" @selected(request('size') === 'small')>Küçük ırk</option>
-        <option value="medium" @selected(request('size') === 'medium')>Orta ırk</option>
-        <option value="large" @selected(request('size') === 'large')>Büyük ırk</option>
+        @foreach(\App\Support\DogBreedGroups::groups() as $size => $group)
+          <option value="{{ $size }}" @selected(request('size') === $size)>{{ $group['label'] }} ({{ implode(', ', $group['examples']) }})</option>
+        @endforeach
       </select>
+      <small class="sr-only">Irk örnekleri yaklaşık boyut grubudur; melez, yavru veya bireysel farklılıklarda gerçek boyutu seçin.</small>
     </div>
     <button class="btn" type="submit">Ara</button>
   </form>

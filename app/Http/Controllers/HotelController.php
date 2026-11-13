@@ -14,6 +14,8 @@ class HotelController extends Controller
         'kamera'    => ['7/24 kamera', ['kamera']],
         'veteriner' => ['Veteriner desteği', ['veteriner']],
         'oyun'      => ['Oyun alanı / bahçe', ['oyun alanı', 'oyun parkı', 'bahçe']],
+        'acik-alan' => ['Açık alan', ['açık alan', 'acik alan', 'bahçe', 'bahce']],
+        'kapali-alan' => ['Kapalı alan', ['kapalı alan', 'kapali alan', 'iç mekân', 'ic mekan']],
         'video'     => ['Fotoğraf / video raporu', ['video raporu', 'fotoğraf raporu', 'fotograf raporu']],
         'ilac'      => ['İlaç uygulaması', ['ilaç uygulaması', 'ilac uygulamasi']],
         'transfer'  => ['Transfer / pet taksi', ['transfer', 'taksi']],

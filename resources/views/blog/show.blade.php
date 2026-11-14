@@ -62,7 +62,7 @@
 <div class="crumb"><a href="{{ route('home') }}">Ana Sayfa</a> ›
   <a href="{{ route('blog.index') }}">Blog</a> › {{ seo_metin($baslik, 60, false) }}</div>
 
-<header class="blog-detail-hero"><img src="{{ $yaziGor }}" alt="{{ $baslik }} rehber görseli" width="1200" height="630" fetchpriority="high" decoding="async" style="display:block;width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:16px;margin:0 0 20px"><span class="blog-eyebrow">{{ $siteBrand }} · Rehber</span><h1 class="blog-article-title">{{ $baslik }}</h1>
+<header class="blog-detail-hero"><span class="blog-eyebrow">{{ $siteBrand }} · Rehber</span><h1 class="blog-article-title">{{ $baslik }}</h1>
 <p class="meta blog-post-meta">
   @if($dTarih)<span>&#128197; {{ $dTarih }}@if($dSaat) · {{ $dSaat }}@endif</span>@endif
   <span>&#128337; {{ $sure }} dk okuma</span>

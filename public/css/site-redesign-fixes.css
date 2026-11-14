@@ -66,12 +66,12 @@ body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)){
   --public-orange:#176447;
   --public-orange-dark:#104d37;
   --public-orange-soft:#e8f2eb;
-  --public-warm:#d77932;
+  --public-warm:#a57d43;
   --public-ink:#20342b;
   --public-muted:#61746a;
   --public-line:#dce7df;
   --public-surface:#fffefa;
-  --public-canvas:#f7f6ef;
+  --public-canvas:#f6f8f5;
   --public-shadow:0 12px 30px rgba(25,70,50,.08);
   --brand:var(--public-orange);
   --brand-d:var(--public-orange-dark);
@@ -88,6 +88,8 @@ body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)){
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo{gap:10px;color:var(--public-ink)}
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-paw{display:inline-grid;flex:0 0 42px;width:42px;height:42px;font-size:0;line-height:1}
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-paw svg{display:block;width:100%;height:100%}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-paw svg{filter:drop-shadow(0 3px 6px rgba(16,77,55,.18));transition:filter .2s ease,transform .2s ease}
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo:hover .brand-paw svg{filter:drop-shadow(0 5px 9px rgba(16,77,55,.24));transform:translateY(-1px) scale(1.035)}
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark{display:flex;flex-direction:column;gap:3px;color:var(--public-ink);font-size:17px;font-weight:850;line-height:1.05;letter-spacing:-.035em}
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark small{color:var(--public-muted);font-size:9px;font-weight:750;line-height:1.2;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .dnav .dnav-register{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 11px;border:1px solid #c9e2df;border-radius:999px;background:var(--public-orange-soft);color:var(--public-orange-dark);font-weight:750;white-space:nowrap}
@@ -109,6 +111,29 @@ body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .dn
   .mnav .mpanel .mnav-partner-cta strong{font-size:14px;font-weight:850}
   .mnav .mpanel .mnav-partner-cta span{color:#104d37;font-size:13px;font-weight:750}
   .apt-lcard .apt-lcard__quick,.hotel-room-whatsapp,.hotel-contact-links a{min-width:44px;min-height:44px}
+}
+
+/* Keep desktop hero copy clear of the booking panel layered over the photo. */
+@media(min-width:900px){
+  .home-hero-copy{
+    top:70px!important;
+    width:min(78%,660px)!important;
+    max-width:660px!important;
+    padding:20px 24px!important;
+  }
+  .home-hero-copy .pw-h1{
+    max-width:620px!important;
+    margin:4px 0 12px!important;
+    font-size:clamp(36px,3.2vw,48px)!important;
+    line-height:1.06!important;
+  }
+  .home-hero-copy .home-eyebrow{margin-bottom:10px!important}
+  .home-hero-copy .pw-alt{
+    max-width:560px!important;
+    margin:0 0 14px!important;
+    font-size:15px!important;
+    line-height:1.5!important;
+  }
 }
 @media(max-width:380px){
   body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .logo .brand-wordmark small{display:none}
@@ -146,3 +171,192 @@ body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel))>header .dn
 
 /* 12) Asistan düğmesi tablet genişliğinde alt sabit çubuğun üstünde dursun */
 @media(min-width:761px) and (max-width:900px){body.hotel-detail-body .site-assistant{bottom:calc(86px + env(safe-area-inset-bottom))}}
+
+/* Keep public pages on one forest, sage, and warm-neutral palette. */
+body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)){
+  --public-orange:#176447;
+  --public-orange-dark:#104d37;
+  --public-orange-soft:#e8f2eb;
+  --public-warm:#a57d43;
+  --public-ink:#20342b;
+  --public-muted:#61746a;
+  --public-line:#dce7df;
+  --public-surface:#fffefa;
+  --public-canvas:#f6f8f5;
+  --brand:var(--public-orange);
+  --brand-d:var(--public-orange-dark);
+  --brand-l:var(--public-orange-soft);
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.btn:not(.ghost):not(.alt):not(.danger),.apt-btn--primary,.btn-primary,.apt-lcard__cta,.hotel-select-room,.hotel-claim-banner>a,.blog-featured-cta,.details-link,.partner-free-listing-cta>a,.hotel-card-details){
+  border-color:var(--public-orange)!important;
+  background-color:var(--public-orange)!important;
+  color:#fff!important;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(.btn:not(.ghost):not(.alt):not(.danger),.apt-btn--primary,.btn-primary,.apt-lcard__cta,.hotel-select-room,.hotel-claim-banner>a,.blog-featured-cta,.details-link,.partner-free-listing-cta>a,.hotel-card-details):hover{
+  border-color:var(--public-orange-dark)!important;
+  background-color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) .site-assistant__launcher,
+body:not(.a-body) .site-assistant__form>button{
+  border-color:var(--public-orange)!important;
+  background-color:var(--public-orange)!important;
+  color:#fff!important;
+}
+body:not(.a-body) .site-assistant__launcher:hover,
+body:not(.a-body) .site-assistant__form>button:hover{background-color:var(--public-orange-dark)!important}
+body:not(.a-body) .mobile-bottom-nav>a[aria-current=page]{color:var(--public-orange-dark)!important}
+body:not(.a-body) .mobile-bottom-nav>a.mobile-bottom-nav__search{
+  background:var(--public-orange)!important;
+  box-shadow:0 5px 14px rgba(23,100,71,.24)!important;
+}
+body:not(.a-body) .home-hero-copy .pw-h1 em{color:var(--public-orange)!important}
+body:not(.a-body) .home-hero-copy .pw-tabs>a.on{
+  border-color:var(--public-orange)!important;
+  background:var(--public-orange)!important;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(button:focus-visible,.btn:focus-visible,.apt-btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible){
+  outline-color:var(--public-orange)!important;
+}
+body:not(.a-body) main#icerik:not(.owner-panel) :where(button:hover,.btn:hover,.apt-btn:hover){
+  box-shadow:0 7px 18px rgba(23,100,71,.16)!important;
+}
+body:not(.a-body) main#icerik .pw-bas,
+body:not(.a-body) main#icerik .pw-satir-bas,
+body:not(.a-body) main#icerik .hotel-section-heading,
+body:not(.a-body) main#icerik .blog-list-head,
+body:not(.a-body) main#icerik .blog-topic-head{
+  border-color:var(--public-line)!important;
+  background:linear-gradient(115deg,#f2f7f2,#fffefa)!important;
+  background-image:linear-gradient(115deg,#f2f7f2,#fffefa)!important;
+}
+body:not(.a-body) main#icerik .pw-bas::before,
+body:not(.a-body) main#icerik .pw-satir-bas::before,
+body:not(.a-body) main#icerik>section.pw-bolum>.wrap>h2:first-child::before{
+  background:linear-gradient(180deg,var(--public-orange),#8eaf8f)!important;
+}
+body:not(.a-body) main#icerik .home-hotels-kicker,
+body:not(.a-body) main#icerik .hotel-section-eyebrow,
+body:not(.a-body) main#icerik .pw-bas .eyebrow,
+body:not(.a-body) main#icerik .pw-satir-bas .eyebrow,
+body:not(.a-body) main#icerik .blog-list-head .eyebrow,
+body:not(.a-body) main#icerik .blog-topic-head .eyebrow{
+  color:var(--public-orange-dark)!important;
+  -webkit-text-fill-color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .pw-bas:has(+.pw-blog){
+  border-color:var(--public-orange-dark)!important;
+  background:linear-gradient(110deg,var(--public-orange),var(--public-orange-dark))!important;
+  background-image:linear-gradient(110deg,var(--public-orange),var(--public-orange-dark))!important;
+  color:#fff!important;
+}
+body:not(.a-body) main#icerik .pw-bas:has(+.pw-blog) h2,
+body:not(.a-body) main#icerik .pw-bas:has(+.pw-blog) .alt,
+body:not(.a-body) main#icerik .pw-bas:has(+.pw-blog) .eyebrow{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+body:not(.a-body) main#icerik .pw-bas:has(+.pw-blog) .pw-ok .btn{
+  border-color:var(--public-orange)!important;
+  background:var(--public-orange)!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+body:not(.a-body) main#icerik .thumb{
+  background:linear-gradient(135deg,#e8f2eb,#f5f7ef)!important;
+  color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .pricing-page>h1::before{
+  background:linear-gradient(180deg,var(--public-orange),#8eaf8f)!important;
+}
+body:not(.a-body) main#icerik .page>h1::before,
+body:not(.a-body) main#icerik .det .detail-panel::before{
+  background:linear-gradient(180deg,var(--public-orange),#8eaf8f)!important;
+}
+body:not(.a-body) main#icerik .blog-eyebrow,
+body:not(.a-body) main#icerik .blog-detail-hero .blog-eyebrow::before,
+body:not(.a-body) main#icerik .pricing-page>.crumb a:hover,
+body:not(.a-body) main#icerik .pricing-page .pricing-table a:hover,
+body:not(.a-body) main#icerik .hotel-address-card>a:hover,
+body:not(.a-body) main#icerik .hotel-address-card>a b,
+body:not(.a-body) main#icerik .hotel-favorite-button.is-saved,
+body:not(.a-body) main#icerik .hotel-favorite-button:hover{
+  color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .pricing-page>p.sub{
+  border-color:var(--public-line)!important;
+  background:var(--public-orange-soft)!important;
+  color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .det .room .price{color:var(--public-warm)!important}
+body:not(.a-body) main#icerik .hotel-address-card>span,
+body:not(.a-body) main#icerik .apt-lcard .apt-lcard__fav:hover,
+body:not(.a-body) main#icerik .apt-lcard .apt-lcard__fav.is-saved,
+body:not(.a-body) main#icerik .apt-lcard .apt-lcard__fav.on{
+  background-color:var(--public-orange-soft)!important;
+  color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .blog-detail-hero{
+  max-width:920px;
+  margin:20px 0 24px;
+  padding:clamp(22px,3vw,34px);
+  border:1px solid var(--public-line)!important;
+  border-radius:20px;
+  background:linear-gradient(130deg,#f2f7f2,#fffefa 76%)!important;
+  box-shadow:0 8px 24px rgba(25,70,50,.06);
+}
+body:not(.a-body) main#icerik .blog-detail-hero::before{
+  top:16px;
+  bottom:16px;
+  background:linear-gradient(180deg,var(--public-orange),#8eaf8f)!important;
+}
+body:not(.a-body) main#icerik .blog-detail-hero::after{display:none!important}
+body:not(.a-body) main#icerik .blog-detail-hero .blog-eyebrow,
+body:not(.a-body) main#icerik .blog-toc-card>.blog-reading-label,
+body:not(.a-body) main#icerik .blog-back-link,
+body:not(.a-body) main#icerik .blog-detail .blog-article a,
+body:not(.a-body) main#icerik .blog-detail>.row2 small,
+body:not(.a-body) main#icerik .blog-detail .blog-article li::marker{
+  color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .blog-detail-hero .blog-article-title{
+  margin:9px 0 14px;
+  color:var(--public-ink)!important;
+  font-size:clamp(28px,3.8vw,42px);
+}
+body:not(.a-body) main#icerik .blog-detail-hero .blog-post-meta span{
+  border-color:var(--public-line);
+  background:#fffefa;
+  color:var(--public-muted);
+}
+body:not(.a-body) main#icerik .blog-detail .blog-article>h2,
+body:not(.a-body) main#icerik .blog-detail .blog-article>h3{
+  border-color:var(--public-line)!important;
+  background:linear-gradient(110deg,#f2f7f2,#fffefa)!important;
+}
+body:not(.a-body) main#icerik .blog-detail .blog-article>h2::before,
+body:not(.a-body) main#icerik .blog-detail .blog-article>h3::before{
+  background:linear-gradient(180deg,var(--public-orange),#8eaf8f)!important;
+}
+body:not(.a-body) main#icerik .blog-list-head a,
+body:not(.a-body) main#icerik .blog-topic-head a,
+body:not(.a-body) main#icerik .blog-pagination a:hover{
+  color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .blog-toc-card li a:hover,
+body:not(.a-body) main#icerik .blog-detail>.row2>div>a:hover{
+  border-color:#c5d9c9;
+  background:var(--public-orange-soft)!important;
+  color:var(--public-orange-dark)!important;
+}
+body:not(.a-body) main#icerik .blog-detail .blog-article blockquote{
+  border-left-color:var(--public-orange);
+  background:#f3f8f3;
+}
+body:not(.a-body) main#icerik .blog-detail>.grid .thumb{
+  background:linear-gradient(135deg,#e8f2eb,#f5f7ef);
+  color:var(--public-orange-dark);
+}
+body:not(.a-body) main#icerik :where(.pet-health-icon.is-orange,.pet-reminder>span:first-child,.pet-reservation-health-heading>span){
+  background:var(--public-orange-soft)!important;
+  color:var(--public-orange-dark)!important;
+}

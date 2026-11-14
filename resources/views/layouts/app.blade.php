@@ -77,7 +77,7 @@ $aramaDiziniDisi = auth()->check()
 <meta name="twitter:description" content="@yield('ogdesc', \App\Models\Setting::al('meta_description', $defaultMetaDescription))">
 <meta name="twitter:image" content="@yield('ogimage', asset('img/og-default.png'))">
 
-<meta name="theme-color" content="#f63c07">
+<meta name="theme-color" content="#176447">
 <meta name="geo.region" content="TR">
 <meta name="geo.placename" content="{{ $sitePlace }}">
 
@@ -177,7 +177,17 @@ $footerLegal = $siteLinks(\App\Models\Setting::al('footer_legal', "Gizlilik Poli
 @else
 <header><div class="wrap"><nav>
 <a class="logo" href="{{ route('home') }}" aria-label="{{ $siteBrand }} ana sayfa">
-  @if($siteLogo !== '')<img class="brand-logo-image" src="{{ asset('storage/'.$siteLogo) }}" alt="{{ $siteLogoText ?: $siteBrand }}">@else<span class="brand-paw" aria-hidden="true"><svg viewBox="0 0 44 44" focusable="false"><rect width="44" height="44" rx="14" fill="#0e7c86"/><circle cx="32" cy="11" r="5" fill="#f2bd62"/><path d="M6 30c4-2.6 8-2.6 12 0s8 2.6 12 0 6-2 8-1" fill="none" stroke="#8ed2ca" stroke-linecap="round" stroke-width="2.2"/><ellipse cx="22" cy="29" rx="8" ry="6.4" fill="#fff"/><ellipse cx="13.5" cy="21.8" rx="2.6" ry="3.4" transform="rotate(-22 13.5 21.8)" fill="#fff"/><ellipse cx="19.4" cy="18.5" rx="2.5" ry="3.4" transform="rotate(-8 19.4 18.5)" fill="#fff"/><ellipse cx="25.9" cy="18.7" rx="2.5" ry="3.4" transform="rotate(8 25.9 18.7)" fill="#fff"/><ellipse cx="31.5" cy="22.2" rx="2.6" ry="3.4" transform="rotate(22 31.5 22.2)" fill="#fff"/></svg></span>@endif
+  @if($siteLogo !== '')<img class="brand-logo-image" src="{{ asset('storage/'.$siteLogo) }}" alt="{{ $siteLogoText ?: $siteBrand }}">@else<span class="brand-paw" aria-hidden="true"><svg viewBox="0 0 44 44" focusable="false">
+    <defs><linearGradient id="brand-paw-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#104d37"/><stop offset="1" stop-color="#176447"/></linearGradient></defs>
+    <rect width="44" height="44" rx="14" fill="url(#brand-paw-gradient)" stroke="#fffefa" stroke-opacity=".2"/>
+    <circle cx="32" cy="11" r="5" fill="#d2b167"/>
+    <path d="M6 30c4-2.6 8-2.6 12 0s8 2.6 12 0 6-2 8-1" fill="none" stroke="#b8d5c0" stroke-linecap="round" stroke-width="2.2"/>
+    <ellipse cx="22" cy="29" rx="8" ry="6.4" fill="#fffefa"/>
+    <ellipse cx="13.5" cy="21.8" rx="2.6" ry="3.4" transform="rotate(-22 13.5 21.8)" fill="#fffefa"/>
+    <ellipse cx="19.4" cy="18.5" rx="2.5" ry="3.4" transform="rotate(-8 19.4 18.5)" fill="#fffefa"/>
+    <ellipse cx="25.9" cy="18.7" rx="2.5" ry="3.4" transform="rotate(8 25.9 18.7)" fill="#fffefa"/>
+    <ellipse cx="31.5" cy="22.2" rx="2.6" ry="3.4" transform="rotate(22 31.5 22.2)" fill="#fffefa"/>
+  </svg></span>@endif
   @if($siteLogoText !== '')<span class="brand-wordmark">{{ $siteLogoText }}<small>Antalya’nın pet otel rehberi</small></span>@elseif($siteLogo === '')<span class="brand-wordmark">{{ $siteBrand }}<small>Antalya’nın pet otel rehberi</small></span>@endif
 </a>
 <div class="dnav">

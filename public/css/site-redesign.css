@@ -1,13 +1,14 @@
 /* Public-site visual system inspired by PawBooking; application and owner panels are excluded. */
 :root {
-  --public-orange: #ff4315;
-  --public-orange-dark: #df390f;
-  --public-orange-soft: #fff1eb;
-  --public-ink: #172338;
-  --public-muted: #637086;
-  --public-line: #e5e9ef;
-  --public-surface: #ffffff;
-  --public-canvas: #f6f7fa;
+  --public-orange: #176447;
+  --public-orange-dark: #104d37;
+  --public-orange-soft: #e8f2eb;
+  --public-warm: #a57d43;
+  --public-ink: #20342b;
+  --public-muted: #61746a;
+  --public-line: #dce7df;
+  --public-surface: #fffefa;
+  --public-canvas: #f6f8f5;
   --public-radius: 22px;
   --public-shadow: 0 12px 32px rgba(27, 39, 58, .07);
 }
@@ -52,7 +53,7 @@ main#icerik:not(.owner-panel) {
 main#icerik:not(.owner-panel) .wrap { max-width: 1240px; }
 main#icerik:not(.owner-panel) :where(a) { text-underline-offset: 3px; }
 main#icerik:not(.owner-panel) :where(button, .btn, .apt-btn) { transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
-main#icerik:not(.owner-panel) :where(button:hover, .btn:hover, .apt-btn:hover) { box-shadow: 0 7px 18px rgba(223, 57, 15, .16); }
+main#icerik:not(.owner-panel) :where(button:hover, .btn:hover, .apt-btn:hover) { box-shadow: 0 7px 18px rgba(23, 100, 71, .16); }
 main#icerik:not(.owner-panel) :where(input:not([type=checkbox]):not([type=radio]), select, textarea) {
   border-color: #dce2eb;
   border-radius: 12px;
@@ -60,12 +61,12 @@ main#icerik:not(.owner-panel) :where(input:not([type=checkbox]):not([type=radio]
 }
 main#icerik:not(.owner-panel) :where(input:focus, select:focus, textarea:focus) {
   border-color: var(--public-orange);
-  box-shadow: 0 0 0 4px rgba(255, 67, 21, .12);
+  box-shadow: 0 0 0 4px rgba(23, 100, 71, .12);
 }
 
 /* Search-led homepage: keep the current local photography and booking controls. */
 .home-hero-shell {
-  max-width: 1512px;
+  max-width: 1240px;
   width: calc(100% - 40px);
   margin: 14px auto 38px;
   border: 1px solid rgba(255, 255, 255, .72);
@@ -449,8 +450,8 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #fff0e9;
-  color: #e3471b;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
   font-size: 18px;
   font-style: normal;
   line-height: 1;
@@ -459,7 +460,7 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
 .hotel-detail-page .hotel-faq-item[open] summary { background: #fffaf7; }
 .hotel-detail-page .hotel-faq-item[open] summary i { transform: rotate(45deg); }
 .hotel-detail-page .hotel-faq-item summary:focus-visible {
-  outline: 3px solid rgba(255, 67, 21, .35);
+  outline: 3px solid rgba(23, 100, 71, .35);
   outline-offset: -3px;
 }
 .hotel-detail-page .hotel-faq-answer {
@@ -474,9 +475,9 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
   gap: 16px;
   margin: 16px 0;
   padding: 22px;
-  border: 1px solid #f1dfd3;
+  border: 1px solid var(--public-line);
   border-radius: 20px;
-  background: linear-gradient(115deg, #fff8f2, #f7faf6);
+  background: linear-gradient(115deg, #f2f7f2, #fffefa);
   box-shadow: 0 9px 24px rgba(27, 39, 58, .045);
 }
 .hotel-detail-page .hotel-claim-icon {
@@ -486,14 +487,14 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: #fff0e8;
-  color: #e3471b;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
 }
 .hotel-detail-page .hotel-claim-banner > div { flex: 1; min-width: 0; }
 .hotel-detail-page .hotel-claim-banner .detail-eyebrow {
   display: block;
   margin-bottom: 5px;
-  color: #c54b27;
+  color: var(--public-orange-dark);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: .1em;
@@ -519,14 +520,14 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
   min-height: 44px;
   padding: 0 16px;
   border-radius: 12px;
-  background: #ff4315;
+  background: var(--public-orange);
   color: #fff;
   font-size: 14px;
   font-weight: 800;
   text-decoration: none;
   transition: background-color .18s ease, transform .18s ease;
 }
-.hotel-detail-page .hotel-claim-banner > a:hover { background: #df390f; transform: translateY(-1px); }
+.hotel-detail-page .hotel-claim-banner > a:hover { background: var(--public-orange-dark); transform: translateY(-1px); }
 .hotel-detail-page .hotel-address-card {
   display: flex;
   align-items: center;
@@ -544,8 +545,8 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: #fff0e8;
-  color: #e3471b;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
 }
 .hotel-detail-page .hotel-address-card > div { flex: 1; min-width: 0; }
 .hotel-detail-page .hotel-address-card small {
@@ -579,11 +580,11 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
   transition: border-color .18s ease, color .18s ease, background-color .18s ease;
 }
 .hotel-detail-page .hotel-address-card > a:hover {
-  border-color: #f0c4b4;
-  background: #fff8f4;
-  color: #df390f;
+  border-color: #c5d9c9;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
 }
-.hotel-detail-page .hotel-address-card > a b { color: #df390f; }
+.hotel-detail-page .hotel-address-card > a b { color: var(--public-orange-dark); }
 .vet-index .vet-filter.is-active { color: #fff !important; }
 @media (max-width: 700px) {
   .hotel-detail-page .hotel-claim-banner { flex-wrap: wrap; padding: 18px; }
@@ -637,15 +638,15 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
 .apt-lcard .apt-lcard__fav:hover,
 .apt-lcard .apt-lcard__fav.is-saved,
 .apt-lcard .apt-lcard__fav.on {
-  color: #e3471b;
+  color: var(--public-orange-dark);
 }
 .apt-lcard .apt-lcard__fav:hover { transform: scale(1.06); }
 .apt-lcard .apt-lcard__foot { gap: 8px; padding: 0 13px 13px; }
 .apt-lcard .apt-lcard__cta {
   min-height: 40px;
-  border-color: #ff4315;
+  border-color: var(--public-orange);
   border-radius: 11px;
-  background: #ff4315;
+  background: var(--public-orange);
   color: #fff;
   font-size: 13px;
   font-weight: 800;
@@ -653,10 +654,10 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
 }
 .apt-lcard .apt-lcard__cta:hover {
   transform: translateY(-1px);
-  border-color: #df390f;
-  background: #df390f;
+  border-color: var(--public-orange-dark);
+  background: var(--public-orange-dark);
   color: #fff;
-  box-shadow: 0 5px 12px rgba(223, 57, 15, .2);
+  box-shadow: 0 5px 12px rgba(23, 100, 71, .2);
 }
 .apt-lcard .apt-lcard__quick {
   flex: 0 0 40px;
@@ -690,7 +691,7 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
   color: #fff;
 }
 .apt-lcard :where(a, button):focus-visible {
-  outline: 3px solid rgba(255, 67, 21, .45);
+  outline: 3px solid rgba(23, 100, 71, .45);
   outline-offset: 3px;
 }
 @media (max-width: 480px) {
@@ -832,7 +833,7 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .mobile-bottom-nav > a[aria-current="page"] { color: #df390f; }
+  .mobile-bottom-nav > a[aria-current="page"] { color: var(--public-orange-dark); }
   .mobile-bottom-nav > a.mobile-bottom-nav__search {
     justify-self: center;
     min-width: 54px;
@@ -840,12 +841,12 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
     padding: 7px 10px 6px;
     border: 4px solid #fff;
     border-radius: 18px;
-    background: #ff4315;
+    background: var(--public-orange);
     color: #fff;
-    box-shadow: 0 5px 14px rgba(223, 57, 15, .26);
+    box-shadow: 0 5px 14px rgba(23, 100, 71, .26);
   }
   .mobile-bottom-nav__search svg { width: 21px !important; height: 21px !important; }
-  .mobile-bottom-nav > a:focus-visible { outline: 3px solid rgba(255, 67, 21, .45); outline-offset: 2px; }
+  .mobile-bottom-nav > a:focus-visible { outline: 3px solid rgba(23, 100, 71, .45); outline-offset: 2px; }
 
   body:has(section.home-hero-shell) > header { margin-bottom: 0 !important; }
   .home-hero-shell {
@@ -907,7 +908,7 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
     letter-spacing: -.04em !important;
     text-shadow: none !important;
   }
-  .home-hero-copy .pw-h1 em { color: #ff4315 !important; }
+  .home-hero-copy .pw-h1 em { color: var(--public-orange) !important; }
   .home-hero-copy .pw-alt {
     margin: 0 0 13px !important;
     color: #566578 !important;
@@ -938,8 +939,8 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
     text-shadow: none !important;
   }
   .home-hero-copy .pw-tabs > a.on {
-    border-color: #ff4315 !important;
-    background: #ff4315 !important;
+    border-color: var(--public-orange) !important;
+    background: var(--public-orange) !important;
     color: #fff !important;
   }
   .home-hero-art {
@@ -1053,30 +1054,31 @@ body:not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer a:hover { colo
 
 /* Warm, approachable public-site refresh. */
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) {
-  --public-orange: #ed7154;
-  --public-orange-dark: #cf563b;
-  --public-orange-soft: #fff0e8;
-  --public-ink: #29344a;
-  --public-muted: #6b7483;
-  --public-line: #ece5dd;
+  --public-orange: #176447;
+  --public-orange-dark: #104d37;
+  --public-orange-soft: #e8f2eb;
+  --public-warm: #a57d43;
+  --public-ink: #20342b;
+  --public-muted: #61746a;
+  --public-line: #dce7df;
   --public-surface: #fffefa;
-  --public-canvas: #fffaf5;
+  --public-canvas: #f6f8f5;
   --public-radius: 22px;
-  --public-shadow: 0 12px 30px rgba(81, 58, 43, .07);
+  --public-shadow: 0 12px 30px rgba(25, 70, 50, .08);
   background: var(--public-canvas) !important;
   color: var(--public-ink);
 }
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header {
-  border-bottom-color: #f0e7df;
+  border-bottom-color: var(--public-line);
   background: rgba(255, 254, 250, .96);
-  box-shadow: 0 4px 18px rgba(81, 58, 43, .045);
+  box-shadow: 0 4px 18px rgba(25, 70, 50, .045);
 }
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav a:not(.dnav-cta) {
   border-radius: 999px;
 }
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav a:not(.dnav-cta):hover {
-  background: #fff0e8;
-  color: #cf563b;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) {
   background: var(--public-canvas) !important;
@@ -1087,23 +1089,23 @@ body:not(.a-body) main#icerik:not(.owner-panel) :where(h1, h2, h3) {
   letter-spacing: -.025em;
 }
 body:not(.a-body) main#icerik:not(.owner-panel) :where(input:not([type=checkbox]):not([type=radio]), select, textarea) {
-  border-color: #e8dfd7;
+  border-color: var(--public-line);
   border-radius: 14px;
 }
 body:not(.a-body) main#icerik:not(.owner-panel) :where(input:focus, select:focus, textarea:focus) {
   border-color: var(--public-orange);
-  box-shadow: 0 0 0 4px rgba(237, 113, 84, .14);
+  box-shadow: 0 0 0 4px rgba(23, 100, 71, .14);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-panel, .apt-card, .apt-lcard, .hotel-card-shell, .hotel-card, .hotel-public-room-card, .hotel-related-card, .hotel-review-card, .booking-sidebar, .booking-summary, .blog-card, .vet-card) {
   border-color: var(--public-line);
-  box-shadow: 0 9px 26px rgba(81, 58, 43, .055);
+  box-shadow: 0 9px 26px rgba(25, 70, 50, .055);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-panel, .apt-card, .apt-lcard, .hotel-card-shell, .hotel-card, .hotel-public-room-card, .hotel-related-card, .hotel-review-card, .booking-sidebar, .booking-summary, .blog-card, .vet-card) :where(h2, h3, .apt-card__title) {
   color: var(--public-ink);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-card__icon, .apt-lcard__fav, .hotel-related-icon, .hotel-claim-icon) {
-  background-color: #fff0e8;
-  color: #d65b40;
+  background-color: var(--public-orange-soft);
+  color: var(--public-orange-dark);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-btn--primary, .btn-primary, .apt-lcard__cta, .hotel-select-room, .home-hero-wrap > .pw-search .btn) {
   border-color: var(--public-orange);
@@ -1115,37 +1117,37 @@ body:not(.a-body) main#icerik:not(.owner-panel) :where(.apt-btn--primary, .btn-p
 }
 body:not(.a-body) main#icerik:not(.owner-panel) .home-hotels-heading {
   border-color: #eee5db;
-  background: linear-gradient(120deg, #fffefa 0%, #fff4ec 100%);
+  background: linear-gradient(120deg, #fffefa 0%, #f2f7f2 100%);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) :where(.pw-neden > *, .steps > *, .pw-rehber, .pw-seffaf > *, .pw-oda > *, .pw-blog > *, .pw-bolum .faq, .pw-bolum .cta) {
   border-color: var(--public-line);
   border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(81, 58, 43, .045);
+  box-shadow: 0 8px 24px rgba(25, 70, 50, .045);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) .pw-bolum .chips a {
-  border-color: #eee2d8;
+  border-color: var(--public-line);
   border-radius: 999px;
   background: #fffefa;
   color: #53627a;
 }
 body:not(.a-body) main#icerik:not(.owner-panel) .pw-bolum .chips a:hover {
-  border-color: #f2b9a7;
-  background: #fff0e8;
-  color: #cf563b;
+  border-color: #c5d9c9;
+  background: var(--public-orange-soft);
+  color: var(--public-orange-dark);
 }
 body:not(.a-body) main#icerik:not(.owner-panel) .hotel-detail-page .hotel-faq-item[open] summary,
 body:not(.a-body) main#icerik:not(.owner-panel) .hotel-detail-page .hotel-address-card {
-  background-color: #fff9f4;
+  background-color: #f3f8f3;
 }
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer {
-  border-top-color: #eee5dc;
-  background: #fff7ef;
-  color: #596477;
+  border-top-color: var(--public-line);
+  background: var(--public-surface);
+  color: var(--public-muted);
 }
-body:not(.a-body) .mobile-bottom-nav > a[aria-current="page"] { color: #cf563b; }
+body:not(.a-body) .mobile-bottom-nav > a[aria-current="page"] { color: var(--public-orange-dark); }
 body:not(.a-body) .mobile-bottom-nav > a.mobile-bottom-nav__search {
-  background: #ed7154;
-  box-shadow: 0 5px 14px rgba(207, 86, 59, .24);
+  background: var(--public-orange);
+  box-shadow: 0 5px 14px rgba(23, 100, 71, .24);
 }
 
 body:not(.a-body) main#icerik .pw-bas h2,
@@ -1201,7 +1203,7 @@ body:not(.a-body) main#icerik .home-hotels-section .home-hotels-heading h2 {
   padding: 0 18px;
   border: 1px solid #e6a18e;
   border-radius: 999px;
-  background: #ed7154;
+  background: var(--public-orange);
   color: #fff;
   box-shadow: 0 8px 25px rgba(106, 63, 47, .2);
   font: inherit;
@@ -1210,7 +1212,7 @@ body:not(.a-body) main#icerik .home-hotels-section .home-hotels-heading h2 {
   cursor: pointer;
   transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
 }
-.site-assistant__launcher:hover { transform: translateY(-2px); background: #cf563b; box-shadow: 0 12px 28px rgba(106, 63, 47, .24); }
+.site-assistant__launcher:hover { transform: translateY(-2px); background: var(--public-orange-dark); box-shadow: 0 12px 28px rgba(23, 100, 71, .24); }
 .site-assistant__launcher svg { width: 21px; height: 21px; fill: currentColor; }
 .site-assistant__launcher:focus-visible, .site-assistant button:focus-visible, .site-assistant textarea:focus-visible { outline: 3px solid rgba(237, 113, 84, .48); outline-offset: 3px; }
 .site-assistant__panel {
@@ -1229,20 +1231,20 @@ body:not(.a-body) main#icerik .home-hotels-section .home-hotels-heading h2 {
 }
 .site-assistant__panel[hidden] { display: none; }
 .site-assistant__header { display: flex; align-items: center; gap: 11px; padding: 16px; border-bottom: 1px solid #f0e7df; background: linear-gradient(120deg, #fffefa, #fff4ec); }
-.site-assistant__mark { display: grid; place-items: center; flex: 0 0 42px; height: 42px; border-radius: 15px; background: #fff0e8; font-size: 22px; }
+.site-assistant__mark { display: grid; place-items: center; flex: 0 0 42px; height: 42px; border-radius: 15px; background: var(--public-orange-soft); font-size: 22px; }
 .site-assistant__header h2 { margin: 0; color: #29344a; font-size: 15px; line-height: 1.3; }
 .site-assistant__header p { margin: 3px 0 0; color: #6b7483; font-size: 11px; }
 .site-assistant__close { margin-left: auto; width: 36px; height: 36px; border: 0; border-radius: 50%; background: #fff; color: #596477; font-size: 24px; line-height: 1; cursor: pointer; }
 .site-assistant__messages { display: flex; flex: 1 1 auto; flex-direction: column; gap: 10px; min-height: 130px; overflow-y: auto; padding: 15px; overscroll-behavior: contain; }
 .site-assistant__message { max-width: 90%; padding: 11px 13px; border: 1px solid #ece5dd; border-radius: 16px 16px 16px 5px; background: #fff7ef; color: #34425a; font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; white-space: pre-wrap; }
-.site-assistant__message--user { align-self: flex-end; border-color: #f0d7ca; border-radius: 16px 16px 5px 16px; background: #fff0e8; color: #513c39; }
+.site-assistant__message--user { align-self: flex-end; border-color: var(--public-line); border-radius: 16px 16px 5px 16px; background: var(--public-orange-soft); color: var(--public-ink); }
 .site-assistant__suggestions { display: flex; flex-wrap: wrap; gap: 7px; }
 .site-assistant__suggestions button { padding: 8px 10px; border: 1px solid #eee2d8; border-radius: 999px; background: #fffefa; color: #53627a; font: inherit; font-size: 11px; cursor: pointer; }
-.site-assistant__suggestions button:hover { border-color: #f2b9a7; background: #fff0e8; color: #cf563b; }
+.site-assistant__suggestions button:hover { border-color: #c5d9c9; background: var(--public-orange-soft); color: var(--public-orange-dark); }
 .site-assistant__form { display: flex; align-items: flex-end; gap: 8px; padding: 12px 14px; border-top: 1px solid #f0e7df; background: #fff; }
 .site-assistant__form textarea { flex: 1 1 auto; min-width: 0; min-height: 44px; max-height: 110px; resize: vertical; padding: 10px 12px; border: 1px solid #e8dfd7; border-radius: 14px; color: #29344a; font: inherit; font-size: 13px; line-height: 1.45; }
-.site-assistant__form > button { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border: 0; border-radius: 14px; background: #ed7154; color: #fff; cursor: pointer; }
-.site-assistant__form > button:hover { background: #cf563b; }
+.site-assistant__form > button { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border: 0; border-radius: 14px; background: var(--public-orange); color: #fff; cursor: pointer; }
+.site-assistant__form > button:hover { background: var(--public-orange-dark); }
 .site-assistant__form > button:disabled { opacity: .6; cursor: wait; }
 .site-assistant__form svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .site-assistant__note { margin: 0; padding: 0 14px 12px; background: #fff; color: #727b88; font-size: 10px; line-height: 1.45; }

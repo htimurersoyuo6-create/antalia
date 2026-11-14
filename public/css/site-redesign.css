@@ -1140,7 +1140,7 @@ body:not(.a-body) main#icerik:not(.owner-panel) .hotel-detail-page .hotel-addres
   background-color: #f3f8f3;
 }
 body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer {
-  border-top-color: var(--public-line);
+  border-top: 1px solid var(--public-line) !important;
   background: var(--public-surface);
   color: var(--public-muted);
 }

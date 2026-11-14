@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\PasswordResetLinkNotification;
+use Illuminate\Support\Str;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'address'])]
 #[Hidden(['password', 'remember_token'])]
@@ -17,6 +18,23 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, \Laravel\Sanctum\HasApiTokens;
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user): void {
+            if (blank($user->username)) {
+                $base = Str::substr(Str::slug((string) $user->name) ?: 'uye', 0, 46);
+                $username = $base;
+                $suffix = 2;
+
+                while (static::query()->where('username', $username)->exists()) {
+                    $username = $base.'-'.$suffix++;
+                }
+
+                $user->username = $username;
+            }
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

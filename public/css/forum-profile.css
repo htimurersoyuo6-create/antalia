@@ -1,0 +1,212 @@
+main#icerik .profile-page {
+  width: min(100% - 32px, 1120px);
+  padding: 22px 0 54px;
+}
+main#icerik .profile-page .forum-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 18px;
+  color: #78857b;
+  font-size: 13px;
+}
+main#icerik .profile-page .forum-crumbs a {
+  color: #4a7055;
+  text-decoration: none;
+}
+main#icerik .profile-page .forum-crumbs a:hover { text-decoration: underline; }
+main#icerik .profile-head {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+  margin: 0;
+  padding: clamp(22px, 4vw, 36px);
+  border: 1px solid #e3ebe2;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #fff 0%, #f8fbf7 100%);
+  box-shadow: 0 12px 32px rgba(37, 54, 42, .06);
+}
+main#icerik .profile-avatar {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border: 1px solid #d5e7d8;
+  border-radius: 23px;
+  background: linear-gradient(145deg, #eaf5ec, #d6eadb);
+  color: #28643f;
+  font-size: 32px;
+  font-weight: 850;
+  line-height: 1;
+}
+main#icerik .profile-identity { min-width: 0; }
+main#icerik .profile-identity > .forum-card-label {
+  display: inline-flex;
+  margin: 0 0 7px;
+  color: #4c7956;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+main#icerik .profile-identity h1 {
+  margin: 0;
+  color: #23392b;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -.04em;
+  overflow-wrap: anywhere;
+}
+main#icerik .profile-identity > .forum-post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 9px 0 14px;
+  color: #738176;
+  font-size: 12px;
+  line-height: 1.5;
+}
+main#icerik .profile-bio {
+  max-width: 760px;
+  margin: 0;
+  color: #536359;
+  font-size: 15px;
+  line-height: 1.7;
+}
+main#icerik .profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 180px));
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+}
+main#icerik .profile-stats > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 9px 13px;
+  border: 1px solid #e2ebe1;
+  border-radius: 13px;
+  background: #fff;
+}
+main#icerik .profile-stats dt {
+  color: #68776c;
+  font-size: 12px;
+  font-weight: 700;
+}
+main#icerik .profile-stats dd {
+  margin: 0;
+  color: #285d3c;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1;
+}
+main#icerik .profile-page .forum-replies { margin-top: 28px; }
+main#icerik .profile-page .forum-section-heading { margin-bottom: 14px; }
+main#icerik .profile-page .forum-section-heading h2 {
+  margin: 5px 0 0;
+  color: #2e4335;
+  font-size: clamp(21px, 3vw, 26px);
+  line-height: 1.25;
+}
+main#icerik .profile-topic-list { display: grid; gap: 11px; }
+main#icerik .profile-topic {
+  margin: 0;
+  padding: 17px 19px;
+  border: 1px solid #e3eae2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(37, 54, 42, .035);
+}
+main#icerik .profile-topic .chip {
+  display: inline-flex;
+  max-width: 100%;
+  margin: 0;
+  padding: 4px 9px;
+  border: 1px solid #dce9dd;
+  border-radius: 999px;
+  background: #f1f7f1;
+  color: #47704f;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+main#icerik .profile-topic h3 {
+  margin: 8px 0 5px;
+  color: #2b3c31;
+  font-size: clamp(16px, 2vw, 18px);
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: -.015em;
+  overflow-wrap: anywhere;
+}
+main#icerik .profile-topic h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+main#icerik .profile-topic h3 a:hover {
+  color: #34724b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+main#icerik .profile-topic > p:not(.forum-post-meta) {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #65736a;
+  font-size: 13px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+main#icerik .profile-topic .forum-post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 9px;
+  margin: 9px 0 0;
+  color: #849087;
+  font-size: 11px;
+}
+main#icerik .profile-page .pagination { margin-top: 18px; }
+
+@media (max-width: 700px) {
+  main#icerik .profile-page {
+    width: min(100% - 28px, 1120px);
+    padding: 18px 0 42px;
+  }
+  main#icerik .profile-page .forum-crumbs { margin-bottom: 14px; }
+  main#icerik .profile-head {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 13px;
+    padding: 20px 17px;
+    border-radius: 18px;
+  }
+  main#icerik .profile-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 17px;
+    font-size: 25px;
+  }
+  main#icerik .profile-identity h1 { font-size: clamp(25px, 6vw, 34px); }
+  main#icerik .profile-identity > .forum-post-meta { margin: 7px 0 12px; }
+  main#icerik .profile-bio { font-size: 14px; }
+  main#icerik .profile-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 15px;
+  }
+  main#icerik .profile-stats > div { min-height: 46px; padding: 8px 10px; }
+  main#icerik .profile-stats dt { font-size: 11px; }
+  main#icerik .profile-stats dd { font-size: 18px; }
+  main#icerik .profile-page .forum-replies { margin-top: 23px; }
+  main#icerik .profile-topic { padding: 15px 14px; border-radius: 14px; }
+}
+
+@media (max-width: 390px) {
+  main#icerik .profile-head { grid-template-columns: 1fr; }
+  main#icerik .profile-avatar { width: 48px; height: 48px; font-size: 22px; }
+}

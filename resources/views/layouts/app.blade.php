@@ -80,6 +80,54 @@ $aramaDiziniDisi = auth()->check()
 <meta name="theme-color" content="#176447">
 <meta name="geo.region" content="TR">
 <meta name="geo.placename" content="{{ $sitePlace }}">
+@unless(request()->routeIs('admin.*', 'panel.*'))
+<script>
+(function () {
+  var key = 'antalyapetotel-theme';
+  var preference = null;
+  try {
+    var saved = window.localStorage.getItem(key);
+    if (saved === 'light' || saved === 'dark') preference = saved;
+  } catch (error) {}
+  var media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var applyTheme = function (theme, persist) {
+    document.documentElement.setAttribute('data-theme', theme);
+    var themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.setAttribute('content', theme === 'dark' ? '#111a15' : '#176447');
+    document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+      var isDark = theme === 'dark';
+      button.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+      button.setAttribute('aria-label', isDark ? 'Gündüz görünümüne geç' : 'Gece görünümüne geç');
+      button.setAttribute('title', isDark ? 'Gündüz görünümüne geç' : 'Gece görünümüne geç');
+      var label = button.querySelector('[data-theme-toggle-label]');
+      if (label) label.textContent = isDark ? 'Gündüz görünümü' : 'Gece görünümü';
+    });
+    if (persist) {
+      preference = theme;
+      try {
+        window.localStorage.setItem(key, theme);
+      } catch (error) {}
+    }
+  };
+  var currentTheme = preference || (media && media.matches ? 'dark' : 'light');
+  applyTheme(currentTheme, false);
+  document.addEventListener('DOMContentLoaded', function () {
+    applyTheme(document.documentElement.getAttribute('data-theme'), false);
+  });
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-theme-toggle]');
+    if (button) applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
+  });
+  if (media) {
+    var syncWithSystem = function (event) {
+      if (!preference) applyTheme(event.matches ? 'dark' : 'light', false);
+    };
+    if (media.addEventListener) media.addEventListener('change', syncWithSystem);
+    else if (media.addListener) media.addListener(syncWithSystem);
+  }
+})();
+</script>
+@endunless
 
 <link rel="icon" href="{{ $siteLogo !== '' ? asset('storage/'.$siteLogo) : asset('img/paw-placeholder.svg') }}">
 <link rel="apple-touch-icon" href="{{ $siteLogo !== '' ? asset('storage/'.$siteLogo) : asset('img/paw-placeholder.svg') }}">
@@ -102,6 +150,8 @@ $aramaDiziniDisi = auth()->check()
 <link rel="stylesheet" href="{{ asset('css/patibul-theme.css') }}?v={{ @filemtime(public_path('css/patibul-theme.css')) }}">
 <link rel="stylesheet" href="{{ asset('css/site-redesign.css') }}?v={{ @filemtime(public_path('css/site-redesign.css')) }}">
 <link rel="stylesheet" href="{{ asset('css/site-redesign-fixes.css') }}?v={{ @filemtime(public_path('css/site-redesign-fixes.css')) }}">
+<link rel="stylesheet" href="{{ asset('css/forum-profile.css') }}?v={{ @filemtime(public_path('css/forum-profile.css')) }}">
+<link rel="stylesheet" href="{{ asset('css/site-theme.css') }}?v={{ @filemtime(public_path('css/site-theme.css')) }}">
 {!! seo_kurum([
     'ad' => $siteBrand,
     'url' => config('app.url'),
@@ -213,6 +263,9 @@ $footerLegal = $siteLinks(\App\Models\Setting::al('footer_legal', "Gizlilik Poli
     <a class="dnav-account" href="{{ route('login') }}">Giriş yap</a>
     <a class="dnav-register" href="{{ route('register') }}">Kayıt ol</a>
   @endauth
+  @unless(request()->routeIs('admin.*', 'panel.*'))
+    @include('components.theme-toggle')
+  @endunless
 </div>
 <form class="hsearch" action="{{ route('search') }}" method="get" role="search">
   <label for="hs" class="skip">Otel ara</label>
@@ -228,6 +281,9 @@ $footerLegal = $siteLinks(\App\Models\Setting::al('footer_legal', "Gizlilik Poli
       <input id="menu-search-q" type="search" name="q" value="{{ request('q') }}" placeholder="Otel veya ilçe ara">
       <button class="btn" type="submit">Ara</button>
     </form>
+    @unless(request()->routeIs('admin.*', 'panel.*'))
+      @include('components.theme-toggle')
+    @endunless
     <div class="grp">Hesap</div>
     @auth
       @if(auth()->user()->role === 'admin')<a href="{{ route('admin.index') }}">Yönetim</a>@endif

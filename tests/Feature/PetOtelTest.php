@@ -63,11 +63,31 @@ class PetOtelTest extends TestCase
 
     public function test_public_pages_render(): void
     {
-        [$h] = $this->mkHotel();
+        [$h, , $profileUser] = $this->mkHotel();
+        $duplicateUser = $this->mkUser();
+        $this->assertNotSame($profileUser->username, $duplicateUser->username);
         foreach (['/', '/ara', '/kategori/pet-otelleri/antalya', '/kategori/pet-otelleri/antalya/kopek-otelleri', '/pet-otel/test-otel',
                   '/blog', '/iletisim', '/partner', '/giris', '/kayit', '/sitemap.xml', '/sayfa/gizlilik', '/sayfa/cerez-politikasi', '/sayfa/iptal-iade', '/sayfa/hakkimizda', '/sayfa/kullanim-kosullari'] as $url) {
             $this->followingRedirects()->get($url)->assertOk();
         }
+        foreach (range(1, 11) as $i) {
+            ForumTopic::create([
+                'user_id' => $profileUser->id,
+                'category' => 'genel',
+                'title' => 'Profil konusu '.$i,
+                'body' => 'Profil sayfası için örnek konu içeriği.',
+                'slug' => 'profil-konusu-'.$i,
+                'status' => 'active',
+                'publish_at' => now()->subDays($i),
+            ]);
+        }
+        $this->get(route('home'))->assertOk()->assertSee('data-theme-toggle', false);
+        $profileResponse = $this->get(route('profile.show', $profileUser->username))
+            ->assertOk()
+            ->assertSee('@'.$profileUser->username)
+            ->assertDontSee('@{{ $profile->username }}');
+        $this->assertSame(10, substr_count($profileResponse->getContent(), 'class="cardbox profile-topic"'));
+        $profileResponse->assertSee('?page=2', false);
         $this->get('/sayfa/yok')->assertNotFound();
         $this->get(route('sitemap.main'))->assertSee(route('hotels.show', $h), false);
     }

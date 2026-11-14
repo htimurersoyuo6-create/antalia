@@ -1,0 +1,204 @@
+.theme-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 7px 11px;
+  border: 1px solid var(--public-line, #dce5dc);
+  border-radius: 999px;
+  background: var(--public-surface, #fff);
+  color: var(--public-ink, #213329);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--public-orange, #17784d);
+  background: var(--public-orange-soft, #eaf3ec);
+}
+.theme-toggle:focus-visible {
+  outline: 3px solid #d5a846;
+  outline-offset: 3px;
+}
+.theme-toggle svg { width: 17px; height: 17px; flex: 0 0 auto; }
+.theme-toggle__sun { display: none; }
+html[data-theme="dark"] .theme-toggle__moon { display: none; }
+html[data-theme="dark"] .theme-toggle__sun { display: block; }
+.mnav .mpanel > .theme-toggle { width: 100%; min-height: 44px; margin: 4px 0 10px; }
+@media (min-width: 900px) {
+  .dnav .theme-toggle { width: 38px; padding: 7px; }
+  .dnav .theme-toggle span { display: none; }
+}
+
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) {
+  color-scheme: dark;
+  --public-orange: #70c895;
+  --public-orange-dark: #4aa875;
+  --public-orange-soft: #203a2b;
+  --public-warm: #d3b675;
+  --public-ink: #e8f0ea;
+  --public-muted: #aebdb2;
+  --public-line: #35483a;
+  --public-surface: #1a2820;
+  --public-canvas: #111a15;
+  --public-shadow: 0 12px 32px rgba(0, 0, 0, .28);
+  --brand: var(--public-orange);
+  --brand-d: var(--public-orange-dark);
+  --brand-l: var(--public-orange-soft);
+  --ink: var(--public-ink);
+  --ink-2: #c3d0c6;
+  --mut: var(--public-muted);
+  --line: var(--public-line);
+  --line-soft: #2b3a30;
+  --soft: #17241b;
+  --apt-line: var(--public-line);
+  --apt-line-soft: #2b3a30;
+  --apt-ink: var(--public-ink);
+  --apt-ink-soft: #c3d0c6;
+  --apt-ink-mute: var(--public-muted);
+  --apt-surface: var(--public-surface);
+  --apt-surface-alt: #202f26;
+  --apt-accent: var(--public-orange);
+  --apt-accent-soft: var(--public-orange-soft);
+  --apt-ok: #76c99a;
+  --apt-ok-soft: #1b3426;
+  --apt-shadow: var(--public-shadow);
+  background: var(--public-canvas) !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header {
+  border-bottom-color: var(--public-line) !important;
+  background: rgba(17, 26, 21, .97) !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav a:not(.dnav-cta),
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav-account-menu > summary {
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .dnav-account-popover,
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .mnav .mpanel {
+  border-color: var(--public-line) !important;
+  background: var(--public-surface) !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .hsearch input,
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .menu-search input {
+  border-color: var(--public-line) !important;
+  background: #142019 !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .hsearch input::placeholder,
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > header .menu-search input::placeholder {
+  color: var(--public-muted) !important;
+}
+
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik:not(.owner-panel) {
+  background-color: transparent !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(
+  .apt-panel,
+  .apt-card,
+  .apt-lcard,
+  .hotel-discovery-hero,
+  .hotel-detail-page .apt-head,
+  .hotel-detail-page .hotel-public-room-card,
+  .hotel-detail-page .hotel-review-card,
+  .hotel-detail-page .hotel-related-card,
+  .hotel-detail-page .hotel-faq-item,
+  .hotel-detail-page .hotel-address-card,
+  .hotel-detail-page .hotel-claim-banner,
+  .hotel-detail-page .booking-summary,
+  .hotel-detail-page .booking-sidebar,
+  .home-hero-shell,
+  .home-search,
+  .home-hotels-section,
+  .blog-card,
+  .blog-article,
+  .blog-toc-card,
+  .blog-related-card,
+  .page-content,
+  .lost-pet-card,
+  .lost-pets-card,
+  .adoption-card,
+  .adoption-listing-card,
+  .forum-post,
+  .forum-reply,
+  .forum-compose,
+  .forum-topic,
+  .forum-empty,
+  .forum-welcome-card,
+  .profile-head,
+  .profile-topic,
+  .profile-stats > div,
+  .forum-empty-reply
+) {
+  border-color: var(--public-line) !important;
+  background-color: var(--public-surface) !important;
+  color: var(--public-ink) !important;
+  box-shadow: var(--public-shadow);
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik .home-hero-shell {
+  background: linear-gradient(135deg, #1a2a20, #121d16) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(h1, h2, h3, h4, h5, p, li, label, dt, dd, .apt-lcard__name, .apt-card__title) {
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(small, .muted, .hint, .meta, .apt-lcard__sub, .apt-card__sub, .apt-crumb, .forum-post-meta) {
+  color: var(--public-muted) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(.forum-card-label, .profile-stats dd) {
+  color: var(--public-orange) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(.profile-avatar, .profile-topic .chip) {
+  border-color: var(--public-line) !important;
+  background: var(--public-orange-soft) !important;
+  color: var(--public-orange) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik a:not(.btn):not([class*="button"]) {
+  color: #a6d9b8;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  border-color: var(--public-line) !important;
+  background: #142019 !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(input, textarea)::placeholder {
+  color: var(--public-muted) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik :where(hr, table, th, td) {
+  border-color: var(--public-line) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) main#icerik thead {
+  background: #202f26 !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) > footer {
+  border-top: 1px solid var(--public-line) !important;
+  background: var(--public-surface) !important;
+  color: var(--public-muted) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) .mobile-bottom-nav,
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) .site-assistant__panel,
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) .analytics-consent,
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) #hotel-call-confirm {
+  border-color: var(--public-line) !important;
+  background: var(--public-surface) !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) .analytics-consent button {
+  border-color: var(--public-line) !important;
+  background: #202f26 !important;
+  color: var(--public-ink) !important;
+}
+html[data-theme="dark"] body:not(.a-body):not(.has-owner-sidebar):not(:has(main.owner-panel)) .analytics-consent button[type="submit"][value="accepted"] {
+  border-color: var(--public-orange-dark) !important;
+  background: var(--public-orange-dark) !important;
+  color: #fff !important;
+}

@@ -18,7 +18,7 @@
       <span class="forum-card-label">TOPLULUK ÜYESİ</span>
       <h1>{{ $profile->name }}</h1>
       <p class="forum-post-meta">
-        <span>@@{{ $profile->username }}</span>
+        <span>{{ '@'.$profile->username }}</span>
         @if($profile->created_at)
           <span>· Üyelik: {{ $profile->created_at->format('d.m.Y') }}</span>
         @endif
@@ -44,10 +44,11 @@
       </div>
     </div>
 
+    @php($categoryLabels = ['pet-bakimi' => 'Pet bakımı', 'saglik' => 'Sağlık ve veteriner', 'egitim' => 'Eğitim ve davranış', 'beslenme' => 'Beslenme', 'pet-otelleri' => 'Pet otelleri', 'genel' => 'Genel sohbet'])
     <div class="profile-topic-list">
       @forelse($topics as $t)
         <article class="cardbox profile-topic">
-          <span class="chip">{{ $t->category }}</span>
+          <span class="chip">{{ $categoryLabels[$t->category] ?? 'Genel sohbet' }}</span>
           <h3><a href="{{ route('forum.show', $t->slug) }}">{{ $t->title }}</a></h3>
           @if($t->meta_description)
             <p>{{ $t->meta_description }}</p>

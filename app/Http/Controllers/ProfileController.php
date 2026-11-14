@@ -22,8 +22,9 @@ class ProfileController extends Controller
         $topics = ForumTopic::where('user_id', $user->id)
             ->tap($published)
             ->withCount(['replies' => fn ($x) => $x->where('status', 'active')])
-            ->orderByDesc('publish_at')
-            ->paginate(20)
+            ->orderByRaw('COALESCE(publish_at, created_at) DESC')
+            ->orderByDesc('id')
+            ->paginate(10)
             ->withQueryString();
 
         $stats = [
